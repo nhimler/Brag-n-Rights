@@ -9,6 +9,8 @@ Brag'n Rights Group Project Repository
 - Tuesday @ 6:30pm -> 1.5 hours
 - Wednesday @ 6:30pm -> 1.5 hours
 - Thursday @ 6:30pm -> 1.5 hours
+- Saturday @ 10:00am -> 1 hour
+- Sunday @ 10:00am -> 1 hour
 
 ## Team Motto
 
@@ -36,3 +38,6 @@ Code worth bragging
     This site would take that data and display it using charts, graphs, tables, etc. Additionally, users would be given a few 
     recommendations based on their listening history/patterns. The app would also take the users data and allow them to unlock 
     various “achievements”. For example, they could get an achievement for listening to 20 different genres/subgenres.
+
+
+### [Diagram and Brainstorm on Miro](https://miro.com/app/board/uXjVLuNrUmk=/)
