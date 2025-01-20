@@ -36,3 +36,6 @@ Code worth bragging
     This site would take that data and display it using charts, graphs, tables, etc. Additionally, users would be given a few 
     recommendations based on their listening history/patterns. The app would also take the users data and allow them to unlock 
     various “achievements”. For example, they could get an achievement for listening to 20 different genres/subgenres.
+
+
+### [Diagram and Brainstorm on Miro](https://miro.com/app/board/uXjVLuNrUmk=/)
