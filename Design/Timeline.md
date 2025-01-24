@@ -2,22 +2,26 @@
 
 ## Milestones
 
-| Milestone | Tasks         |
+| Milestone | Due Date |
 | --------- | ------------- |
-| Week 1    | Team name, Team Motto, Resumes, Meeting Times, GitHub Repo, Project Ideas |
-| Week 2    | Brainstorm Idea, Mindmap, Rough Draft Vision Statement, Needs & Features, Architecture Diagram |
-| Week 3    | Update Vision Statement, Stakeholders & Personas, Timeline & Release Plan, Update Needs & Features, Requirements E & E, Initial System Architecture, Modeling Outputs, Jira & Epics |
-| Week 4    | Product Backlong, Sprint Backlog, Architectural Decisions, Initial Data Model |
+| Week 1    | 1-15-2025 |
+| Week 2    | 1-20-2025 |
+| Week 3    | 1-27-2025 |
+| Week 4    | 2-3-2025 |
 
 ## Sprints
 
-| Sprint | Tasks         |
+| Sprint | Due Date |
 | --------- | ------------- |
-| Sprint 1  |               |
-| Sprint 2  |               |
-| Sprint 3  |               |
-| Sprint 4  |               |
-| Sprint 5  |               |
-| Sprint 6  |               |
-| Sprint 7  |               |
-| Sprint 8  |               |
+| Sprint 1  | 2-17-2025 |
+| Sprint 2  | 3-3-2025 |
+| Sprint 3  | 3-17-2025 |
+| Sprint 4  | TBA |
+| Sprint 5  | TBA |
+| Sprint 6  | TBA |
+| Sprint 7  | TBA |
+| Sprint 8  | TBA |
+
+## Academic Excellence Showcase
+
+TBA
