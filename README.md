@@ -6,9 +6,9 @@ Brag'n Rights Group Project Repository
 
 - Advisor Project Meeting Monday 11-12
 - Monday @ 10:00am -> 1 hour
-- Tuesday @ 6:30pm -> 1.5 hours
-- Wednesday @ 6:30pm -> 1.5 hours
-- Thursday @ 6:30pm -> 1.5 hours
+- Tuesday @ 5:30pm -> 1.5 hours
+- Wednesday @ 5:30pm -> 1.5 hours
+- Thursday @ 5:30pm -> 1.5 hours
 - Saturday @ 10:00am -> 1 hour
 - Sunday @ 10:00am -> 1 hour
 
