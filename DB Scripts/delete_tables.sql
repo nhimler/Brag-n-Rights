@@ -1,41 +1,27 @@
--- Drop the junction table for the many-to-many relationship between Meal and Food
-IF OBJECT_ID('Meal_Food', 'U') IS NOT NULL DROP TABLE Meal_Food;
+IF OBJECT_ID('MealFood', 'U') IS NOT NULL DROP TABLE [MealFood];
 
--- Drop the Leaderboard table
-IF OBJECT_ID('Leaderboard', 'U') IS NOT NULL DROP TABLE Leaderboard;
+IF OBJECT_ID('Leaderboard', 'U') IS NOT NULL DROP TABLE [Leaderboard];
 
--- Drop the table for Challenge-User relationship
-IF OBJECT_ID('Challenge_User', 'U') IS NOT NULL DROP TABLE Challenge_User;
+IF OBJECT_ID('ChallengeUser', 'U') IS NOT NULL DROP TABLE [ChallengeUser];
 
--- Drop the Fitness Challenge table
-IF OBJECT_ID('Fitness_Challenge', 'U') IS NOT NULL DROP TABLE Fitness_Challenge;
+IF OBJECT_ID('FitnessChallenge', 'U') IS NOT NULL DROP TABLE [FitnessChallenge];
 
--- Drop the Gym-User relationship table
-IF OBJECT_ID('Gym_User', 'U') IS NOT NULL DROP TABLE Gym_User;
+IF OBJECT_ID('GymUser', 'U') IS NOT NULL DROP TABLE [GymUser];
 
--- Drop the Gym table
-IF OBJECT_ID('Gym', 'U') IS NOT NULL DROP TABLE Gym;
+IF OBJECT_ID('Gym', 'U') IS NOT NULL DROP TABLE [Gym];
 
--- Drop the Biometric Data table
-IF OBJECT_ID('Biometric_Data', 'U') IS NOT NULL DROP TABLE Biometric_Data;
+IF OBJECT_ID('BiometricData', 'U') IS NOT NULL DROP TABLE [BiometricData];
 
--- Drop the Meal table
-IF OBJECT_ID('Meal', 'U') IS NOT NULL DROP TABLE Meal;
+IF OBJECT_ID('Meal', 'U') IS NOT NULL DROP TABLE [Meal];
 
--- Drop the Meal Plan table
-IF OBJECT_ID('Meal_Plan', 'U') IS NOT NULL DROP TABLE Meal_Plan;
+IF OBJECT_ID('MealPlan', 'U') IS NOT NULL DROP TABLE [MealPlan];
 
--- Drop the Workout Plan Exercise linking table
-IF OBJECT_ID('Workout_Plan_Exercise', 'U') IS NOT NULL DROP TABLE Workout_Plan_Exercise;
+IF OBJECT_ID('WorkoutPlanExercise', 'U') IS NOT NULL DROP TABLE [WorkoutPlanExercise];
 
--- Drop the Exercise table
-IF OBJECT_ID('Exercise', 'U') IS NOT NULL DROP TABLE Exercise;
+IF OBJECT_ID('Exercise', 'U') IS NOT NULL DROP TABLE [Exercise];
 
--- Drop the Workout Plan table
-IF OBJECT_ID('Workout_Plan', 'U') IS NOT NULL DROP TABLE Workout_Plan;
+IF OBJECT_ID('WorkoutPlan', 'U') IS NOT NULL DROP TABLE [WorkoutPlan];
 
--- Drop the Food table
-IF OBJECT_ID('Food', 'U') IS NOT NULL DROP TABLE Food;
+IF OBJECT_ID('Food', 'U') IS NOT NULL DROP TABLE [Food];
 
--- Drop the User table
 IF OBJECT_ID('[User]', 'U') IS NOT NULL DROP TABLE [User];
