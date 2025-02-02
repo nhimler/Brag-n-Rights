@@ -19,7 +19,7 @@ CREATE TABLE [User] (
 );
 
 -- Workout Plan table
-CREATE TABLE WorkoutPlan (
+CREATE TABLE [WorkoutPlan] (
     [WorkoutPlanID]         INT                 IDENTITY(1,1) PRIMARY KEY,
     [UserID]                INT,
     [PlanName]              NVARCHAR(255),
@@ -32,7 +32,7 @@ CREATE TABLE WorkoutPlan (
 );
 
 -- Exercise table
-CREATE TABLE Exercise (
+CREATE TABLE [Exercise] (
     [ExerciseID]            INT             IDENTITY(1,1) PRIMARY KEY,
     [Name]                  NVARCHAR(255),
     [Category]              NVARCHAR(20)    CHECK (category IN ('Strength', 'Cardio', 'Flexibility')),
@@ -44,7 +44,7 @@ CREATE TABLE Exercise (
 );
 
 -- Linking Exercise to Workout Plan (Many-to-Many Relationship)
-CREATE TABLE WorkoutPlanExercise (
+CREATE TABLE [WorkoutPlanExercise] (
     [WorkoutPlanID]     INT,
     [ExerciseID]        INT,
     PRIMARY KEY (WorkoutPlanID, ExerciseID),
@@ -53,7 +53,7 @@ CREATE TABLE WorkoutPlanExercise (
 );
 
 -- Meal Plan table
-CREATE TABLE MealPlan (
+CREATE TABLE [MealPlan] (
     [MealPlanID]        INT     IDENTITY(1,1) PRIMARY KEY,
     [UserID]            INT,
     [PlanName]          NVARCHAR(255),
@@ -68,7 +68,7 @@ CREATE TABLE MealPlan (
 );
 
 -- Meal table
-CREATE TABLE Meal (
+CREATE TABLE [Meal] (
     [MealID]        INT             IDENTITY(1,1) PRIMARY KEY,
     [MealName]      NVARCHAR(255),
     [MealType]      NVARCHAR(20)    CHECK (MealType IN ('Breakfast', 'Lunch', 'Dinner', 'Snack')),
@@ -82,7 +82,7 @@ CREATE TABLE Meal (
 );
 
 -- Food table
-CREATE TABLE Food (
+CREATE TABLE [Food] (
     [FoodID]                INT             IDENTITY(1,1) PRIMARY KEY,
     [FoodName]              NVARCHAR(255),
     [CaloriesPerServing]    INT,
@@ -93,7 +93,7 @@ CREATE TABLE Food (
 );
 
 -- Linking Food to Meal (Many-to-Many Relationship)
-CREATE TABLE MealFood (
+CREATE TABLE [MealFood] (
     [MealID]    INT,
     [FoodID]    INT,
     PRIMARY KEY (MealID, FoodID),
@@ -102,7 +102,7 @@ CREATE TABLE MealFood (
 );
 
 -- Biometric Data table
-CREATE TABLE BiometricData (
+CREATE TABLE [BiometricData] (
     [BiometricID]       INT     IDENTITY(1,1) PRIMARY KEY,
     [UserID]            INT,
     [Date]              DATE,
@@ -115,7 +115,7 @@ CREATE TABLE BiometricData (
 );
 
 -- Gym table
-CREATE TABLE Gym (
+CREATE TABLE [Gym] (
     [GymID]                 INT             IDENTITY(1,1) PRIMARY KEY,
     [GymName]               NVARCHAR(255),
     [Address]               NVARCHAR(255),
@@ -127,7 +127,7 @@ CREATE TABLE Gym (
 );
 
 -- Gym-User relationship (Many-to-Many)
-CREATE TABLE GymUser (
+CREATE TABLE [GymUser] (
     [GymID]     INT,
     [UserID]    INT,
     PRIMARY KEY (GymID, UserID),
@@ -136,7 +136,7 @@ CREATE TABLE GymUser (
 );
 
 -- Fitness Challenge table
-CREATE TABLE FitnessChallenge (
+CREATE TABLE [FitnessChallenge] (
     [ChallengeID]   INT             IDENTITY(1,1) PRIMARY KEY,
     [ChallengeName] NVARCHAR(255),
     [Description]   NVARCHAR(MAX),
@@ -147,7 +147,7 @@ CREATE TABLE FitnessChallenge (
 );
 
 -- Leaderboard table
-CREATE TABLE Leaderboard (
+CREATE TABLE [Leaderboard] (
     [LeaderboardID]     INT     IDENTITY(1,1) PRIMARY KEY,
     [ChallengeID]       INT,
     [UserID]            INT,
@@ -158,7 +158,7 @@ CREATE TABLE Leaderboard (
 );
 
 -- Linking User to Fitness Challenge (Many-to-Many Relationship)
-CREATE TABLE ChallengeUser (
+CREATE TABLE [ChallengeUser] (
     [ChallengeID]   INT,
     [UserID]        INT,
     PRIMARY KEY (ChallengeID, UserID),
