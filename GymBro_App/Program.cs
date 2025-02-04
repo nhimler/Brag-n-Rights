@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using GymBro_App.Models;
+
 namespace GymBro_App;
 
 public class Program
@@ -8,6 +11,10 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+        var connectionString = builder.Configuration.GetConnectionString("GymBroConnection");
+        builder.Services.AddDbContext<GymBroDbContext>(options => options
+            .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
+            .UseSqlServer(connectionString));
 
         var app = builder.Build();
 
