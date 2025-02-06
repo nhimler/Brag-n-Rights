@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using GymBro_App.Models;
+using GymBro_App.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace GymBro_App;
 
@@ -15,6 +17,13 @@ public class Program
         builder.Services.AddDbContext<GymBroDbContext>(options => options
             .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
             .UseSqlServer(connectionString));
+
+        // Configure the database connection
+        builder.Services.AddDbContext<AuthGymBroDb>(options => options
+                        .UseSqlServer(builder.Configuration.GetConnectionString("AuthGymBroDbConnection")));
+
+        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                        .AddEntityFrameworkStores<AuthGymBroDb>();
 
         var app = builder.Build();
 
