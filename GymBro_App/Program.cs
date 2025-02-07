@@ -11,7 +11,11 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
-        var connectionString = builder.Configuration.GetConnectionString("GymBroConnection");
+
+        // This works with user secrets. 
+        // When storing the connection string in appsettings, instead use builder.GetConnectionString("GymBroConnection");
+        var connectionString = builder.Configuration["GymBroConnection"];
+
         builder.Services.AddDbContext<GymBroDbContext>(options => options
             .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
             .UseSqlServer(connectionString));
