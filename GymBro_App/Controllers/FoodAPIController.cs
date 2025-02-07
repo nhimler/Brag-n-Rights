@@ -22,8 +22,16 @@ public class FoodAPIController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ApiFood>))]
     public async Task<IActionResult> Search([FromQuery(Name = "q")] string query)
     {
+        var foods = await _foodService.GetFoodsAsync(query);
+        return Ok(foods);
+    }
+
+    [HttpGet("id")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiFood))]
+    public async Task<IActionResult> GetById([FromQuery(Name = "id")] string id)
+    {
         // TODO: add checking for null and non int queries
-        var foods = await _foodService.GetFoodAsync(query);
+        var foods = await _foodService.GetFoodAsync(id);
         return Ok(foods);
     }
 }

@@ -19,7 +19,12 @@ class GetFoodResponse
 
 class FoodSearch
 {
-    public List<ExtApiFood> foods { get; set; } = new List<ExtApiFood>();
+    public List<ExtApiFood> food { get; set; } = new List<ExtApiFood>();
+}
+
+class FoodSearchResponse
+{
+    public FoodSearch foods { get; set; } = new FoodSearch();
 }
 
 public class FoodService : IFoodService
@@ -33,15 +38,23 @@ public class FoodService : IFoodService
         _logger = logger;
     }
 
-    public async Task<List<ApiFood>> GetFoodsAsync()
+    public async Task<List<ApiFood>> GetFoodsAsync(string query)
     {
-        var response = await _httpClient.GetAsync("api/foods");
+        var response = await _httpClient.PostAsync("", new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string?, string?>("method", "foods.search"),
+            new KeyValuePair<string?, string?>("search_expression", query),
+            new KeyValuePair<string?, string?>("format", "json")
+        }));
         if (response.IsSuccessStatusCode)
         {
-            var foods = await JsonSerializer.DeserializeAsync<List<ExtApiFood>>(await response.Content.ReadAsStreamAsync());
-            foods = foods ?? new List<ExtApiFood>();
-            return foods.Select(f => new ApiFood
+            var searchResults = await JsonSerializer.DeserializeAsync<FoodSearchResponse>(await response.Content.ReadAsStreamAsync());
+            searchResults = searchResults ?? new FoodSearchResponse();
+            return searchResults.foods.food.Select(f => new ApiFood
             {
+                FoodId = f.food_id,
+                FoodName = f.food_name,
+                FoodDescription = f.food_description
             }).ToList();
         }
         return null;
@@ -50,14 +63,14 @@ public class FoodService : IFoodService
     public async Task<ApiFood> GetFoodAsync(string id)
     {
         var response = await _httpClient.PostAsync("", new FormUrlEncodedContent(new[]
-                    {
-                        new KeyValuePair<string?, string?>("method", "food.get"),
-                        new KeyValuePair<string?, string?>("food_id", id.ToString()),
-                        new KeyValuePair<string?, string?>("format", "json")
-                    }));
+        {
+            new KeyValuePair<string?, string?>("method", "food.get.v4"),
+            new KeyValuePair<string?, string?>("food_id", id.ToString()),
+            new KeyValuePair<string?, string?>("format", "json")
+        }));
         var rawResponse = await response.Content.ReadAsStringAsync();
         Console.WriteLine($"Response Status: {response.StatusCode}");
-        Console.WriteLine($"Raw Response: {rawResponse}");
+        // Console.WriteLine($"Raw Response: {rawResponse}");
         if (response.IsSuccessStatusCode)
         {
             JsonSerializerOptions options = new JsonSerializerOptions
@@ -71,7 +84,6 @@ public class FoodService : IFoodService
             return new ApiFood
             {
                 FoodName = food.food_name,
-                FoodDescription = food.food_description,
                 FoodId = food.food_id,
                 BrandName = food.brand_name
             };
