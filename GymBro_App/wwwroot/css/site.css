@@ -8,10 +8,6 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
 html {
   position: relative;
   min-height: 100%;
@@ -19,4 +15,143 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+
+/* Reset default styles */
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: Arial, sans-serif;
+}
+
+/* Default: Mobile Navbar */
+.navbar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: #007bff;
+padding: 15px 20px;
+color: white;
+position: fixed;
+width: 100%;
+top: 0;
+left: 0;
+z-index: 1000;
+transition: all 0.3s ease;
+}
+
+/* Brand Name */
+.nav-brand {
+font-size: 24px;
+font-weight: bold;
+}
+
+/* Nav Links */
+.nav-links {
+list-style: none;
+display: flex;
+}
+
+.nav-links li links{
+margin: 0 15px;
+}
+
+.nav-links a {
+color: white;
+text-decoration: none;
+font-size: 18px;
+transition: 0.3s;
+}
+
+.nav-links a:hover {
+text-decoration: underline;
+}
+
+/* Mobile Menu Toggle */
+.nav-toggle {
+display: none;
+background: none;
+border: none;
+color: white;
+font-size: 24px;
+cursor: pointer;
+}
+
+/* Desktop Sidebar */
+@media (min-width: 769px) {
+.navbar {
+flex-direction: column;
+justify-content: flex-start;
+align-items: flex-start;
+position: fixed;
+height: 100vh;
+width: 250px;
+top: 0;
+left: 0;
+padding-top: 20px;
+}
+
+.nav-brand {
+margin-left: 20px;
+margin-bottom: 20px;
+}
+
+.nav-links {
+display: flex;
+flex-direction: column;
+width: 100%;
+padding: 0;
+}
+
+.nav-links li {
+margin: 10px 0;
+text-align: left;
+}
+
+.nav-links a {
+display: block;
+padding: 15px 20px;
+width: 100%;
+}
+
+.nav-links a:hover {
+background: rgba(255, 255, 255, 0.2);
+}
+
+.content {
+margin-left: 250px; /* Push content to the right */
+padding: 20px;
+}
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
+.content {
+padding-top: 70px;
+}
+.nav-links {
+display: none;
+flex-direction: column;
+position: absolute;
+top: 60px;
+left: 0;
+width: 100%;
+background: #007bff;
+text-align: center;
+padding: 10px 0;
+}
+
+.nav-links.active {
+display: flex;
+}
+
+.nav-links li {
+margin: 10px 0;
+}
+
+.nav-toggle {
+display: block;
+}
 }
