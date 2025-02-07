@@ -4,6 +4,6 @@ namespace GymBro_App.Services;
 
 public interface IFoodService
 {
-    Task<List<Food>> GetFoodsAsync();
-    Task<Food> GetFoodAsync(int id);
+    Task<List<ApiFood>> GetFoodsAsync();
+    Task<ApiFood> GetFoodAsync(string id);
 }
