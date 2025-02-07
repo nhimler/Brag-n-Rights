@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using GymBro_App.Models;
 
 namespace GymBro_App.Areas.Identity.Pages.Account
 {
@@ -29,13 +30,15 @@ namespace GymBro_App.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly GymBroDbContext _gymBroContext;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            GymBroDbContext gymBroContext)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +46,7 @@ namespace GymBro_App.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _gymBroContext = gymBroContext;
         }
 
         /// <summary>
@@ -97,6 +101,18 @@ namespace GymBro_App.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required(ErrorMessage = "First Name is required")]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Required(ErrorMessage = "Last Name is required")]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
+            [Required]
+            [Display(Name = "Username")]
+            public string Username { get; set; }
         }
 
 
@@ -114,13 +130,27 @@ namespace GymBro_App.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    GymBro_App.Models.User gymBroUser = new GymBro_App.Models.User
+                    {
+                        FirstName = Input.FirstName,
+                        LastName = Input.LastName,
+                        Email = Input.Email,
+                        // UserName = Input.Username,
+                        // IdentityUserId = user.Id,
+                        
+                        // This is not secure, but passwords are currently required by the main app's schema. Change this later.
+                        Password = "Don't store passwords here",
+                    };
+                    _gymBroContext.Add(gymBroUser);
+                    await _gymBroContext.SaveChangesAsync();
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -151,6 +181,11 @@ namespace GymBro_App.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
+            _logger.LogInformation("Full Name: " + Input.FirstName + " " + Input.LastName);
+            _logger.LogInformation("Username: " + Input.Username);
+            _logger.LogInformation("Email: " + Input.Email);
+            _logger.LogInformation("Password: " + Input.Password);
+            _logger.LogInformation("Something failed, redisplaying form.");
             return Page();
         }
 

@@ -27,10 +27,10 @@ public class Program
 
         // Configure the Identity registration requirements
         builder.Services.Configure<IdentityOptions>(options =>
-        {
-            // First Name requirements
-            options.User
-            
+        {   
+            // Sign in requirements
+            options.SignIn.RequireConfirmedAccount = true;
+
             // Password requirements
             options.Password.RequireDigit = false;
             options.Password.RequireLowercase = true;
