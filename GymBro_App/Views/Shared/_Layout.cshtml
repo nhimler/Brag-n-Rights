@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,7 +9,6 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GymBro_App.styles.css" asp-append-version="true" />
 </head>
-
 <body>
     <!-- Sidebar / Navbar -->
     <nav class="navbar">
@@ -18,16 +16,19 @@
         <button class="nav-toggle">&#9776;</button>
         <ul class="nav-links">
             <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li><a asp-controller="UserPage" asp-action="Index">User Page</a></li>
+           <li><a asp-controller="UserPage" asp-action="Index">User Page</a></li>
             <li><a asp-controller="MealPlan" asp-action="Index">Meal Plan</a></li>
             <li><a asp-controller="Workouts" asp-action="Index">Workout Plan</a></li>
 
         </ul>
+        <div class="login-partial">
+            <partial name="_LoginPartial" />
+        </div>
     </nav>
 
     <!-- Page Content -->
     <div class="content">
-        @RenderBody()
+      @RenderBody()
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -35,5 +36,4 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-
 </html>

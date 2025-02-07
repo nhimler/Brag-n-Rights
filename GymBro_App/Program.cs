@@ -25,6 +25,21 @@ public class Program
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                         .AddEntityFrameworkStores<AuthGymBroDb>();
 
+        // Configure the Identity registration requirements
+        builder.Services.Configure<IdentityOptions>(options =>
+        {
+            // First Name requirements
+            options.User
+            
+            // Password requirements
+            options.Password.RequireDigit = false;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequiredLength = 10;
+            options.Password.RequiredUniqueChars = 0;
+        });
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
