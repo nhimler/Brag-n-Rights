@@ -1,7 +1,6 @@
 using GymBro_App.Models;
 using GymBro_App.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 
 namespace GymBro_App.Controllers;
 

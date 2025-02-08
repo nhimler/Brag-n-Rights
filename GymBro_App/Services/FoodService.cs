@@ -57,7 +57,7 @@ public class FoodService : IFoodService
                 FoodDescription = f.food_description
             }).ToList();
         }
-        return null;
+        return new List<ApiFood>();
     }
 
     public async Task<ApiFood> GetFoodAsync(string id)
@@ -88,6 +88,6 @@ public class FoodService : IFoodService
                 BrandName = food.brand_name
             };
         }
-        return null;
+        return new ApiFood();
     }
 }
