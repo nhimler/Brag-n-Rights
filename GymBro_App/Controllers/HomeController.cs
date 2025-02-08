@@ -23,7 +23,7 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult WorkoutCreation()
+    public IActionResult WorkoutScheduling()
     {
         return View();
     }
