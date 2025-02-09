@@ -1,26 +1,38 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using GymBro_App.Models;
+using GymBro_App.DAL.Abstract;
 
-namespace GymBro_App.Controllers;
-
-public class WorkoutsController : Controller
+namespace GymBro_App.Controllers
 {
-    private readonly ILogger<WorkoutsController> _logger;
-
-    public WorkoutsController(ILogger<WorkoutsController> logger)
+    public class WorkoutPlanController : Controller
     {
-        _logger = logger;
-    }
+        private readonly IWorkoutPlanRepository _workoutPlanRepository;
 
-    public IActionResult Index()
-    {
-        return View();
-    }
+        public WorkoutPlanController(IWorkoutPlanRepository workoutPlanRepository)
+        {
+            _workoutPlanRepository = workoutPlanRepository;
+        }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        public IActionResult Index()
+        {
+            var workoutPlans = _workoutPlanRepository.GetAll().ToList();
+            return View(workoutPlans);
+        }
+
+        public IActionResult WorkoutCreationPage()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(WorkoutPlan workoutPlan)
+        {
+            if (ModelState.IsValid)
+            {
+                _workoutPlanRepository.Add(workoutPlan);
+                return RedirectToAction("Index");
+            }
+            return View(workoutPlan);
+        }
     }
 }

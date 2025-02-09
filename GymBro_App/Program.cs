@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using GymBro_App.Models;
 using System.Net.Http.Headers;
 using GymBro_App.Services;
+using GymBro_App.DAL.Abstract;
+using GymBro_App.DAL.Concrete;
 
 namespace GymBro_App;
 
@@ -22,6 +24,8 @@ public class Program
         builder.Services.AddDbContext<GymBroDbContext>(options => options
             .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
             .UseSqlServer(connectionString));
+        
+        builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
 
         string foodApiUrl = "https://platform.fatsecret.com/rest/server.api";
         string foodApiKey = builder.Configuration["FoodApiKey"] ?? "";
