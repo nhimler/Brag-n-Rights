@@ -1,6 +1,8 @@
 -- User table
 CREATE TABLE [User] (
     [UserID]                INT             IDENTITY(1,1) PRIMARY KEY,
+    [IdentityUserId]        NVARCHAR(450),
+    [Username]              NVARCHAR(100),
     [FirstName]             NVARCHAR(100),
     [LastName]              NVARCHAR(100),
     [Email]                 NVARCHAR(255)   UNIQUE NOT NULL,
