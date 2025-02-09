@@ -4,21 +4,23 @@ using GymBro_App.DAL.Abstract;
 
 namespace GymBro_App.Controllers
 {
-    public class WorkoutPlanController : Controller
+    public class WorkoutsController : Controller
     {
         private readonly IWorkoutPlanRepository _workoutPlanRepository;
 
-        public WorkoutPlanController(IWorkoutPlanRepository workoutPlanRepository)
+        public WorkoutsController(IWorkoutPlanRepository workoutPlanRepository)
         {
             _workoutPlanRepository = workoutPlanRepository;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             var workoutPlans = _workoutPlanRepository.GetAll().ToList();
             return View(workoutPlans);
         }
 
+        [HttpGet]
         public IActionResult WorkoutCreationPage()
         {
             return View();
