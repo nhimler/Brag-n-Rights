@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using GymBro_App.Models;
+using GymBro_App.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 using System.Net.Http.Headers;
 using GymBro_App.Services;
 
@@ -22,6 +24,15 @@ public class Program
         builder.Services.AddDbContext<GymBroDbContext>(options => options
             .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
             .UseSqlServer(connectionString));
+        
+        // Configure the authentication/Identity database connection
+        var authDbConnectionString = builder.Configuration["AuthGymBroDbConnection"];
+
+        builder.Services.AddDbContext<AuthGymBroDb>(options => options
+                        .UseSqlServer(authDbConnectionString));
+
+        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                        .AddEntityFrameworkStores<AuthGymBroDb>();
 
         string foodApiUrl = "https://platform.fatsecret.com/rest/server.api";
         string foodApiKey = builder.Configuration["FoodApiKey"] ?? "";
@@ -34,6 +45,21 @@ public class Program
             return new FoodService(client, services.GetRequiredService<ILogger<FoodService>>());
         });
 
+
+        // Configure the Identity registration requirements
+        builder.Services.Configure<IdentityOptions>(options =>
+        {   
+            // Sign in requirements
+            options.SignIn.RequireConfirmedAccount = true;
+
+            // Password requirements
+            options.Password.RequireDigit = false;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequiredLength = 10;
+            options.Password.RequiredUniqueChars = 0;
+        });
 
         var app = builder.Build();
 
@@ -61,6 +87,7 @@ public class Program
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
+        app.MapRazorPages();
 
         app.Run();
     }
