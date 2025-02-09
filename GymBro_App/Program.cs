@@ -25,9 +25,11 @@ public class Program
             .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
             .UseSqlServer(connectionString));
         
-        // Configure the database connection
+        // Configure the authentication/Identity database connection
+        var authDbConnectionString = builder.Configuration["AuthGymBroDbConnection"];
+
         builder.Services.AddDbContext<AuthGymBroDb>(options => options
-                        .UseSqlServer(builder.Configuration.GetConnectionString("AuthGymBroDbConnection")));
+                        .UseSqlServer(authDbConnectionString));
 
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                         .AddEntityFrameworkStores<AuthGymBroDb>();

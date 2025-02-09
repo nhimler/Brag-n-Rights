@@ -7,12 +7,18 @@ using Microsoft.EntityFrameworkCore;
 namespace GymBro_App.Models;
 
 [Table("User")]
-[Index("Email", Name = "UQ__User__A9D105340602CCCC", IsUnique = true)]
+[Index("Email", Name = "UQ__User__A9D10534E830977D", IsUnique = true)]
 public partial class User
 {
     [Key]
     [Column("UserID")]
     public int UserId { get; set; }
+
+    [StringLength(450)]
+    public string? IdentityUserId { get; set; }
+
+    [StringLength(100)]
+    public string? Username { get; set; }
 
     [StringLength(100)]
     public string? FirstName { get; set; }

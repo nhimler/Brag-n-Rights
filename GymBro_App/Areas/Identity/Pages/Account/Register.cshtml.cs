@@ -143,8 +143,8 @@ namespace GymBro_App.Areas.Identity.Pages.Account
                         FirstName = Input.FirstName,
                         LastName = Input.LastName,
                         Email = Input.Email,
-                        // UserName = Input.Username,
-                        // IdentityUserId = user.Id,
+                        Username = Input.Username,
+                        IdentityUserId = user.Id,
                         
                         // This is not secure, but passwords are currently required by the main app's schema. Change this later.
                         Password = "Don't store passwords here",
