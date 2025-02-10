@@ -164,6 +164,12 @@ display: block;
 }
 
 /*Styling For Food Search*/
-#foodSearchResults li {
-    
+#searchResults li.btn {
+    background-color: white;
+    color: black;
+}
+
+#searchResults ul {
+    list-style-type: none;
+    padding: 0;
 }
