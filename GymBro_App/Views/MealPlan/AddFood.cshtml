@@ -4,8 +4,14 @@
     ViewData["Title"] = "Add Food";
 }
 
-<h2>Add Food</h2>
-<div id="selectedFood"></div>
+<h2>Create Meal</h2>
+<form method="post">
+
+    <h4>Selected Foods</h4>
+    <table class="table table-bordered">
+        <tbody id="selectedFood"></tbody>
+    </table>
+</form>
 <input type=text id="searchBar">
 <button class="btn btn-primary" type="button" id="searchButton">Search</button>
 <div id="searchResults">
