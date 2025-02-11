@@ -124,6 +124,13 @@ background: rgba(255, 255, 255, 0.2);
 margin-left: 250px; /* Push content to the right */
 padding: 20px;
 }
+
+.login-partial {
+  margin-top: auto;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+}
 }
 
 /* Mobile View */
