@@ -4,6 +4,8 @@ using GymBro_App.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using System.Net.Http.Headers;
 using GymBro_App.Services;
+using GymBro_App.DAL.Abstract;
+using GymBro_App.DAL.Concrete;
 
 namespace GymBro_App;
 
@@ -25,6 +27,7 @@ public class Program
             .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
             .UseSqlServer(connectionString));
         
+        builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
         // Configure the authentication/Identity database connection
         var authDbConnectionString = builder.Configuration["AuthGymBroDbConnection"];
 
