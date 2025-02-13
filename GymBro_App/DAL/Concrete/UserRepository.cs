@@ -16,13 +16,13 @@ public class UserRepository : Repository<User>, IUserRepository
         _users = context.Users;
     }
 
-    public User GetUserByUserId(int id)
+    public User GetUserByIdentityUserId(string identityId)
     {
-        return _users.FirstOrDefault(u => u.UserId == id);
+        return _users.FirstOrDefault(u => u.IdentityUserId == identityId);
     }
 
-    public List<WorkoutPlan> GetWorkoutPlansByUserId(int id)
+    public List<WorkoutPlan> GetWorkoutPlansByIdentityUserId(string identityId)
     {
-        return _users.FirstOrDefault(u => u.UserId == id)?.WorkoutPlans.ToList();
+        return _users.FirstOrDefault(u => u.IdentityUserId == identityId)?.WorkoutPlans.ToList();
     }
 }

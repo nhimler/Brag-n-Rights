@@ -4,7 +4,7 @@ namespace GymBro_App.DAL.Abstract;
 
 public interface IUserRepository : IRepository<User>
 {
-    User GetUserByUserId(int id);
+    User GetUserByIdentityUserId(string identityId);
 
-    List<WorkoutPlan> GetWorkoutPlansByUserId(int id);
+    List<WorkoutPlan> GetWorkoutPlansByIdentityUserId(string identityId);
 }
