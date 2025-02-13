@@ -1,11 +1,12 @@
 <!-- TODO: Make this a Meal Creation form instead of food search -->
+@model List<GymBro_App.DTO.FoodDTO?>
 
 @{
     ViewData["Title"] = "Add Food";
 }
 
 <h2>Create Meal</h2>
-<form method="post">
+<form method="post" asp-action="CreateMeal">
 
     <h4>Selected Foods</h4>
     <table class="table table-bordered">
@@ -18,4 +19,4 @@
 </div>
 
 
-<script src="~/js/foodSearch.js"></script>
+<script src="~/js/foodSearch.js" type="module" asp-append-version="true"></script>

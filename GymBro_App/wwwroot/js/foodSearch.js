@@ -33,14 +33,15 @@ async function displaySearchResults(result){
 
     let table = document.createElement("table");
     table.className = "table table-bordered";
-    tbody = document.createElement("tbody");
+    let tbody = document.createElement("tbody");
     result.forEach(food => {
-        if(!findValueInChildren(selectedFood, food.foodId)){
+        if(!findValueInChildrensChildren(selectedFood, food.foodId)){
             // console.log("foodId: " + food.foodId + " not found in selectedFood");
             let tr = document.createElement("tr");
             let td = document.createElement("td");
             td.colspan = 2;
-            td.value = food.foodId;
+            td.setAttribute("value", food.foodId);
+            td.setAttribute("name", "foods");
             td.textContent = food.foodName;
             let expandBtn = document.createElement("button");
             expandBtn.className = "btn";
@@ -68,14 +69,14 @@ async function displaySearchResults(result){
             addBtn.addEventListener("click", function(){
                 if(this.textContent === "Add"){
                     this.textContent = "Remove";
-                    movedLi = this.parentElement.parentElement;
+                    let movedTr = this.parentElement.parentElement;
                     this.parentElement.parentElement.remove();
-                    selectedFood.appendChild(movedLi);
+                    selectedFood.appendChild(movedTr);
                 }else{
                     this.textContent = "Add";
-                    movedLi = this.parentElement.parentElement;
+                    let movedTr = this.parentElement.parentElement;
                     this.parentElement.parentElement.remove();
-                    tbody.prepend(movedLi);
+                    tbody.prepend(movedTr);
 
                 }
             });
@@ -89,11 +90,18 @@ async function displaySearchResults(result){
     resultList.appendChild(table);
 }
 
-function findValueInChildren(parent, value){
+function findValueInChildrensChildren(parent, value){
+    if(!parent){
+        console.log("parent is null");
+        return false;
+    }
     for(let i = 0; i < parent.children.length; i++){
-        if(parent.children[i].getAttribute("value") === value){
-            return true;
+        for(let j = 0; j < parent.children[i].children.length; j++){
+            if(parent.children[i].children[j].getAttribute("value") === value){
+                return true;
+            }
         }
     }
     return false;
 }
+

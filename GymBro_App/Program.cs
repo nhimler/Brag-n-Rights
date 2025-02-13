@@ -26,8 +26,10 @@ public class Program
         builder.Services.AddDbContext<GymBroDbContext>(options => options
             .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
             .UseSqlServer(connectionString));
-        
+
         builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
+        builder.Services.AddScoped<IFoodRepository, FoodRepository>();
+        builder.Services.AddScoped<IMealRepository, MealRepository>();
         // Configure the authentication/Identity database connection
         var authDbConnectionString = builder.Configuration["AuthGymBroDbConnection"];
 
@@ -51,7 +53,7 @@ public class Program
 
         // Configure the Identity registration requirements
         builder.Services.Configure<IdentityOptions>(options =>
-        {   
+        {
             // Sign in requirements
             options.SignIn.RequireConfirmedAccount = true;
 
