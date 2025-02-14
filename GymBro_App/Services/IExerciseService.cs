@@ -3,7 +3,7 @@ namespace GymBro_App.Services
 {
     public interface IExerciseService
     {
-        Task<List<ApiExercise>> GetExercisesAsync(string query);
-        Task<ApiExercise> GetExerciseAsync(string id);
+        Task<List<ExerciseRespone>> GetExercisesAsync(string query);
+        Task<ExerciseRespone> GetExerciseAsync(string id);
     }
 }
