@@ -65,7 +65,7 @@ public class FoodService : IFoodService
         var response = await _httpClient.PostAsync("", new FormUrlEncodedContent(new[]
         {
             new KeyValuePair<string?, string?>("method", "food.get.v4"),
-            new KeyValuePair<string?, string?>("food_id", id.ToString()),
+            new KeyValuePair<string?, string?>("food_id", id),
             new KeyValuePair<string?, string?>("format", "json")
         }));
         var rawResponse = await response.Content.ReadAsStringAsync();

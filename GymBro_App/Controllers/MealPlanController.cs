@@ -36,7 +36,31 @@ public class MealPlanController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        return View();
+        if (!(User.Identity?.IsAuthenticated ?? false))
+        {
+            return View(null);
+        }
+        var user = _userManager.GetUserAsync(User).Result;
+        if (user == null)
+        {
+            return View(null);
+        }
+        var userId = _userRepository.GetAll().Where(u => u.IdentityUserId == user.Id).FirstOrDefault()?.UserId;
+        var mealPlan = _mealPlanRepository.GetAll().Where(m => m.UserId == userId).FirstOrDefault();
+        if (mealPlan == null)
+        {   
+            return View(null);
+        }
+        MealPlanView mealPlanView = new MealPlanView();
+        foreach(Meal meal in mealPlan.Meals){
+            mealPlanView.MealNames.Add(meal.MealName);
+            List<long> foodIds = new List<long>();
+            foreach(Food food in meal.Foods){
+                foodIds.Add(food.ApiFoodId ?? -1);
+            }
+            mealPlanView.Foods.Add(foodIds);
+        }
+        return View(mealPlanView);
     }
 
     [HttpPost]
@@ -44,12 +68,12 @@ public class MealPlanController : Controller
     {
         if (!(User.Identity?.IsAuthenticated ?? false))
         {
-            return View();
+            return View(null);
         }
         var user = _userManager.GetUserAsync(User).Result;
         if (user == null)
         {
-            return View();
+            return View(null);
         }
         var userId = _userRepository.GetAll().Where(u => u.IdentityUserId == user.Id).FirstOrDefault()?.UserId;
         var mealPlan = _mealPlanRepository.GetAll().Where(m => m.UserId == userId).FirstOrDefault();
@@ -72,12 +96,32 @@ public class MealPlanController : Controller
             });
             Console.WriteLine("New meal added");
         }
-        return View();
+        return View(null);
     }
 
     [HttpGet]
     public IActionResult CreateMeal()
     {
+        if (!(User.Identity?.IsAuthenticated ?? false))
+        {
+            return RedirectToAction("Index");
+        }
+        var user = _userManager.GetUserAsync(User).Result;
+        if (user == null)
+        {
+            return RedirectToAction("Index");
+        }
+        var userId = _userRepository.GetAll().Where(u => u.IdentityUserId == user.Id).FirstOrDefault()?.UserId;
+        var mealPlan = _mealPlanRepository.GetAll().Where(m => m.UserId == userId).FirstOrDefault();
+        if (mealPlan == null)
+        {   
+            return RedirectToAction("Index");
+        }
+        var meal = _mealRepository.GetAll().Where(m => m.MealPlanId == mealPlan.MealPlanId).FirstOrDefault();
+        if (meal == null)
+        {
+            return RedirectToAction("Index");
+        }
         return View(null);
     }
 
@@ -88,18 +132,38 @@ public class MealPlanController : Controller
     {
         if (ModelState.IsValid && m.Foods != null)
         {
+            if (!(User.Identity?.IsAuthenticated ?? false))
+            {
+                return RedirectToAction("Index");
+            }
+            var user = _userManager.GetUserAsync(User).Result;
+            if (user == null)
+            {
+                return RedirectToAction("Index");
+            }
+            var userId = _userRepository.GetAll().Where(u => u.IdentityUserId == user.Id).FirstOrDefault()?.UserId;
+            var mealPlan = _mealPlanRepository.GetAll().Where(m => m.UserId == userId).FirstOrDefault();
+            if (mealPlan == null)
+            {   
+                return RedirectToAction("Index");
+            }
+            var meal = _mealRepository.GetAll().Where(m => m.MealPlanId == mealPlan.MealPlanId).FirstOrDefault();
+            if (meal == null)
+            {
+                return RedirectToAction("Index");
+            }
             foreach (var food in m.Foods)
             {
                 _foodRepository.Add(new Food
                 {
                     ApiFoodId = food,
-                    MealId = null
+                    MealId = meal.MealId
                 });
             }
             return RedirectToAction("Index");
         }
         Debug.WriteLine("Food not added");
-        return View();
+        return RedirectToAction("Index");
     }
 
 

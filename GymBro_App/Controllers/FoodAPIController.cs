@@ -25,9 +25,9 @@ public class FoodAPIController : ControllerBase
         return Ok(foods);
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FoodDTO))]
-    public async Task<IActionResult> GetById([FromQuery(Name = "id")] string id)
+    public async Task<IActionResult> GetById(string id)
     {
         // TODO: add checking for null and non int queries
         var foods = await _foodService.GetFoodAsync(id);
