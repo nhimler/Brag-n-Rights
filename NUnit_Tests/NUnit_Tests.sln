@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymBro_App", "GymBro_App.csproj", "{F9FBAA63-BF61-8C8B-812F-BCD72B7CD118}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnit_Tests", "NUnit_Tests.csproj", "{7B40EB65-1449-79E4-3791-D759F66E782A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,15 +10,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F9FBAA63-BF61-8C8B-812F-BCD72B7CD118}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9FBAA63-BF61-8C8B-812F-BCD72B7CD118}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9FBAA63-BF61-8C8B-812F-BCD72B7CD118}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9FBAA63-BF61-8C8B-812F-BCD72B7CD118}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B40EB65-1449-79E4-3791-D759F66E782A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B40EB65-1449-79E4-3791-D759F66E782A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B40EB65-1449-79E4-3791-D759F66E782A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B40EB65-1449-79E4-3791-D759F66E782A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {CA701DEC-8BF5-498C-87C6-E54A7D8707C3}
+		SolutionGuid = {127599D3-3659-4224-89D4-09AFDBE0512D}
 	EndGlobalSection
 EndGlobal
