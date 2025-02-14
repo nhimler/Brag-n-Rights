@@ -31,6 +31,8 @@ public class Program
         builder.Services.AddScoped<IFoodRepository, FoodRepository>();
         builder.Services.AddScoped<IMealRepository, MealRepository>();
         builder.Services.AddScoped<IMealPlanRepository, MealPlanRepository>();
+        builder.Services.AddScoped<DbContext, GymBroDbContext>();
+        builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         // Configure the authentication/Identity database connection
         var authDbConnectionString = builder.Configuration["AuthGymBroDbConnection"];
 
