@@ -1,8 +1,44 @@
+@model GymBro_App.ViewModels.UserInfoModel;
 @{
     ViewData["Title"] = "User Page";
 }
 
 <div class="text-left">
-    <h1 class="display-4">User Page</h1>
-    <p>View your user information here.</p>
+    <h1 class="display-4">Welcome @Model.Username</h1>
+    <hr/>
+</div>
+<div class="row">
+    <div class="col-md-2">
+        <div class="card">
+            <div class="card-body text-center">
+                <img src="https://placehold.co/125x125?text=Profile+Pic" class="img-fluid mb-2 user-profile" alt="User Image" />
+                <p>@Model.FirstName @Model.LastName</p>
+                <p>@Model.Email</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7 text-center">
+        <div class="card">
+            <h5 class="card-title my-2">Workouts</h5>
+            <div class="card-body">
+                <ul class="list-group"></ul>
+                    @foreach (var workout in Model.WorkoutPlans)
+                    {
+                        <li class="list-group-item">@workout.PlanName</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <img src="https://placehold.co/350x200?text=Stats+Chart" class="img-fluid mb-2 user-profile" alt="Statistics Graph" />
+                <p>Fitness Level: @Model.FitnessLevel</p>
+            </div>
+        </div>
+    </div>
+
 </div>

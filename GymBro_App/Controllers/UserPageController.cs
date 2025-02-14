@@ -31,6 +31,7 @@ public class UserPageController : Controller
         userInfoModel.Email = gymBroUser.Email;
         userInfoModel.FirstName = gymBroUser.FirstName;
         userInfoModel.LastName = gymBroUser.LastName;
+        userInfoModel.FitnessLevel = gymBroUser.FitnessLevel;
         userInfoModel.WorkoutPlans = _userRepository.GetWorkoutPlansByIdentityUserId(identityId);
         return View(userInfoModel);
 

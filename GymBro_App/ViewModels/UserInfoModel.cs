@@ -7,5 +7,6 @@ public class UserInfoModel
     public string Email { get; set; } = "";
     public string FirstName { get; set; } = "";
     public string LastName { get; set; } = "";
+    public string FitnessLevel { get; set; } = "";
     public List<WorkoutPlan> WorkoutPlans { get; set; } = [];
 }
