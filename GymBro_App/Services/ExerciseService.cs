@@ -49,9 +49,21 @@ namespace GymBro_App.Services
             _logger = logger;
         }
 
-        public Task<ExerciseRespone> GetExerciseAsync(string id)
+        public async Task<ExerciseRespone> GetExerciseAsync(string name)
         {
-            throw new NotImplementedException();
+            string endpoint = $"exercises/name/{name}";
+            var response = await _httpClient.GetAsync(endpoint);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var results = JsonSerializer.Deserialize<ExerciseRespone>(responseBody, options);
+                return results ?? new ExerciseRespone();
+            }
+            return new ExerciseRespone();
         }
 
         public Task<List<ExerciseRespone>> GetExercisesAsync(string query)

@@ -40,8 +40,8 @@ public class Program
         string foodApiUrl = "https://platform.fatsecret.com/rest/server.api";
         string foodApiKey = builder.Configuration["FoodApiKey"] ?? "";
 
-         string exerciseDbAPIUrl = "exercisedb.p.rapidapi.com";
-         string exerciseDbAPIKey = builder.Configuration["ExerciseDbApiKey"] ?? "";
+         string exerciseDbAPIUrl = "exercisedb.p.rapidapi.com/";
+         string exerciseDbAPIKey = builder.Configuration["ExerciseDbApiKey"];
 
         builder.Services.AddHttpClient<IFoodService, FoodService>((client, services) =>
         {
