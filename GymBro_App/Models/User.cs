@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GymBro_App.Models;
 
 [Table("User")]
-[Index("Email", Name = "UQ__User__A9D10534E830977D", IsUnique = true)]
+[Index("Email", Name = "UQ__User__A9D1053461D49600", IsUnique = true)]
 public partial class User
 {
     [Key]

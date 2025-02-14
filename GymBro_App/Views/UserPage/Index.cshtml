@@ -12,22 +12,30 @@
         <div class="card">
             <div class="card-body text-center">
                 <img src="https://placehold.co/125x125?text=Profile+Pic" class="img-fluid mb-2 user-profile" alt="User Image" />
-                <p>@Model.FirstName @Model.LastName</p>
-                <p>@Model.Email</p>
+                <p class="mb-0">@Model.FirstName @Model.LastName</p>
+                <p class="text-muted">@Model.Email</p>
             </div>
         </div>
     </div>
 
     <div class="col-md-7 text-center">
         <div class="card">
-            <h5 class="card-title my-2">Workouts</h5>
+            <h5 class="card-title my-2">Completed Workouts</h5>
             <div class="card-body">
-                <ul class="list-group"></ul>
-                    @foreach (var workout in Model.WorkoutPlans)
-                    {
-                        <li class="list-group-item">@workout.PlanName</li>
-                    }
-                </ul>
+                @if (Model.WorkoutPlans.Count <= 0)
+                {
+                    <p>You haven't completed any workouts yet</p>
+                }
+                else
+                {
+                    <ul class="list-group">
+                        @foreach (var workout in Model.WorkoutPlans)
+                        {
+                            <li class="list-group-item">@workout.PlanName</li>
+                        }
+                    
+                    </ul>
+                }
             </div>
         </div>
     </div>
@@ -35,7 +43,7 @@
     <div class="col-md-3">
         <div class="card">
             <div class="card-body text-center">
-                <img src="https://placehold.co/350x200?text=Stats+Chart" class="img-fluid mb-2 user-profile" alt="Statistics Graph" />
+                <img src="https://placehold.co/350x200?text=Analytics+Chart" class="img-fluid mb-2 user-profile" alt="Analytics Graph" />
                 <p>Fitness Level: @Model.FitnessLevel</p>
             </div>
         </div>

@@ -18,11 +18,19 @@ public class UserRepository : Repository<User>, IUserRepository
 
     public User GetUserByIdentityUserId(string identityId)
     {
-        return _users.FirstOrDefault(u => u.IdentityUserId == identityId);
+        return _users.FirstOrDefault(u => u.IdentityUserId == identityId) ?? new User();
     }
 
     public List<WorkoutPlan> GetWorkoutPlansByIdentityUserId(string identityId)
     {
-        return _users.FirstOrDefault(u => u.IdentityUserId == identityId)?.WorkoutPlans.ToList();
+        return _users.FirstOrDefault(u => u.IdentityUserId == identityId)?.WorkoutPlans
+                     .ToList() ?? new List<WorkoutPlan>();
+    }
+
+    // Bool types are not supported by SQL. Treat isCompleted as a boolean value (0 or 1) to see only workouts that are complete/incomplete.
+    public List<WorkoutPlan> GetWorkoutPlansByIdentityUserId(string identityId, int isCompleted)
+    {
+        return _users.FirstOrDefault(u => u.IdentityUserId == identityId)?.WorkoutPlans
+                     .Where(wp => wp.IsCompleted == isCompleted).ToList() ?? new List<WorkoutPlan>();
     }
 }

@@ -27,12 +27,12 @@ public class UserPageController : Controller
     {
         string identityId = _userManager.GetUserId(User) ?? "";
         Models.User gymBroUser = _userRepository.GetUserByIdentityUserId(identityId);
-        userInfoModel.Username = gymBroUser.Username;
-        userInfoModel.Email = gymBroUser.Email;
-        userInfoModel.FirstName = gymBroUser.FirstName;
-        userInfoModel.LastName = gymBroUser.LastName;
-        userInfoModel.FitnessLevel = gymBroUser.FitnessLevel;
-        userInfoModel.WorkoutPlans = _userRepository.GetWorkoutPlansByIdentityUserId(identityId);
+        userInfoModel.Username = gymBroUser.Username ?? "";
+        userInfoModel.Email = gymBroUser.Email ?? "";
+        userInfoModel.FirstName = gymBroUser.FirstName ?? "";
+        userInfoModel.LastName = gymBroUser.LastName ?? "";
+        userInfoModel.FitnessLevel = gymBroUser.FitnessLevel ?? "";
+        userInfoModel.WorkoutPlans = _userRepository.GetWorkoutPlansByIdentityUserId(identityId, 1);
         return View(userInfoModel);
 
         // return View();
