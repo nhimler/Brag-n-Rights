@@ -3,8 +3,9 @@ namespace GymBro_App.DTO;
 
 public class FoodDTO
 {
-    public List<int> Foods { get; set; }
-
-    public int MealId { get; set; }
+    public string FoodId { get; set; } = "";
+    public string FoodName { get; set; } = "";
+    public string FoodDescription { get; set; } = "";
+    public string BrandName { get; set; } = "";
 
 }

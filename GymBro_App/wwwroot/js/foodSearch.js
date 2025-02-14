@@ -17,8 +17,6 @@ searchButton.addEventListener("click", async function () {
 
 
 async function displaySearchResults(result){
-    console.log("displaySearchResults called with:", result); // Debugging line
-
     let resultList = document.getElementById("searchResults");
     if (!resultList) {
         console.error("resultsList element not found");
@@ -35,14 +33,19 @@ async function displaySearchResults(result){
     table.className = "table table-bordered";
     let tbody = document.createElement("tbody");
     result.forEach(food => {
-        if(!findValueInChildrensChildren(selectedFood, food.foodId)){
+        if(!findValueInSelected(selectedFood, food.foodId)){
             // console.log("foodId: " + food.foodId + " not found in selectedFood");
             let tr = document.createElement("tr");
             let td = document.createElement("td");
+            let data = document.createElement("input");
             td.colspan = 2;
-            td.setAttribute("value", food.foodId);
-            td.setAttribute("name", "foods");
+            data.setAttribute("value", food.foodId);
+            data.setAttribute("name", "Foods");
+            data.setAttribute("type", "number");
+            data.setAttribute("hidden", "true");
+            data.setAttribute("readonly", "true");
             td.textContent = food.foodName;
+
             let expandBtn = document.createElement("button");
             expandBtn.className = "btn";
             expandBtn.textContent = "v";
@@ -60,6 +63,7 @@ async function displaySearchResults(result){
             });
 
             td.appendChild(expandBtn);
+            td.appendChild(data);
 
             let td2 = document.createElement("td");
             let addBtn = document.createElement("button");
@@ -90,16 +94,14 @@ async function displaySearchResults(result){
     resultList.appendChild(table);
 }
 
-function findValueInChildrensChildren(parent, value){
+function findValueInSelected(parent, value){
     if(!parent){
         console.log("parent is null");
         return false;
     }
-    for(let i = 0; i < parent.children.length; i++){
-        for(let j = 0; j < parent.children[i].children.length; j++){
-            if(parent.children[i].children[j].getAttribute("value") === value){
-                return true;
-            }
+    for (let input of parent.querySelectorAll("input")) {
+        if (input.value === value) {
+            return true;
         }
     }
     return false;

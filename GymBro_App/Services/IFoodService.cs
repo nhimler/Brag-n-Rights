@@ -1,9 +1,9 @@
-using GymBro_App.Models;
+using GymBro_App.DTO;
 
 namespace GymBro_App.Services;
 
 public interface IFoodService
 {
-    Task<List<ApiFood>> GetFoodsAsync(string query);
-    Task<ApiFood> GetFoodAsync(string id);
+    Task<List<FoodDTO>> GetFoodsAsync(string query);
+    Task<FoodDTO> GetFoodAsync(string id);
 }

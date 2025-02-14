@@ -16,11 +16,12 @@ public partial class Food
     [Column("MealID")]
     public int? MealId { get; set; }
 
-    public int ApiFoodId { get; set; }
+    [Column("ApiFoodID")]
+    public long? ApiFoodId { get; set; }
 
-    public int Amount { get; set; }
+    public int? Amount { get; set; }
 
     [ForeignKey("MealId")]
     [InverseProperty("Foods")]
-    public virtual ICollection<Meal> Meals { get; set; } = new List<Meal>();
+    public virtual Meal? Meal { get; set; }
 }

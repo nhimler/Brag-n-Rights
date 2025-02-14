@@ -30,6 +30,7 @@ public class Program
         builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
         builder.Services.AddScoped<IFoodRepository, FoodRepository>();
         builder.Services.AddScoped<IMealRepository, MealRepository>();
+        builder.Services.AddScoped<IMealPlanRepository, MealPlanRepository>();
         // Configure the authentication/Identity database connection
         var authDbConnectionString = builder.Configuration["AuthGymBroDbConnection"];
 

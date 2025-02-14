@@ -1,4 +1,4 @@
-using GymBro_App.Models;
+using GymBro_App.DTO;
 using GymBro_App.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +18,7 @@ public class FoodAPIController : ControllerBase
     }
 
     [HttpGet("search")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ApiFood>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<FoodDTO>))]
     public async Task<IActionResult> Search([FromQuery(Name = "q")] string query)
     {
         var foods = await _foodService.GetFoodsAsync(query);
@@ -26,7 +26,7 @@ public class FoodAPIController : ControllerBase
     }
 
     [HttpGet("id")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiFood))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FoodDTO))]
     public async Task<IActionResult> GetById([FromQuery(Name = "id")] string id)
     {
         // TODO: add checking for null and non int queries

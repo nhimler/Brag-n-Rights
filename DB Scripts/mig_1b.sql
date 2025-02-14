@@ -7,7 +7,7 @@ IF OBJECT_ID('Food', 'U') IS NOT NULL DROP TABLE [Food];
 CREATE TABLE [Food] (
     [FoodID]                INT                         IDENTITY(1,1) PRIMARY KEY,
     [MealID]                INT,
-    [ApiFoodID]             INT,
+    [ApiFoodID]             BIGINT,
     [Amount]                INT,
     FOREIGN KEY (MealID)    REFERENCES Meal(MealID)     ON DELETE CASCADE
 );

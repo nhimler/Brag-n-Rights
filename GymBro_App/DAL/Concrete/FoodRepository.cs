@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using GymBro_App.Models;
 using Microsoft.EntityFrameworkCore;
 using GymBro_App.DAL.Abstract;
@@ -15,11 +14,6 @@ namespace GymBro_App.DAL.Concrete
         {
             _food = context.Foods;
             _context = context;
-        }
-
-        public Food Find(Expression<Func<Food, bool>> predicate)
-        {
-            return _food.FirstOrDefault(predicate);
         }
 
         public void Add(Food f)

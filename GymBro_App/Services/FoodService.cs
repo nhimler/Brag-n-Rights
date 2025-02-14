@@ -1,10 +1,10 @@
-using GymBro_App.Models;
+using GymBro_App.DTO;
 using System.Text.Json;
 
 namespace GymBro_App.Services;
 
 //TODO: Conform these classes to the api's actual structure
-class ExtApiFood
+class ExtFoodDTO
 {
     public string food_id { get; set; } = "";
     public string food_name { get; set; } = "";
@@ -14,12 +14,12 @@ class ExtApiFood
 
 class GetFoodResponse
 {
-    public ExtApiFood food { get; set; } = new ExtApiFood();
+    public ExtFoodDTO food { get; set; } = new ExtFoodDTO();
 }
 
 class FoodSearch
 {
-    public List<ExtApiFood> food { get; set; } = new List<ExtApiFood>();
+    public List<ExtFoodDTO> food { get; set; } = new List<ExtFoodDTO>();
 }
 
 class FoodSearchResponse
@@ -38,7 +38,7 @@ public class FoodService : IFoodService
         _logger = logger;
     }
 
-    public async Task<List<ApiFood>> GetFoodsAsync(string query)
+    public async Task<List<FoodDTO>> GetFoodsAsync(string query)
     {
         var response = await _httpClient.PostAsync("", new FormUrlEncodedContent(new[]
         {
@@ -50,17 +50,17 @@ public class FoodService : IFoodService
         {
             var searchResults = await JsonSerializer.DeserializeAsync<FoodSearchResponse>(await response.Content.ReadAsStreamAsync());
             searchResults = searchResults ?? new FoodSearchResponse();
-            return searchResults.foods.food.Select(f => new ApiFood
+            return searchResults.foods.food.Select(f => new FoodDTO
             {
                 FoodId = f.food_id,
                 FoodName = f.food_name,
                 FoodDescription = f.food_description
             }).ToList();
         }
-        return new List<ApiFood>();
+        return new List<FoodDTO>();
     }
 
-    public async Task<ApiFood> GetFoodAsync(string id)
+    public async Task<FoodDTO> GetFoodAsync(string id)
     {
         var response = await _httpClient.PostAsync("", new FormUrlEncodedContent(new[]
         {
@@ -81,13 +81,13 @@ public class FoodService : IFoodService
             foods = foods ?? new GetFoodResponse();
             var food = foods.food;
 
-            return new ApiFood
+            return new FoodDTO
             {
                 FoodName = food.food_name,
                 FoodId = food.food_id,
                 BrandName = food.brand_name
             };
         }
-        return new ApiFood();
+        return new FoodDTO();
     }
 }
