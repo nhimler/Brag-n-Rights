@@ -40,6 +40,9 @@ public class Program
         string foodApiUrl = "https://platform.fatsecret.com/rest/server.api";
         string foodApiKey = builder.Configuration["FoodApiKey"] ?? "";
 
+        // string exerciseDbAPIUrl = "exercisedb.p.rapidapi.com";
+        // string exerciseDbAPIKey = builder.Configuration["ExerciseDbApiKey"] ?? "";
+
         builder.Services.AddHttpClient<IFoodService, FoodService>((client, services) =>
         {
             client.BaseAddress = new Uri(foodApiUrl);
@@ -47,6 +50,14 @@ public class Program
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", foodApiKey);
             return new FoodService(client, services.GetRequiredService<ILogger<FoodService>>());
         });
+
+        // builder.Services.AddHttpClient<IExerciseDbService, ExerciseDbService>((client, services) =>
+        // {
+        //     client.BaseAddress = new Uri(exerciseDbAPIUrl);
+        //     client.DefaultRequestHeaders.Add("Accept", "application/json");
+        //     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", exerciseDbAPIKey);
+        //     return new ExerciseDbService(client, services.GetRequiredService<ILogger<ExerciseDbService>>());
+        // });
 
 
         // Configure the Identity registration requirements
