@@ -1,16 +1,19 @@
-<!-- TODO: Make this a Meal Creation form instead of food search -->
+@model GymBro_App.ViewModels.MealView?
 
 @{
     ViewData["Title"] = "Add Food";
 }
 
 <h2>Create Meal</h2>
-<form method="post">
-
+<form method="post" asp-action="CreateMeal">
+    <button class="btn btn-primary" type="submit">Create</button>
+    <h4>Meal x</h4>
+    <input asp-for="MealId" value="1" hidden readonly/>
     <h4>Selected Foods</h4>
     <table class="table table-bordered">
         <tbody id="selectedFood"></tbody>
     </table>
+
 </form>
 <input type=text id="searchBar">
 <button class="btn btn-primary" type="button" id="searchButton">Search</button>
@@ -18,4 +21,4 @@
 </div>
 
 
-<script src="~/js/foodSearch.js"></script>
+<script src="~/js/foodSearch.js" asp-append-version="true"></script>
