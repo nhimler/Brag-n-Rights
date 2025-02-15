@@ -20,10 +20,10 @@ public class MealPlanController : Controller
 
     private readonly UserManager<IdentityUser> _userManager;
 
-    private readonly IRepository<User> _userRepository;
+    private readonly IUserRepository _userRepository;
 
     public MealPlanController(ILogger<MealPlanController> logger, IFoodRepository foodRepository, IMealRepository mealRepository,
-            IMealPlanRepository mealPlanRepository, UserManager<IdentityUser> userManager, IRepository<User> userRepository)
+            IMealPlanRepository mealPlanRepository, UserManager<IdentityUser> userManager, IUserRepository userRepository)
     {
         _logger = logger;
         _foodRepository = foodRepository;
@@ -45,8 +45,8 @@ public class MealPlanController : Controller
         {
             return View(null);
         }
-        var userId = _userRepository.GetAll().Where(u => u.IdentityUserId == user.Id).FirstOrDefault()?.UserId;
-        var mealPlan = _mealPlanRepository.GetAll().Where(m => m.UserId == userId).FirstOrDefault();
+        int userId = _userRepository.GetIdFromIdentityId(user.Id);
+        var mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
         if (mealPlan == null)
         {   
             return View(null);
@@ -75,8 +75,8 @@ public class MealPlanController : Controller
         {
             return View(null);
         }
-        var userId = _userRepository.GetAll().Where(u => u.IdentityUserId == user.Id).FirstOrDefault()?.UserId;
-        var mealPlan = _mealPlanRepository.GetAll().Where(m => m.UserId == userId).FirstOrDefault();
+        var userId = _userRepository.GetIdFromIdentityId(user.Id);
+        var mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
         if (mealPlan == null)
         {
             _mealPlanRepository.Add(new MealPlan()
@@ -84,17 +84,17 @@ public class MealPlanController : Controller
                 UserId = userId,
                 PlanName = "New Meal Plan"
             });
-            Console.WriteLine("New meal plan added");
+            Debug.WriteLine("New meal plan added");
         }
-        mealPlan = _mealPlanRepository.GetAll().Where(m => m.UserId == userId).FirstOrDefault();
-        if (!_mealRepository.GetAll().Where(m => m.MealPlanId == mealPlan.MealPlanId).Any())
+        mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
+        if (!_mealPlanRepository.HasMeals(mealPlan.MealPlanId))
         {
             _mealRepository.Add(new Meal()
             {
                 MealPlanId = mealPlan.MealPlanId,
                 MealName = "New Meal"
             });
-            Console.WriteLine("New meal added");
+            Debug.WriteLine("New meal added");
         }
         return View(null);
     }
@@ -111,13 +111,13 @@ public class MealPlanController : Controller
         {
             return RedirectToAction("Index");
         }
-        var userId = _userRepository.GetAll().Where(u => u.IdentityUserId == user.Id).FirstOrDefault()?.UserId;
-        var mealPlan = _mealPlanRepository.GetAll().Where(m => m.UserId == userId).FirstOrDefault();
+        var userId = _userRepository.GetIdFromIdentityId(user.Id);
+        var mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
         if (mealPlan == null)
         {   
             return RedirectToAction("Index");
         }
-        var meal = _mealRepository.GetAll().Where(m => m.MealPlanId == mealPlan.MealPlanId).FirstOrDefault();
+        var meal = _mealPlanRepository.FirstMeal(mealPlan.MealPlanId);
         if (meal == null)
         {
             return RedirectToAction("Index");
@@ -128,9 +128,9 @@ public class MealPlanController : Controller
     // TODO: Actually create user defined meals here
     // Currently only adds foods to the database
     [HttpPost]
-    public IActionResult CreateMeal(MealView m)
+    public IActionResult CreateMeal(MealView mv)
     {
-        if (ModelState.IsValid && m.Foods != null)
+        if (ModelState.IsValid && mv.Foods != null)
         {
             if (!(User.Identity?.IsAuthenticated ?? false))
             {
@@ -141,8 +141,8 @@ public class MealPlanController : Controller
             {
                 return RedirectToAction("Index");
             }
-            var userId = _userRepository.GetAll().Where(u => u.IdentityUserId == user.Id).FirstOrDefault()?.UserId;
-            var mealPlan = _mealPlanRepository.GetAll().Where(m => m.UserId == userId).FirstOrDefault();
+            var userId = _userRepository.GetIdFromIdentityId(user.Id);
+            var mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
             if (mealPlan == null)
             {   
                 return RedirectToAction("Index");
@@ -152,7 +152,7 @@ public class MealPlanController : Controller
             {
                 return RedirectToAction("Index");
             }
-            foreach (var food in m.Foods)
+            foreach (var food in mv.Foods)
             {
                 _foodRepository.Add(new Food
                 {

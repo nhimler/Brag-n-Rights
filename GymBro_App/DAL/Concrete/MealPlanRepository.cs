@@ -22,5 +22,20 @@ namespace GymBro_App.DAL.Concrete
             _context.SaveChanges();
         }
 
+        public MealPlan? GetFirstMealPlanForUser(int userId)
+        {
+            return GetAll().Where(mp => mp.UserId == userId).FirstOrDefault();
+        }
+
+        public bool HasMeals(int mealPlanId)
+        {
+            return FindById(mealPlanId).Meals.Any();
+        }
+        
+        public Meal? FirstMeal(int mealPlanId)
+        {
+            return FindById(mealPlanId).Meals.FirstOrDefault();
+        }
+
     }
 }
