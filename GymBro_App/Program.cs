@@ -29,7 +29,7 @@ public class Program
         
         builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
         // Configure the authentication/Identity database connection
-        var authDbConnectionString = builder.Configuration["AuthGymBroDbConnection"];
+        var authDbConnectionString = builder.Configuration.GetConnectionString("AuthGymBroDbConnection");
 
         builder.Services.AddDbContext<AuthGymBroDb>(options => options
                         .UseSqlServer(authDbConnectionString));

@@ -34,8 +34,6 @@ public class UserPageController : Controller
         userInfoModel.FitnessLevel = gymBroUser.FitnessLevel ?? "";
         userInfoModel.WorkoutPlans = _userRepository.GetWorkoutPlansByIdentityUserId(identityId, 1);
         return View(userInfoModel);
-
-        // return View();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
