@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GymBro_App.Controllers;
 
-[Route("api/exercise")]
+[Route("api/exercises")]
 public class ExerciseDbAPIController : ControllerBase
 {
     private readonly IExerciseService _exerciseService;
@@ -16,23 +16,29 @@ public class ExerciseDbAPIController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet("{name}")]
-    public async Task<IActionResult> GetExercisesAsync(string name)
+    [HttpGet]
+    public async Task<IActionResult> GetExercises()
     {
-        try
+        var exercises = await _exerciseService.GetExercisesAsync();
+    
+        if (exercises == null || exercises.Count == 0)
         {
-            var exercises = await _exerciseService.GetExercisesAsync(name);
-            if (exercises == null || !exercises.Any())
-            {
-                return NotFound();
-            }
-            return Ok(exercises);
+            return NotFound("No exercises found for the given query.");
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while fetching exercises");
-            return StatusCode(500);
-        }
-    }
 
+        return Ok(exercises);
+}
+
+    [HttpGet("{name}")]
+    public async Task<IActionResult> GetExercise(string name)
+    {
+        var exercises = await _exerciseService.GetExerciseAsync(name);
+    
+        if (exercises == null || exercises.Count == 0)
+        {
+            return NotFound($"No exercises found for '{name}'.");
+        }
+
+        return Ok(exercises);
+}
 }

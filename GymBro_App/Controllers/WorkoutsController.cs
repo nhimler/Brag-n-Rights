@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using GymBro_App.Models;
 using GymBro_App.DAL.Abstract;
+using GymBro_App.Services;
 
 namespace GymBro_App.Controllers
 {
@@ -35,6 +36,12 @@ namespace GymBro_App.Controllers
                 return RedirectToAction("Index");
             }
             return View(workoutPlan);
+        }
+
+        [HttpGet]
+        public IActionResult WorkoutSearch()
+        {
+            return View();
         }
     }
 }

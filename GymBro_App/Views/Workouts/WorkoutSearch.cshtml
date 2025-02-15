@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = "Workout Search";
+}
+
+<h1>Let's search our API for a workout</h1>
+
+<form method="post">
+    <h3>Selected Exercises</h3>
+    <table class="table table-bordered">
+        <tbody id="selectedWorkouts"></tbody>
+    </table>
+</form>
+
+<input type="text" id="exerciseSearchBar">
+<button class="btn btn-primary" type="button" id="exerciseSearchButton">Search</button>
+<div id="exerciseSearchResults">
+    
+</div>
+
+<script src="~/js/exerciseSearch.js"></script>

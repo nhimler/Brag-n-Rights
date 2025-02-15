@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
         }
 
         [Test]
-        public void Index_ReturnsViewResult_WithListOfWorkoutPlans()
+        public void Index_ReturnsViewResult_WithTableOfWorkoutPlans()
         {
             // Arrange
             var workoutPlans = new List<WorkoutPlan> { new WorkoutPlan(), new WorkoutPlan() };

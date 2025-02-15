@@ -2,6 +2,12 @@ using GymBro_App.Models;
 using GymBro_App.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using GymBro_App.Models.DTOs;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace GymBro_App.Services
 {
@@ -31,13 +37,6 @@ namespace GymBro_App.Services
         [JsonPropertyName("instructions")]
         public List<string> Instructions { get; set; }
     }
-
-    public class ExerciseRespone
-    {
-        [JsonPropertyName("exercises")]
-        public List<Exercises> Exercises { get; set; }
-    }
-
     public class ExerciseService : IExerciseService
     {
         readonly HttpClient _httpClient;
@@ -49,10 +48,33 @@ namespace GymBro_App.Services
             _logger = logger;
         }
 
-        public async Task<ExerciseRespone> GetExerciseAsync(string name)
+        public async Task<List<ExerciseDTO>> GetExercisesAsync()
         {
-            string endpoint = $"exercises/name/{name}";
+            string endpoint = $"/exercises?limit=10&offset=0";
             var response = await _httpClient.GetAsync(endpoint);
+            _logger.LogInformation($"Response status code: {response.StatusCode}");
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Step 1");
+                var responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("Step 2");
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                Console.WriteLine("Step 3");
+                var results = JsonSerializer.Deserialize<List<ExerciseDTO>>(responseBody, options);
+                Console.WriteLine("Step 4");
+                return results?? new List<ExerciseDTO>();
+                
+            }
+            return new List<ExerciseDTO>();
+        }
+        public async Task<List<ExerciseDTO>> GetExerciseAsync(string name)
+        {
+            string endpoint = $"/exercises/name/{name}";
+            var response = await _httpClient.GetAsync(endpoint);
+            _logger.LogInformation($"Response status code: {response.StatusCode}");
             if (response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
@@ -60,15 +82,10 @@ namespace GymBro_App.Services
                 {
                     PropertyNameCaseInsensitive = true
                 };
-                var results = JsonSerializer.Deserialize<ExerciseRespone>(responseBody, options);
-                return results ?? new ExerciseRespone();
+                var results = JsonSerializer.Deserialize<List<ExerciseDTO>>(responseBody, options);
+                return results ?? new List<ExerciseDTO>();
             }
-            return new ExerciseRespone();
-        }
-
-        public Task<List<ExerciseRespone>> GetExercisesAsync(string query)
-        {
-            throw new NotImplementedException();
+            return new List<ExerciseDTO>();
         }
     }
 }

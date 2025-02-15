@@ -1,5 +1,3 @@
-
-
 namespace GymBro_App.Models;
 
 public class ApiFood
