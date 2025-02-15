@@ -21,15 +21,19 @@ public class Program
 
         // This works with user secrets. 
         // When storing the connection string in appsettings, instead use builder.GetConnectionString("GymBroConnection");
-        var connectionString = builder.Configuration["GymBroConnection"];
+        var connectionString = builder.Configuration.GetConnectionString("GymBroAzureConnection");
+        // Console.WriteLine(connectionString);
+        // var connectionPassword = builder.Configuration["GymBroPassword"];
+
+        // var connectionStringWithPassword = $"{connectionString};Password={connectionPassword}";
 
         builder.Services.AddDbContext<GymBroDbContext>(options => options
             .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
             .UseSqlServer(connectionString));
-        
+
         builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
         // Configure the authentication/Identity database connection
-        var authDbConnectionString = builder.Configuration.GetConnectionString("AuthGymBroDbConnection");
+        var authDbConnectionString = builder.Configuration.GetConnectionString("AuthGymBroAzureConnection");
 
         builder.Services.AddDbContext<AuthGymBroDb>(options => options
                         .UseSqlServer(authDbConnectionString));
