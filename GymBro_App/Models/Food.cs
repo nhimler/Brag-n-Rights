@@ -13,21 +13,15 @@ public partial class Food
     [Column("FoodID")]
     public int FoodId { get; set; }
 
-    [StringLength(255)]
-    public string? FoodName { get; set; }
+    [Column("MealID")]
+    public int? MealId { get; set; }
 
-    public int? CaloriesPerServing { get; set; }
+    [Column("ApiFoodID")]
+    public long? ApiFoodId { get; set; }
 
-    public int? ProteinPerServing { get; set; }
+    public int? Amount { get; set; }
 
-    public int? CarbsPerServing { get; set; }
-
-    public int? FatPerServing { get; set; }
-
-    [StringLength(50)]
-    public string? ServingSize { get; set; }
-
-    [ForeignKey("FoodId")]
+    [ForeignKey("MealId")]
     [InverseProperty("Foods")]
-    public virtual ICollection<Meal> Meals { get; set; } = new List<Meal>();
+    public virtual Meal? Meal { get; set; }
 }
