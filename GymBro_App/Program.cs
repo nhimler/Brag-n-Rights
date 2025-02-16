@@ -21,7 +21,11 @@ public class Program
 
         // This works with user secrets. 
         // When storing the connection string in appsettings, instead use builder.GetConnectionString("GymBroConnection");
-        var connectionString = builder.Configuration["GymBroConnection"];
+        var connectionString = builder.Configuration.GetConnectionString("GymBroAzureConnection");
+        // Console.WriteLine(connectionString);
+        // var connectionPassword = builder.Configuration["GymBroPassword"];
+
+        // var connectionStringWithPassword = $"{connectionString};Password={connectionPassword}";
 
         builder.Services.AddDbContext<GymBroDbContext>(options => options
             .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
@@ -33,7 +37,7 @@ public class Program
         builder.Services.AddScoped<IMealPlanRepository, MealPlanRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         // Configure the authentication/Identity database connection
-        var authDbConnectionString = builder.Configuration["AuthGymBroDbConnection"];
+        var authDbConnectionString = builder.Configuration.GetConnectionString("AuthGymBroAzureConnection");
 
         builder.Services.AddDbContext<AuthGymBroDb>(options => options
                         .UseSqlServer(authDbConnectionString));
@@ -44,12 +48,27 @@ public class Program
         string foodApiUrl = "https://platform.fatsecret.com/rest/server.api";
         string foodApiKey = builder.Configuration["FoodApiKey"] ?? "";
 
+        string exerciseDbAPIUrl = "https://exercisedb.p.rapidapi.com";
+        string exerciseDbAPIKey = builder.Configuration["ExerciseDbApiKey"];
+
         builder.Services.AddHttpClient<IFoodService, FoodService>((client, services) =>
         {
             client.BaseAddress = new Uri(foodApiUrl);
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", foodApiKey);
             return new FoodService(client, services.GetRequiredService<ILogger<FoodService>>());
+        });
+
+        builder.Services.AddHttpClient<IExerciseService, ExerciseService>((client, services) =>
+        {
+            client.BaseAddress = new Uri(exerciseDbAPIUrl);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add("x-rapidapi-host", "exercisedb.p.rapidapi.com");
+            // The ExerciseDB requires the Key to be an added header instead of a new AuthenticationHeaderValue
+            client.DefaultRequestHeaders.Add("x-rapidapi-key", exerciseDbAPIKey);
+            var logger = services.GetRequiredService<ILogger<ExerciseService>>();
+            logger.LogInformation("Request: {0} - Headers: {1}", client.BaseAddress, client.DefaultRequestHeaders);
+            return new ExerciseService(client, services.GetRequiredService<ILogger<ExerciseService>>());
         });
 
 
