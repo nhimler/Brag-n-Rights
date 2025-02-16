@@ -32,11 +32,10 @@ public partial class Meal
     [Column("MealPlanID")]
     public int? MealPlanId { get; set; }
 
+    [InverseProperty("Meal")]
+    public virtual ICollection<Food> Foods { get; set; } = new List<Food>();
+
     [ForeignKey("MealPlanId")]
     [InverseProperty("Meals")]
     public virtual MealPlan? MealPlan { get; set; }
-
-    [ForeignKey("MealId")]
-    [InverseProperty("Meals")]
-    public virtual ICollection<Food> Foods { get; set; } = new List<Food>();
 }

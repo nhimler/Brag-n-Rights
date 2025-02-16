@@ -32,6 +32,10 @@ public class Program
             .UseSqlServer(connectionString));
 
         builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
+        builder.Services.AddScoped<IFoodRepository, FoodRepository>();
+        builder.Services.AddScoped<IMealRepository, MealRepository>();
+        builder.Services.AddScoped<IMealPlanRepository, MealPlanRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         // Configure the authentication/Identity database connection
         var authDbConnectionString = builder.Configuration.GetConnectionString("AuthGymBroAzureConnection");
 
@@ -70,7 +74,7 @@ public class Program
 
         // Configure the Identity registration requirements
         builder.Services.Configure<IdentityOptions>(options =>
-        {   
+        {
             // Sign in requirements
             options.SignIn.RequireConfirmedAccount = true;
 
