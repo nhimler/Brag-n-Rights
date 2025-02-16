@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using GymBro_App;
 
+namespace NUnit_Tests;
+
 [TestFixture]
 public class HomeController_Tests
 {

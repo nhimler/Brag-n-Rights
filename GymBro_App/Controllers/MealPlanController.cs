@@ -53,12 +53,14 @@ public class MealPlanController : Controller
         }
         MealPlanView mealPlanView = new MealPlanView();
         foreach(Meal meal in mealPlan.Meals){
+            if(mealPlanView.MealNames != null && meal.MealName != null && mealPlanView.Foods != null){
             mealPlanView.MealNames.Add(meal.MealName);
             List<long> foodIds = new List<long>();
             foreach(Food food in meal.Foods){
                 foodIds.Add(food.ApiFoodId ?? -1);
             }
             mealPlanView.Foods.Add(foodIds);
+            }
         }
         return View(mealPlanView);
     }
@@ -87,7 +89,7 @@ public class MealPlanController : Controller
             Debug.WriteLine("New meal plan added");
         }
         mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
-        if (!_mealPlanRepository.HasMeals(mealPlan.MealPlanId))
+        if (mealPlan != null && !_mealPlanRepository.HasMeals(mealPlan.MealPlanId))
         {
             _mealRepository.Add(new Meal()
             {
