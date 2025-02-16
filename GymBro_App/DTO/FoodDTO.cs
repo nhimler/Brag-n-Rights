@@ -8,3 +8,5 @@ public class FoodDTO
     public string BrandName { get; set; } = "";
 
 }
+
+// PUT THIS IN THE MODEL/DTOs FOLDER
