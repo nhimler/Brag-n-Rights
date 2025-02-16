@@ -39,7 +39,7 @@ namespace GymBro_App.Controllers
         }
 
         [HttpGet]
-        public IActionResult WorkoutSearch()
+        public IActionResult ExerciseSearch()
         {
             return View();
         }

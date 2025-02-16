@@ -1,7 +1,7 @@
 let exerciseSearchButton = document.getElementById("exerciseSearchButton");
 
 exerciseSearchButton.addEventListener("click", async function(){
-    let name = document.getElementById("exerciseSearchBar").value;
+    let name = document.getElementById("exerciseInput").value;
     console.log("We are looking for: " + name);
 
     let response = await fetch(`/api/exercises/${name}`, {
