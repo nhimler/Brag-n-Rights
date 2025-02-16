@@ -17,8 +17,6 @@ searchButton.addEventListener("click", async function () {
 
 
 async function displaySearchResults(result){
-    console.log("displaySearchResults called with:", result); // Debugging line
-
     let resultList = document.getElementById("searchResults");
     if (!resultList) {
         console.error("resultsList element not found");
@@ -33,15 +31,21 @@ async function displaySearchResults(result){
 
     let table = document.createElement("table");
     table.className = "table table-bordered";
-    tbody = document.createElement("tbody");
+    let tbody = document.createElement("tbody");
     result.forEach(food => {
-        if(!findValueInChildren(selectedFood, food.foodId)){
+        if(!findValueInSelected(selectedFood, food.foodId)){
             // console.log("foodId: " + food.foodId + " not found in selectedFood");
             let tr = document.createElement("tr");
             let td = document.createElement("td");
+            let data = document.createElement("input");
             td.colspan = 2;
-            td.value = food.foodId;
+            data.setAttribute("value", food.foodId);
+            data.setAttribute("name", "Foods");
+            data.setAttribute("type", "number");
+            data.setAttribute("hidden", "true");
+            data.setAttribute("readonly", "true");
             td.textContent = food.foodName;
+
             let expandBtn = document.createElement("button");
             expandBtn.className = "btn";
             expandBtn.textContent = "v";
@@ -59,6 +63,7 @@ async function displaySearchResults(result){
             });
 
             td.appendChild(expandBtn);
+            td.appendChild(data);
 
             let td2 = document.createElement("td");
             let addBtn = document.createElement("button");
@@ -68,14 +73,14 @@ async function displaySearchResults(result){
             addBtn.addEventListener("click", function(){
                 if(this.textContent === "Add"){
                     this.textContent = "Remove";
-                    movedLi = this.parentElement.parentElement;
+                    let movedTr = this.parentElement.parentElement;
                     this.parentElement.parentElement.remove();
-                    selectedFood.appendChild(movedLi);
+                    selectedFood.appendChild(movedTr);
                 }else{
                     this.textContent = "Add";
-                    movedLi = this.parentElement.parentElement;
+                    let movedTr = this.parentElement.parentElement;
                     this.parentElement.parentElement.remove();
-                    tbody.prepend(movedLi);
+                    tbody.prepend(movedTr);
 
                 }
             });
@@ -89,11 +94,16 @@ async function displaySearchResults(result){
     resultList.appendChild(table);
 }
 
-function findValueInChildren(parent, value){
-    for(let i = 0; i < parent.children.length; i++){
-        if(parent.children[i].getAttribute("value") === value){
+function findValueInSelected(parent, value){
+    if(!parent){
+        console.log("parent is null");
+        return false;
+    }
+    for (let input of parent.querySelectorAll("input")) {
+        if (input.value === value) {
             return true;
         }
     }
     return false;
 }
+
