@@ -1,0 +1,26 @@
+@model GymBro_App.Models.DTOs.AwardMedal
+
+@{
+    ViewData["Title"] = "Awarded Medals";
+}
+
+<h1>Awarded Medals for User @Model.UserId</h1>
+
+@if (Model.AwardedMedals.Count == 0)
+{
+    <p>No medals were awarded today.</p>
+}
+else
+{
+    <ul>
+        @foreach (var medal in Model.AwardedMedals)
+        {
+            <li>
+                <h3>@medal.MedalName</h3>
+                <img src="@medal.MedalImage" alt="@medal.MedalName" style="max-width: 100px;" />
+                <p>Progress: @medal.ProgressPercentage% - Goal: @medal.StepThreshold steps</p>
+                <p>Awarded on: @medal.AwardedDate.ToString("MM/dd/yyyy")</p>
+            </li>
+        }
+    </ul>
+}
