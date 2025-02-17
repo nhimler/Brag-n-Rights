@@ -1,41 +1,49 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;  // For [Authorize]
+using System.Security.Claims;  // Add this namespace for ClaimsPrincipal and ClaimTypes
 using GymBro_App.Models.DTOs;
 using GymBro_App.Services;
 using System.Threading.Tasks;
-using System.Security.Claims;
 
-public class AwardMedalController : Controller
+namespace GymBro_App.Controllers
 {
-    private readonly IAwardMedalService _awardMedalService;
-
-    public AwardMedalController(IAwardMedalService awardMedalService)
+    [Authorize]  // Ensure that the controller requires authentication
+    public class AwardMedalController : Controller
     {
-        _awardMedalService = awardMedalService;
-    }
+        private readonly IAwardMedalService _awardMedalService;
 
-    public async Task<IActionResult> AwardMedals()
-    {
-        var identityId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get logged-in user’s Identity ID
-
-        if (string.IsNullOrEmpty(identityId))
+        public AwardMedalController(IAwardMedalService awardMedalService)
         {
-            return Unauthorized("User not logged in.");  // Return 401 if not authenticated
+            _awardMedalService = awardMedalService;
         }
 
-        try
+        // Action to award medals for a specific user
+        public async Task<IActionResult> AwardMedals()
         {
-            var awardMedalsResult = await _awardMedalService.AwardUserdMedalsAsync(identityId);
+            // Get the identityId from the logged-in user's claims
+            var identityId = User.FindFirstValue(ClaimTypes.NameIdentifier);  // Using NameIdentifier for the Identity Id (replace if needed)
 
-            if (awardMedalsResult.AwardedMedals.Count == 0)
+            if (string.IsNullOrEmpty(identityId))
             {
-                return View("NoMedals");  // No medals awarded
+                return Unauthorized();  // Return 401 if the user is not logged in or has no identity
             }
 
-            return View("AwardedMedals", awardMedalsResult);  // Show awarded medals
-        }
-        catch (Exception ex)
-        {
-            return View("Error", new { message = ex.Message });
+            try
+            {
+                var awardMedalsResult = await _awardMedalService.AwardUserdMedalsAsync(identityId);
+
+                if (awardMedalsResult.AwardedMedals.Count == 0)
+                {
+                    return View("NoMedals");  // View for when no medals were awarded today
+                }
+
+                return View("AwardedMedals", awardMedalsResult);  // Pass AwardMedal to the view
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (optional) and show an error message
+                return View("Error", new { message = ex.Message });
+            }
         }
     }
 }

@@ -4,23 +4,44 @@
     ViewData["Title"] = "Awarded Medals";
 }
 
-<h1>Awarded Medals for User @Model.UserId</h1>
+<link href="~/css/AwardedMedal.css" rel="stylesheet" type="text/css" />
 
-@if (Model.AwardedMedals.Count == 0)
+<h2>Awarded Medals</h2>
+
+@if (Model.AwardedMedals != null && Model.AwardedMedals.Any())
 {
-    <p>No medals were awarded today.</p>
+    <div class="medals-container">
+        @foreach (var medal in Model.AwardedMedals)
+        {
+            <div class="medal">
+                <h3>@medal.MedalName</h3>
+                <img src="@medal.MedalImage" alt="@medal.MedalName" class="medal-image" />
+
+                <p><strong>Progress:</strong> @medal.ProgressPercentage.ToString("F2")%</p>
+
+                @if (medal.AwardedDate.HasValue)
+                {
+                    <p><strong>Awarded On:</strong> @medal.AwardedDate.Value.ToString("MM/dd/yyyy")</p>
+                }
+                else
+                {
+                    <p>Not Awarded Yet</p>
+                }
+
+                @if (medal.StepsRemaining > 0)
+                {
+                    <p><strong>Steps Remaining:</strong> @medal.StepsRemaining</p>
+                }
+                else
+                {
+                    <p><strong>Medal Unlocked!</strong></p>
+                }
+            </div>
+        }
+    </div>
 }
 else
 {
-    <ul>
-        @foreach (var medal in Model.AwardedMedals)
-        {
-            <li>
-                <h3>@medal.MedalName</h3>
-                <img src="@medal.MedalImage" alt="@medal.MedalName" style="max-width: 100px;" />
-                <p>Progress: @medal.ProgressPercentage% - Goal: @medal.StepThreshold steps</p>
-                <p>Awarded on: @medal.AwardedDate.ToString("MM/dd/yyyy")</p>
-            </li>
-        }
-    </ul>
+    <p>No medals have been awarded today.</p>
 }
+
