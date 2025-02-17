@@ -87,6 +87,10 @@ public class Program
             options.Password.RequiredUniqueChars = 0;
         });
 
+        // Add the dependency injections for controllers below:
+        // Register the IUserRepository service with UserRepository
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

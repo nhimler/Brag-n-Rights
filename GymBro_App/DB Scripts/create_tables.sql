@@ -29,6 +29,7 @@ CREATE TABLE [WorkoutPlan] (
     [EndDate]               DATE,
     [Frequency]             NVARCHAR(50),
     [Goal]                  NVARCHAR(255),
+    [IsCompleted]           INT                 CHECK (IsCompleted IN (0, 1)),
     [DifficultyLevel]       NVARCHAR(20)        CHECK (DifficultyLevel IN ('Beginner', 'Intermediate', 'Advanced')),
     FOREIGN KEY (UserID) REFERENCES [User](UserID) ON DELETE CASCADE
 );
