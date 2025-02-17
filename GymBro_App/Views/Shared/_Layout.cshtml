@@ -19,7 +19,7 @@
            <li><a asp-controller="UserPage" asp-action="Index">User Page</a></li>
             <li><a asp-controller="MealPlan" asp-action="Index">Meal Plan</a></li>
             <li><a asp-controller="Workouts" asp-action="Index">Workout Plan</a></li>
-
+            <li><a asp-controller="AwardMedal" asp-action="AwardMedals">Check Medals</a></li>
         </ul>
         <div class="login-partial">
             <partial name="_LoginPartial" />
@@ -30,6 +30,19 @@
     <div class="content">
       @RenderBody()
     </div>
+
+
+    <script>
+        document.getElementById("awardMedalsButton").addEventListener("click", async function () {
+            try {
+                const response = await fetch('/AwardMedal/AwardMedals', { method: 'POST' });
+                const data = await response.json();
+                alert(`Awarded Medals: ${JSON.stringify(data.awardedMedals)}`);
+            } catch (error) {
+                console.error("Error claiming medals:", error);
+            }
+        });
+    </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

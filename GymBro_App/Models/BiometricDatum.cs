@@ -27,6 +27,9 @@ public partial class BiometricDatum
 
     public int? ActiveMinutes { get; set; }
 
+    [Column(TypeName = "datetime")]
+    public DateTime? LastUpdated { get; set; }
+
     [ForeignKey("UserId")]
     [InverseProperty("BiometricData")]
     public virtual User? User { get; set; }

@@ -36,6 +36,10 @@ public class Program
         builder.Services.AddScoped<IMealRepository, MealRepository>();
         builder.Services.AddScoped<IMealPlanRepository, MealPlanRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IMedalRepository, MedalRepository>();
+        builder.Services.AddScoped<IAwardMedalService, AwardMedalService>();
+        builder.Services.AddScoped<IUserMedalRepository, UserMedalRepository>();
+        builder.Services.AddScoped<IBiometricDatumRepository, BiometricDatumRepository>();
         // Configure the authentication/Identity database connection
         var authDbConnectionString = builder.Configuration.GetConnectionString("AuthGymBroAzureConnection");
 
