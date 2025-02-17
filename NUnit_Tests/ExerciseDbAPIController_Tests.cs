@@ -31,8 +31,8 @@ namespace ExerciseDbAPIControllerTests
             // Arrange
             var exercises = new List<ExerciseDTO>
             {
-                new ExerciseDTO { Name = "Push Up" },
-                new ExerciseDTO { Name = "Pull Up" }
+                new ExerciseDTO { Id = "0001", Name = "sit-up" },
+                new ExerciseDTO { Id = "0002", Name = "sit-up" }
             };
             _mockService.Setup(service => service.GetExercisesAsync()).ReturnsAsync(exercises);
 
@@ -43,6 +43,7 @@ namespace ExerciseDbAPIControllerTests
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
             Assert.IsNotNull(okResult);
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
             Assert.That(okResult.Value, Is.EqualTo(exercises));
         }
 
@@ -59,7 +60,7 @@ namespace ExerciseDbAPIControllerTests
             Assert.IsInstanceOf<NotFoundObjectResult>(result);
             var notFoundResult = result as NotFoundObjectResult;
             Assert.IsNotNull(notFoundResult);
-            Assert.That(notFoundResult.Value, Is.EqualTo("No exercises found for the given query."));
+            Assert.That(notFoundResult.StatusCode, Is.EqualTo(404));
         }
 
         [Test]
@@ -68,17 +69,18 @@ namespace ExerciseDbAPIControllerTests
             // Arrange
             var exercises = new List<ExerciseDTO>
             {
-                new ExerciseDTO { Name = "Push Up" }
+                new ExerciseDTO { Id = "0001", Name = "sit-up" }
             };
-            _mockService.Setup(service => service.GetExerciseAsync("Push Up")).ReturnsAsync(exercises);
+            _mockService.Setup(service => service.GetExerciseAsync("sit-up")).ReturnsAsync(exercises);
 
             // Act
-            var result = await _controller.GetExercise("Push Up");
+            var result = await _controller.GetExercise("sit-up");
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
             Assert.IsNotNull(okResult);
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
             Assert.That(okResult.Value, Is.EqualTo(exercises));
         }
 
