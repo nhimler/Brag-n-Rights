@@ -79,6 +79,10 @@ public partial class User
     [InverseProperty("Users")]
     public virtual ICollection<FitnessChallenge> Challenges { get; set; } = new List<FitnessChallenge>();
 
+    [InverseProperty("User")]
+    public virtual ICollection<UserMedal> UserMedals { get; set; } = new List<UserMedal>();
+
+
     [ForeignKey("UserId")]
     [InverseProperty("Users")]
     public virtual ICollection<Gym> Gyms { get; set; } = new List<Gym>();
