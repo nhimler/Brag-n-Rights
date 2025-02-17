@@ -29,6 +29,8 @@ public partial class WorkoutPlan
     [StringLength(255)]
     public string? Goal { get; set; }
 
+    public int? IsCompleted { get; set; }
+
     [StringLength(20)]
     public string? DifficultyLevel { get; set; }
 

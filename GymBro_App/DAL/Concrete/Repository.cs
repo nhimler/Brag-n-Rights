@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-
 using GymBro_App.DAL.Abstract;
 
 namespace GymBro_App.DAL.Concrete
