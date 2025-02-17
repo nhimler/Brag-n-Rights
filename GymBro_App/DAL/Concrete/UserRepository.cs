@@ -4,33 +4,46 @@ using Microsoft.EntityFrameworkCore;
 using GymBro_App.DAL.Abstract;
 using GymBro_App.Models;
 
-
-namespace GymBro_App.DAL.Concrete;
-
-public class UserRepository : Repository<User>, IUserRepository
+namespace GymBro_App.DAL.Concrete
 {
-    private DbSet<Models.User> _users;
+    public class UserRepository : Repository<User>, IUserRepository
 
-    public UserRepository(GymBroDbContext context) : base(context)
     {
-        _users = context.Users;
-    }
+        private readonly DbSet<User> _user;
+        private readonly GymBroDbContext _context;
 
-    public User GetUserByIdentityUserId(string identityId)
-    {
-        return _users.FirstOrDefault(u => u.IdentityUserId == identityId) ?? new User();
-    }
+        public UserRepository(GymBroDbContext context) : base(context)
+        {
+            _user = context.Users;
+            _context = context;
+        }
 
-    public List<WorkoutPlan> GetWorkoutPlansByIdentityUserId(string identityId)
-    {
-        return _users.FirstOrDefault(u => u.IdentityUserId == identityId)?.WorkoutPlans
-                     .ToList() ?? new List<WorkoutPlan>();
-    }
+        public int GetIdFromIdentityId(string identityId)
+        {
+            User? user = GetAll().Where(u => u.IdentityUserId == identityId).FirstOrDefault();
+            if (user == null)
+            {
+                return -1;
+            }
+            return user.UserId;
+        }
 
-    // Bool types are not supported by SQL. Treat isCompleted as a boolean value (0 or 1) to see only workouts that are complete/incomplete.
-    public List<WorkoutPlan> GetWorkoutPlansByIdentityUserId(string identityId, int isCompleted)
-    {
-        return _users.FirstOrDefault(u => u.IdentityUserId == identityId)?.WorkoutPlans
-                     .Where(wp => wp.IsCompleted == isCompleted).ToList() ?? new List<WorkoutPlan>();
+        public User GetUserByIdentityUserId(string identityId)
+        {
+            return _user.FirstOrDefault(u => u.IdentityUserId == identityId) ?? new User();
+        }
+
+        public List<WorkoutPlan> GetWorkoutPlansByIdentityUserId(string identityId)
+        {
+            return _user.FirstOrDefault(u => u.IdentityUserId == identityId)?.WorkoutPlans
+                         .ToList() ?? new List<WorkoutPlan>();
+        }
+
+        // Bool types are not supported by SQL. Treat isCompleted as a boolean value (0 or 1) to see only workouts that are complete/incomplete.
+        public List<WorkoutPlan> GetWorkoutPlansByIdentityUserId(string identityId, int isCompleted)
+        {
+            return _user.FirstOrDefault(u => u.IdentityUserId == identityId)?.WorkoutPlans
+                         .Where(wp => wp.IsCompleted == isCompleted).ToList() ?? new List<WorkoutPlan>();
+        }
     }
 }

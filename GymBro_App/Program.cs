@@ -30,8 +30,12 @@ public class Program
         builder.Services.AddDbContext<GymBroDbContext>(options => options
             .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
             .UseSqlServer(connectionString));
-        
+
         builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
+        builder.Services.AddScoped<IFoodRepository, FoodRepository>();
+        builder.Services.AddScoped<IMealRepository, MealRepository>();
+        builder.Services.AddScoped<IMealPlanRepository, MealPlanRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         // Configure the authentication/Identity database connection
         var authDbConnectionString = builder.Configuration.GetConnectionString("AuthGymBroAzureConnection");
 
@@ -44,6 +48,9 @@ public class Program
         string foodApiUrl = "https://platform.fatsecret.com/rest/server.api";
         string foodApiKey = builder.Configuration["FoodApiKey"] ?? "";
 
+        string exerciseDbAPIUrl = "https://exercisedb.p.rapidapi.com";
+        string exerciseDbAPIKey = builder.Configuration["ExerciseDbApiKey"];
+
         builder.Services.AddHttpClient<IFoodService, FoodService>((client, services) =>
         {
             client.BaseAddress = new Uri(foodApiUrl);
@@ -52,10 +59,22 @@ public class Program
             return new FoodService(client, services.GetRequiredService<ILogger<FoodService>>());
         });
 
+        builder.Services.AddHttpClient<IExerciseService, ExerciseService>((client, services) =>
+        {
+            client.BaseAddress = new Uri(exerciseDbAPIUrl);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add("x-rapidapi-host", "exercisedb.p.rapidapi.com");
+            // The ExerciseDB requires the Key to be an added header instead of a new AuthenticationHeaderValue
+            client.DefaultRequestHeaders.Add("x-rapidapi-key", exerciseDbAPIKey);
+            var logger = services.GetRequiredService<ILogger<ExerciseService>>();
+            logger.LogInformation("Request: {0} - Headers: {1}", client.BaseAddress, client.DefaultRequestHeaders);
+            return new ExerciseService(client, services.GetRequiredService<ILogger<ExerciseService>>());
+        });
+
 
         // Configure the Identity registration requirements
         builder.Services.Configure<IdentityOptions>(options =>
-        {   
+        {
             // Sign in requirements
             options.SignIn.RequireConfirmedAccount = true;
 
