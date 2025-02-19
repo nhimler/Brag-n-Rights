@@ -1,5 +1,5 @@
 using Moq;
-using Xunit;
+using NUnit.Framework;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using GymBro_App.Services;
@@ -7,23 +7,23 @@ using GymBro_App.Models;
 using GymBro_App.Models.DTOs;
 using GymBro_App.DAL.Abstract;
 
+[TestFixture]
 public class AwardMedalServiceTests
 {
-    private readonly Mock<IUserRepository> _mockUserRepo;
-    private readonly Mock<IMedalRepository> _mockMedalRepo;
-    private readonly Mock<IUserMedalRepository> _mockUserMedalRepo;
-    private readonly Mock<IBiometricDatumRepository> _mockBiometricDatumRepo;
-    private readonly AwardMedalService _service;
+    private Mock<IUserRepository> _mockUserRepo;
+    private Mock<IMedalRepository> _mockMedalRepo;
+    private Mock<IUserMedalRepository> _mockUserMedalRepo;
+    private Mock<IBiometricDatumRepository> _mockBiometricDatumRepo;
+    private AwardMedalService _service;
 
-    public AwardMedalServiceTests()
+    [SetUp]
+    public void Setup()
     {
-        // Create mocks for the dependencies
         _mockUserRepo = new Mock<IUserRepository>();
         _mockMedalRepo = new Mock<IMedalRepository>();
         _mockUserMedalRepo = new Mock<IUserMedalRepository>();
         _mockBiometricDatumRepo = new Mock<IBiometricDatumRepository>();
 
-        // Initialize the service with mocked dependencies
         _service = new AwardMedalService(
             _mockUserRepo.Object,
             _mockMedalRepo.Object,
@@ -32,10 +32,9 @@ public class AwardMedalServiceTests
         );
     }
 
-[Fact]
-public async Task AwardUserdMedalsAsync_ShouldAwardNewMedals_WhenUserStepsMeetThreshold()
+    [Test]
+    public async Task AwardUserdMedalsAsync_ShouldAwardNewMedals_WhenUserStepsMeetThreshold()
     {
-        // Arrange
         var identityId = "user123";
         var userId = 1;
         
@@ -45,39 +44,32 @@ public async Task AwardUserdMedalsAsync_ShouldAwardNewMedals_WhenUserStepsMeetTh
             new Medal { MedalId = 2, Name = "Silver", StepThreshold = 200, Image = "silver.png", Description = "Silver medal" }
         };
         
-        var userMedalsToday = new List<UserMedal>(); // Assume the user hasn't earned any medals today
-        var userSteps = 150; // User has taken 150 steps today
+        var userMedalsToday = new List<UserMedal>();
+        var userSteps = 150;
 
-        // Setup the mock repository methods
         _mockUserRepo.Setup(repo => repo.GetIdFromIdentityId(It.IsAny<string>())).Returns(userId);
         _mockMedalRepo.Setup(repo => repo.GetAllMedalsAsync()).ReturnsAsync(medals);
         _mockUserMedalRepo.Setup(repo => repo.GetUserMedalsEarnedTodayAsync(It.IsAny<int>())).ReturnsAsync(userMedalsToday);
         _mockBiometricDatumRepo.Setup(repo => repo.GetUserStepsAsync(It.IsAny<int>())).ReturnsAsync(userSteps);
 
-        // Act
         var result = await _service.AwardUserdMedalsAsync(identityId);
 
-        // Assert
-        Xunit.Assert.NotNull(result);
-        Xunit.Assert.Equal(userId, result.UserId);
-        Xunit.Assert.Equal(2, result.AwardedMedals.Count); // Should return 2 medals (even if user only earns 1, both will be in the list)
+        Assert.NotNull(result);
+        Assert.AreEqual(userId, result.UserId);
+        Assert.AreEqual(2, result.AwardedMedals.Count);
 
-        // Assert the first medal (Bronze) is unlocked
-        Xunit.Assert.True(result.AwardedMedals[0].Locked == false);
-        Xunit.Assert.Equal(0, result.AwardedMedals[0].StepsRemaining); // 100 threshold - 150 steps = 0 (not negative)
+        Assert.False(result.AwardedMedals[0].Locked);
+        Assert.AreEqual(0, result.AwardedMedals[0].StepsRemaining);
 
-        // Assert that the second medal (Silver) remains locked
-        Xunit.Assert.True(result.AwardedMedals[1].Locked == true);
-        Xunit.Assert.Equal(50, result.AwardedMedals[1].StepsRemaining); // 200 threshold - 150 steps = 50 (locked is true)
+        Assert.True(result.AwardedMedals[1].Locked);
+        Assert.AreEqual(50, result.AwardedMedals[1].StepsRemaining);
 
-        // Verify that new medals are added to the user's medal list
         _mockUserMedalRepo.Verify(repo => repo.AddBatchUserMedalsAsync(It.IsAny<List<UserMedal>>()), Times.Once);
     }
 
-    [Fact]
+    [Test]
     public async Task AwardUserdMedalsAsync_ShouldNotAwardMedals_IfAlreadyEarnedToday()
     {
-        // Arrange
         var identityId = "user123";
         var userId = 1;
         
@@ -86,27 +78,23 @@ public async Task AwardUserdMedalsAsync_ShouldAwardNewMedals_WhenUserStepsMeetTh
             new Medal { MedalId = 1, Name = "Bronze", StepThreshold = 100, Image = "bronze.png", Description = "Bronze medal" }
         };
         
-        var userMedalsToday = new List<UserMedal> // Assume the user already earned the "Bronze" medal today
+        var userMedalsToday = new List<UserMedal>
         {
             new UserMedal { MedalId = 1, UserId = userId, EarnedDate = DateOnly.FromDateTime(DateTime.Now) }
         };
         
         var userSteps = 150;
 
-        // Setup the mock repository methods
         _mockUserRepo.Setup(repo => repo.GetIdFromIdentityId(It.IsAny<string>())).Returns(userId);
         _mockMedalRepo.Setup(repo => repo.GetAllMedalsAsync()).ReturnsAsync(medals);
         _mockUserMedalRepo.Setup(repo => repo.GetUserMedalsEarnedTodayAsync(It.IsAny<int>())).ReturnsAsync(userMedalsToday);
         _mockBiometricDatumRepo.Setup(repo => repo.GetUserStepsAsync(It.IsAny<int>())).ReturnsAsync(userSteps);
 
-        // Act
         var result = await _service.AwardUserdMedalsAsync(identityId);
 
-        // Assert
-        Xunit.Assert.NotNull(result);
-        Xunit.Assert.Single(result.AwardedMedals); // Only 1 medal, because the "Bronze" medal was already earned today
+        Assert.NotNull(result);
+        Assert.AreEqual(1, result.AwardedMedals.Count);
 
-        // Verify that no new medals are awarded
         _mockUserMedalRepo.Verify(repo => repo.AddBatchUserMedalsAsync(It.IsAny<List<UserMedal>>()), Times.Never);
     }
 }

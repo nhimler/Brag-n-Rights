@@ -1,4 +1,4 @@
-using Xunit;
+using NUnit.Framework;
 using Moq;
 using GymBro_App.Controllers;
 using GymBro_App.Services;
@@ -9,25 +9,31 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using GymBro_App.Models.DTOs;
 
+[TestFixture]
 public class AwardMedalControllerTests
 {
-    private readonly Mock<IAwardMedalService> _mockAwardMedalService;
-    private readonly AwardMedalController _controller;
-    private readonly ClaimsPrincipal _user;
+    private Mock<IAwardMedalService> _mockAwardMedalService;
+    private AwardMedalController _controller;
+    private ClaimsPrincipal _user;
 
-    public AwardMedalControllerTests()
+    [SetUp]
+    public void Setup()
     {
         _mockAwardMedalService = new Mock<IAwardMedalService>();
         _controller = new AwardMedalController(_mockAwardMedalService.Object);
 
-        // Simulate a user with a claim for 'NameIdentifier' (IdentityId)
         _user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
-            new Claim(ClaimTypes.NameIdentifier, "user123") // simulate authenticated user with 'user123' as identityId
+            new Claim(ClaimTypes.NameIdentifier, "user123")
         }, "mock"));
     }
 
-    // Helper method to simulate the controller being executed with an authenticated user
+    [TearDown]
+    public void TearDown()
+    {
+        _controller.Dispose();
+    }
+
     private void SetUser(ClaimsPrincipal user)
     {
         _controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
@@ -36,10 +42,9 @@ public class AwardMedalControllerTests
         };
     }
 
-    [Fact]
+    [Test]
     public async Task AwardMedals_ShouldReturnView_WhenUserIsAuthenticatedAndMedalsAreAwarded()
     {
-        // Arrange
         SetUser(_user);
         var awardMedalsResult = new AwardMedal
         {
@@ -52,47 +57,42 @@ public class AwardMedalControllerTests
 
         _mockAwardMedalService.Setup(s => s.AwardUserdMedalsAsync("user123")).ReturnsAsync(awardMedalsResult);
 
-        // Act
         var result = await _controller.AwardMedals();
 
-        // Assert
-        var viewResult = Xunit.Assert.IsType<ViewResult>(result);
-        Xunit.Assert.Equal("AwardedMedals", viewResult.ViewName);
-        var model = Xunit.Assert.IsType<AwardMedal>(viewResult.Model);
-        Xunit.Assert.Equal(1, model.AwardedMedals.Count); // Should return one awarded medal
+        Assert.IsInstanceOf<ViewResult>(result);
+        var viewResult = result as ViewResult;
+        Assert.AreEqual("AwardedMedals", viewResult.ViewName);
+        var model = viewResult.Model as AwardMedal;
+        Assert.IsInstanceOf<AwardMedal>(model);
+        Assert.AreEqual(1, model.AwardedMedals.Count);
     }
 
-    [Fact]
+    [Test]
     public async Task AwardMedals_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
     {
-        // Arrange
-        SetUser(null); // Simulating an unauthenticated user
+        SetUser(null);
 
-        // Act
         var result = await _controller.AwardMedals();
 
-        // Assert
-        var unauthorizedResult = Xunit.Assert.IsType<UnauthorizedResult>(result);
+        Assert.IsInstanceOf<UnauthorizedResult>(result);
     }
 
-    [Fact]
+    [Test]
     public async Task AwardMedals_ShouldReturnNoMedalsView_WhenNoMedalsAreAwarded()
     {
-        // Arrange
         SetUser(_user);
         var awardMedalsResult = new AwardMedal
         {
             UserId = 123,
-            AwardedMedals = new List<AwardMedalDetails>() // No medals awarded
+            AwardedMedals = new List<AwardMedalDetails>()
         };
 
         _mockAwardMedalService.Setup(s => s.AwardUserdMedalsAsync("user123")).ReturnsAsync(awardMedalsResult);
 
-        // Act
         var result = await _controller.AwardMedals();
 
-        // Assert
-        var viewResult = Xunit.Assert.IsType<ViewResult>(result);
-        Xunit.Assert.Equal("NoMedals", viewResult.ViewName);
+        Assert.IsInstanceOf<ViewResult>(result);
+        var viewResult = result as ViewResult;
+        Assert.AreEqual("NoMedals", viewResult.ViewName);
     }
 }
