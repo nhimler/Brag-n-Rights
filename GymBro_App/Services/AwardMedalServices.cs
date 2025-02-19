@@ -24,61 +24,58 @@ namespace GymBro_App.Services
             _biometricDatumRepository = biometricDatumRepository;  // Assign to field
         }
 
-public async Task<AwardMedal> AwardUserdMedalsAsync(string identityId)
-{
-    var userId = _userRepository.GetIdFromIdentityId(identityId);
-
-    var medals = await _medalRepository.GetAllMedalsAsync();
-    var userMedalsToday = await _userMedalRepository.GetUserMedalsEarnedTodayAsync(userId);
-    var today = DateOnly.FromDateTime(DateTime.Now);
-
-    var userSteps = await _biometricDatumRepository.GetUserStepsAsync(userId) ?? 0;  // Handle nullable case
-
-    var awardedMedals = new List<AwardMedalDetails>();
-
-    foreach (var medal in medals)
-    {
-        bool alreadyEarnedToday = userMedalsToday
-            .Any(um => um.MedalId == medal.MedalId && um.EarnedDate == today);
-
-        int stepsRemaining = medal.StepThreshold - userSteps;
-
-        // Create an AwardMedalDetails object
-        var awardMedalDetails = new AwardMedalDetails
+        public async Task<AwardMedal> AwardUserdMedalsAsync(string identityId)
         {
-            MedalId = medal.MedalId,
-            MedalName = medal.Name,
-            MedalImage = medal.Image,
-            AwardedDate = userSteps >= medal.StepThreshold ? DateTime.Now : (DateTime?)null, // Set awarded date if steps threshold met
-            StepThreshold = medal.StepThreshold,
-            ProgressPercentage = userSteps >= medal.StepThreshold ? 100 : (double)userSteps / medal.StepThreshold * 100,
-            Locked = userSteps < medal.StepThreshold,  // If steps are less than the threshold, it's locked
-            StepsRemaining = stepsRemaining  // Calculate steps remaining
-        };
+            var userId = _userRepository.GetIdFromIdentityId(identityId);
 
-        // If the user hasn't earned this medal yet today and meets the step threshold
-        if (userSteps >= medal.StepThreshold && !alreadyEarnedToday)
-        {
-            var userMedal = new UserMedal
+            var medals = await _medalRepository.GetAllMedalsAsync();// get all medals
+            var userMedalsToday = await _userMedalRepository.GetUserMedalsEarnedTodayAsync(userId);// get all medals earned by the user today
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            var userSteps = await _biometricDatumRepository.GetUserStepsAsync(userId) ?? 0;  // get total user steps for today
+            var awardedMedals = new List<AwardMedalDetails>();
+            var newUserMedals = new List<UserMedal>();
+
+            foreach (var medal in medals)
+            {
+                bool alreadyEarnedToday = userMedalsToday.Any(um => um.MedalId == medal.MedalId);
+                int stepsRemaining = medal.StepThreshold - userSteps;
+
+                awardedMedals.Add(new AwardMedalDetails
+                {
+                    MedalId = medal.MedalId,
+                    MedalName = medal.Name,
+                    MedalImage = medal.Image,
+                    MedalDescription = medal.Description ?? "No description available",
+                    StepThreshold = medal.StepThreshold,
+                    Locked = userSteps < medal.StepThreshold,
+                    StepsRemaining = stepsRemaining
+                });
+
+                if (userSteps >= medal.StepThreshold && !alreadyEarnedToday)
+                {
+                    newUserMedals.Add(new UserMedal
+                    {
+                        UserId = userId,
+                        MedalId = medal.MedalId,
+                        EarnedDate = today
+                    });
+                }
+            }
+
+            // Batch insert newly earned medals
+            if (newUserMedals.Any())
+            {
+                await _userMedalRepository.AddBatchUserMedalsAsync(newUserMedals);
+            }
+
+            return new AwardMedal
             {
                 UserId = userId,
-                MedalId = medal.MedalId,
-                EarnedDate = today  // Record the date the medal was awarded
+                AwardedMedals = awardedMedals
             };
+        } 
 
-            // Save to the database
-            await _userMedalRepository.AddUserMedalAsync(userMedal);
-        }
-
-        awardedMedals.Add(awardMedalDetails);
-    }
-
-    return new AwardMedal
-    {
-        UserId = userId,
-        AwardedMedals = awardedMedals
-    };
-}
 
 
     }
