@@ -39,7 +39,7 @@ namespace GymBro_App.Services
             foreach (var medal in medals)
             {
                 bool alreadyEarnedToday = userMedalsToday.Any(um => um.MedalId == medal.MedalId);
-                int stepsRemaining = medal.StepThreshold - userSteps;
+                int stepsRemaining = Math.Max(0, medal.StepThreshold - userSteps);
 
                 awardedMedals.Add(new AwardMedalDetails
                 {
