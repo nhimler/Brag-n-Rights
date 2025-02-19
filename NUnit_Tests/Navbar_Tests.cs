@@ -1,35 +1,46 @@
-using Xunit;
+using NUnit.Framework;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Threading.Tasks;
 using System.Net.Http;
 using HtmlAgilityPack;
 using GymBro_App;
 
-public class NavbarTests : IClassFixture<WebApplicationFactory<Program>>
+[TestFixture]
+public class NavbarTests
 {
-    private readonly HttpClient _client;
+    private HttpClient _client;
+    private WebApplicationFactory<Program> _factory;
 
-    public NavbarTests(WebApplicationFactory<Program> factory)
+    [OneTimeSetUp]
+    public void OneTimeSetup()
     {
-        _client = factory.CreateClient();
+        _factory = new WebApplicationFactory<Program>();
+        _client = _factory.CreateClient();
     }
 
-    [Fact]
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
+    {
+        _client.Dispose();
+        _factory.Dispose();
+    }
+
+    [Test]
     public async Task Navbar_ShouldContain_ExpectedLinks()
     {
         var response = await _client.GetAsync("/");
         response.EnsureSuccessStatusCode();
         var html = await response.Content.ReadAsStringAsync();
-        
+
         var doc = new HtmlDocument();
         doc.LoadHtml(html);
 
         var links = doc.DocumentNode.SelectNodes("//nav//ul//li//a");
-        Xunit.Assert.NotNull(links);
-        Xunit.Assert.Contains(links, l => l.InnerText.Contains("Home"));
-        Xunit.Assert.Contains(links, l => l.InnerText.Contains("User Page"));
-        Xunit.Assert.Contains(links, l => l.InnerText.Contains("Meal Plan"));
-        Xunit.Assert.Contains(links, l => l.InnerText.Contains("Workout Plan"));
-        Xunit.Assert.Contains(links, l => l.InnerText.Contains("Check Medals"));
+        Assert.NotNull(links);
+        Assert.IsTrue(links.Any(l => l.InnerText.Contains("Home")));
+        Assert.IsTrue(links.Any(l => l.InnerText.Contains("User Page")));
+        Assert.IsTrue(links.Any(l => l.InnerText.Contains("Meal Plan")));
+        Assert.IsTrue(links.Any(l => l.InnerText.Contains("Workout Plan")));
+        Assert.IsTrue(links.Any(l => l.InnerText.Contains("Check Medals")));
     }
 }
