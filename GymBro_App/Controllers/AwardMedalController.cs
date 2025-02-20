@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GymBro_App.Controllers
 {
-    [Authorize]  // Ensure that the controller requires authentication
+     // Ensure that the controller requires authentication
     public class AwardMedalController : Controller
     {
         private readonly IAwardMedalService _awardMedalService;
@@ -18,6 +18,7 @@ namespace GymBro_App.Controllers
         }
 
         // Action to award medals for a specific user
+        [Authorize] 
         public async Task<IActionResult> AwardMedals()
         {
             // Get the identityId from the logged-in user's claims
