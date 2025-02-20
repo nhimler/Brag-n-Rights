@@ -186,6 +186,6 @@ CREATE TABLE UserMedal (
     MedalID INT NOT NULL,                       -- Foreign key to Medal
     EarnedDate DATE NOT NULL,                   -- Date when the medal was earned
 
-    CONSTRAINT FK_UserMedal_User FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE,
-    CONSTRAINT FK_UserMedal_Medal FOREIGN KEY (MedalID) REFERENCES Medals(MedalID) ON DELETE CASCADE
+    CONSTRAINT FK_UserMedal_User FOREIGN KEY (UserID) REFERENCES [User](UserID) ON DELETE CASCADE,
+    CONSTRAINT FK_UserMedal_Medal FOREIGN KEY (MedalID) REFERENCES Medal(MedalID) ON DELETE CASCADE
 );
