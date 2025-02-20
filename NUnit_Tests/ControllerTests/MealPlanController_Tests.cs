@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace NUnit_Tests;
+namespace Controller_Tests;
 
 [TestFixture]
 public class MealPlanController_Tests

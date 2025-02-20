@@ -4,6 +4,8 @@ using GymBro_App.Controllers;
 using GymBro_App.Models;
 using Microsoft.AspNetCore.Mvc;
 
+namespace Controller_Tests;
+
 [TestFixture]
     public class WorkoutsController_Tests
     {

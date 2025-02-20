@@ -5,6 +5,8 @@ using System.Net.Http;
 using HtmlAgilityPack;
 using GymBro_App;
 
+namespace UI_Tests;
+
 [TestFixture]
 public class NavbarTests
 {

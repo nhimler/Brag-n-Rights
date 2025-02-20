@@ -9,6 +9,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using GymBro_App.Models.DTOs;
 
+namespace Controller_Tests;
+
 [TestFixture]
 public class AwardMedalControllerTests
 {

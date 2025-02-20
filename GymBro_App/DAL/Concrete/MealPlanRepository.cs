@@ -24,17 +24,28 @@ namespace GymBro_App.DAL.Concrete
 
         public MealPlan? GetFirstMealPlanForUser(int userId)
         {
-            return GetAll().Where(mp => mp.UserId == userId).FirstOrDefault();
+            return GetAll().Where(mp => mp.UserId == userId).ToList().FirstOrDefault();
         }
 
         public bool HasMeals(int mealPlanId)
         {
-            return FindById(mealPlanId).Meals.Any();
-        }
+            try
+            {
+                return FindById(mealPlanId).Meals.ToList().Any();
+            }
+            catch
+            {
+                return false;
+            }
+    }
         
         public Meal? FirstMeal(int mealPlanId)
         {
-            return FindById(mealPlanId).Meals.FirstOrDefault();
+            try{
+                return FindById(mealPlanId).Meals.ToList().FirstOrDefault();
+            }catch{
+                return null;
+            }
         }
 
     }
