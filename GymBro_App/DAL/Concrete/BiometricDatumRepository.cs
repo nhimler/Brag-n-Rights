@@ -101,9 +101,12 @@ namespace GymBro_App.DAL.Concrete
         }
 
         // Get all biometric data for a user
+
         public async Task<IEnumerable<BiometricDatum>> GetUserBiometricDataAsync(int userId)
         {
-            return await _context.BiometricData.Where(b => b.UserId == userId).ToListAsync();
+            return await _context.BiometricData
+                .Where(b => b.UserId == userId)
+                .ToListAsync();
         }
     }
 }

@@ -4,44 +4,38 @@
     ViewData["Title"] = "Awarded Medals";
 }
 
-<link href="~/css/AwardedMedal.css" rel="stylesheet" type="text/css" />
 
-<h2>Awarded Medals</h2>
+<link rel="stylesheet" href="~/css/AwardedMedal.css" />
 
-@if (Model.AwardedMedals != null && Model.AwardedMedals.Any())
-{
-    <div class="medals-container">
-        @foreach (var medal in Model.AwardedMedals)
-        {
-            <div class="medal">
-                <h3>@medal.MedalName</h3>
-                <img src="@medal.MedalImage" alt="@medal.MedalName" class="medal-image" />
+<h1>@ViewData["Title"]</h1>
 
-                <p><strong>Progress:</strong> @medal.ProgressPercentage.ToString("F2")%</p>
 
-                @if (medal.AwardedDate.HasValue)
-                {
-                    <p><strong>Awarded On:</strong> @medal.AwardedDate.Value.ToString("MM/dd/yyyy")</p>
-                }
-                else
-                {
-                    <p>Not Awarded Yet</p>
-                }
+    @if (Model.AwardedMedals != null && Model.AwardedMedals.Any())
+    {
 
-                @if (medal.StepsRemaining > 0)
-                {
-                    <p><strong>Steps Remaining:</strong> @medal.StepsRemaining</p>
-                }
-                else
-                {
-                    <p><strong>Medal Unlocked!</strong></p>
-                }
-            </div>
-        }
-    </div>
-}
-else
-{
-    <p>No medals have been awarded today.</p>
-}
+            <div class="medal-container">
+    @foreach (var medal in Model.AwardedMedals)
+    {
+        <div class="medal-card @(medal.Locked ? "locked" : "unlocked")">
+            <img src="@Url.Content("~/" + medal.MedalImage)" alt="@medal.MedalName" class="medal-image" />
+            <h3>@medal.MedalName</h3>
+            <p>@medal.MedalDescription</p>
+
+
+            @if (medal.Locked)
+            {
+                <div class="progress-info">
+                    <p><strong>Steps Remaining: </strong>@medal.StepsRemaining</p>
+                </div>
+                <p class="locked-message">This medal is locked! Complete @medal.StepsRemaining more steps to unlock it.</p>
+            }
+        </div>
+    }
+</div>
+
+    }
+    else
+    {
+        <p>No medals earned yet!</p>
+    }
 
