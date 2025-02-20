@@ -29,6 +29,7 @@ CREATE TABLE [WorkoutPlan] (
     [EndDate]               DATE,
     [Frequency]             NVARCHAR(50),
     [Goal]                  NVARCHAR(255),
+    [IsCompleted]           INT                 CHECK (IsCompleted IN (0, 1)),
     [DifficultyLevel]       NVARCHAR(20)        CHECK (DifficultyLevel IN ('Beginner', 'Intermediate', 'Advanced')),
     FOREIGN KEY (UserID) REFERENCES [User](UserID) ON DELETE CASCADE
 );
@@ -104,17 +105,20 @@ CREATE TABLE [MealFood] (
 );
 
 -- Biometric Data table
-CREATE TABLE [BiometricData] (
-    [BiometricID]       INT     IDENTITY(1,1) PRIMARY KEY,
-    [UserID]            INT,
-    [Date]              DATE,
-    [Steps]             INT,
-    [CaloriesBurned]    INT,
-    [HeartRate]         INT,
-    [SleepDuration]     INT,
-    [ActiveMinutes]     INT,
-    FOREIGN KEY (UserID) REFERENCES [User](UserID) ON DELETE CASCADE
+CREATE TABLE BiometricDatum (
+    BiometricID INT PRIMARY KEY IDENTITY(1,1),        -- Auto-increment primary key
+    UserID INT NULL,                                   -- Foreign key to User (nullable)
+    Date DATE NULL,                                    -- The date of the biometric data entry
+    Steps INT NULL,                                    -- Number of steps for the day
+    CaloriesBurned INT NULL,                           -- Number of calories burned
+    HeartRate INT NULL,                                -- User's heart rate
+    SleepDuration INT NULL,                            -- Duration of sleep in minutes
+    ActiveMinutes INT NULL,                            -- Duration of active minutes
+    LastUpdated DATETIME NULL,                         -- DateTime when the biometric data was last updated
+    
+    FOREIGN KEY (UserID) REFERENCES [User](UserID)    -- Foreign key reference to the User table
 );
+
 
 -- Gym table
 CREATE TABLE [Gym] (
@@ -166,4 +170,22 @@ CREATE TABLE [ChallengeUser] (
     PRIMARY KEY (ChallengeID, UserID),
     FOREIGN KEY (ChallengeID) REFERENCES FitnessChallenge(ChallengeID) ON DELETE CASCADE,
     FOREIGN KEY (UserID) REFERENCES [User](UserID) ON DELETE CASCADE
+);
+
+CREATE TABLE Medal (
+    MedalID INT PRIMARY KEY IDENTITY(1,1),         -- Auto-increment primary key
+    Name NVARCHAR(100) NOT NULL,                    -- Medal name (e.g., "5K Step Champion")
+    Description NVARCHAR(255) NULL,                 -- Optional description of the medal
+    StepThreshold INT NOT NULL,                     -- Steps required to earn the medal
+    Image NVARCHAR(255) NOT NULL                    -- Image URL for the medal
+);
+
+CREATE TABLE UserMedal (
+    UserMedalID INT PRIMARY KEY IDENTITY(1,1), -- Auto-increment primary key
+    UserID INT NOT NULL,                        -- Foreign key to User
+    MedalID INT NOT NULL,                       -- Foreign key to Medal
+    EarnedDate DATE NOT NULL,                   -- Date when the medal was earned
+
+    CONSTRAINT FK_UserMedal_User FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE,
+    CONSTRAINT FK_UserMedal_Medal FOREIGN KEY (MedalID) REFERENCES Medals(MedalID) ON DELETE CASCADE
 );

@@ -1,0 +1,41 @@
+@model GymBro_App.Models.DTOs.AwardMedal
+
+@{
+    ViewData["Title"] = "Awarded Medals";
+}
+
+
+<link rel="stylesheet" href="~/css/AwardedMedal.css" />
+
+<h1>@ViewData["Title"]</h1>
+
+
+    @if (Model.AwardedMedals != null && Model.AwardedMedals.Any())
+    {
+
+            <div class="medal-container">
+    @foreach (var medal in Model.AwardedMedals)
+    {
+        <div class="medal-card @(medal.Locked ? "locked" : "unlocked")">
+            <img src="@Url.Content("~/" + medal.MedalImage)" alt="@medal.MedalName" class="medal-image" />
+            <h3>@medal.MedalName</h3>
+            <p>@medal.MedalDescription</p>
+
+
+            @if (medal.Locked)
+            {
+                <div class="progress-info">
+                    <p><strong>Steps Remaining: </strong>@medal.StepsRemaining</p>
+                </div>
+                <p class="locked-message">This medal is locked! Complete @medal.StepsRemaining more steps to unlock it.</p>
+            }
+        </div>
+    }
+</div>
+
+    }
+    else
+    {
+        <p>No medals earned yet!</p>
+    }
+

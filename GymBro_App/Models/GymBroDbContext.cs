@@ -14,6 +14,8 @@ public partial class GymBroDbContext : DbContext
         : base(options)
     {
     }
+    public virtual DbSet<Medal> Medals { get; set; }
+    public virtual DbSet<UserMedal> UserMedals { get; set; }
 
     public virtual DbSet<BiometricDatum> BiometricData { get; set; }
 
@@ -36,7 +38,7 @@ public partial class GymBroDbContext : DbContext
     public virtual DbSet<WorkoutPlan> WorkoutPlans { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=GymBroConnection");
+        => optionsBuilder.UseSqlServer("Name=GymBroAzureConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -137,6 +139,29 @@ public partial class GymBroDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__MealPlan__UserID__339FAB6E");
         });
+
+        modelBuilder.Entity<Medal>(entity =>
+        {
+        entity.HasKey(e => e.MedalId).HasName("PK__Medal__A074AD0F12345678");
+        });
+
+        modelBuilder.Entity<UserMedal>(entity =>
+        {
+            entity.HasKey(e => e.UserMedalId).HasName("PK__UserMedal__B07CE715ABCDE");
+
+            entity.HasOne(um => um.User)
+                .WithMany(u => u.UserMedals)
+                .HasForeignKey(um => um.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_UserMedal_User");
+
+            entity.HasOne(um => um.Medal)
+                .WithMany(m => m.UserMedals)
+                .HasForeignKey(um => um.MedalId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_UserMedal_Medal");
+        });
+
 
         modelBuilder.Entity<User>(entity =>
         {
