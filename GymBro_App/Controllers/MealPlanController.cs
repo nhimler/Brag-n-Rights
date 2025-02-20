@@ -104,7 +104,7 @@ public class MealPlanController : Controller
     [HttpGet]
     public IActionResult CreateMeal()
     {
-        if (!(User.Identity?.IsAuthenticated ?? false))
+        if (User == null || User.Identity == null || !User.Identity.IsAuthenticated)
         {
             return RedirectToAction("Index");
         }
@@ -124,7 +124,7 @@ public class MealPlanController : Controller
         {
             return RedirectToAction("Index");
         }
-        return View(null);
+        return View("CreateMeal", null);
     }
 
     // TODO: Actually create user defined meals here
