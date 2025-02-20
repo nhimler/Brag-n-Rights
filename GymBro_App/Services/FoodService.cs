@@ -88,6 +88,6 @@ public class FoodService : IFoodService
                 BrandName = food.brand_name
             };
         }
-        return new FoodDTO();
+        return null;
     }
 }
