@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
+namespace Controller_Tests;
+
 [TestFixture]
 public class UserPageController_Test
 {

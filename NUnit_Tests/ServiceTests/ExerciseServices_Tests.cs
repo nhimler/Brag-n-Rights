@@ -11,7 +11,7 @@ using Moq;
 using Moq.Protected;
 using NUnit.Framework;
 
-namespace GymBro_App.Tests.Services
+namespace Service_Tests
 {
     [TestFixture]
     public class ExerciseServiceTests
