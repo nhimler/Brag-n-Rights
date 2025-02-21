@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymBro_App.Models;
 
+[Table("BiometricDatum")]
 public partial class BiometricDatum
 {
     [Key]
