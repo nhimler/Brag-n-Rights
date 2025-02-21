@@ -33,15 +33,20 @@
 
 
     <script>
-        document.getElementById("awardMedalsButton").addEventListener("click", async function () {
-            try {
-                const response = await fetch('/AwardMedal/AwardMedals', { method: 'POST' });
-                const data = await response.json();
-                alert(`Awarded Medals: ${JSON.stringify(data.awardedMedals)}`);
-            } catch (error) {
-                console.error("Error claiming medals:", error);
-            }
-        });
+        //Idk why is this here but I'm putting it in a try catch block
+        try{
+            document.getElementById("awardMedalsButton").addEventListener("click", async function () {
+                try {
+                    const response = await fetch('/AwardMedal/AwardMedals', { method: 'POST' });
+                    const data = await response.json();
+                    alert(`Awarded Medals: ${JSON.stringify(data.awardedMedals)}`);
+                } catch (error) {
+                    console.error("Error claiming medals:", error);
+                }
+            });
+        }catch {
+            console.log("awardMedalsButton not found, not on correct page");
+        }
     </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
