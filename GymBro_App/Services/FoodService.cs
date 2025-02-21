@@ -41,8 +41,8 @@ public class FoodService : IFoodService
     readonly string _clientID;
     readonly string _clientSecret;
 
-    private string _accessToken = "";
-    private DateTime _accessTokenExpiration;
+    private string? _accessToken { set; get; } = null;
+    public DateTime _accessTokenExpiration { private set; get; } = DateTime.MinValue;
 
     private const string ACCESS_TOKEN_REQUEST_URL = "https://oauth.fatsecret.com/connect/token";
     private const string FOOD_API_URL = "https://platform.fatsecret.com/rest/server.api";
@@ -57,10 +57,9 @@ public class FoodService : IFoodService
 
     public async Task GetNewAccessTokenAsync()
     {   
-        var client = new HttpClient();
         string credentials = $"{_clientID}:{_clientSecret}";
         var byteArray = Encoding.ASCII.GetBytes(credentials);
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
         var values = new Dictionary<string, string>
         {
@@ -68,7 +67,8 @@ public class FoodService : IFoodService
         { "grant_type", "client_credentials" },
         };
         var content = new FormUrlEncodedContent(values);
-        var response = await client.PostAsync("https://oauth.fatsecret.com/connect/token", content);
+        var response = await _httpClient.PostAsync("https://oauth.fatsecret.com/connect/token", content);
+        _httpClient.DefaultRequestHeaders.Authorization = null;
         if (response.IsSuccessStatusCode)
         {
             var token = await JsonSerializer.DeserializeAsync<AccessTokenResponse>(await response.Content.ReadAsStreamAsync());
@@ -103,7 +103,13 @@ public class FoodService : IFoodService
         
         if (response.IsSuccessStatusCode)
         {
-            var searchResults = await JsonSerializer.DeserializeAsync<FoodSearchResponse>(await response.Content.ReadAsStreamAsync());
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            // var responseStream = await response.Content.ReadAsStreamAsync();
+            var responseStream = await response.Content.ReadAsStringAsync();
+            var searchResults = await JsonSerializer.DeserializeAsync<FoodSearchResponse>(await response.Content.ReadAsStreamAsync(), options);
             searchResults = searchResults ?? new FoodSearchResponse();
             return searchResults.foods.food.Select(f => new FoodDTO
             {
@@ -115,7 +121,7 @@ public class FoodService : IFoodService
         return new List<FoodDTO>();
     }
 
-    public async Task<FoodDTO> GetFoodAsync(string id)
+    public async Task<FoodDTO?> GetFoodAsync(string id)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, FOOD_API_URL);
         request.Content = new FormUrlEncodedContent(new[]

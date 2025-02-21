@@ -8,7 +8,7 @@
 <form method="post" asp-action="CreateMeal">
     <button class="btn btn-primary" type="submit">Create</button>
     <h4>Meal x</h4>
-    <input asp-for="MealId" value="1" hidden readonly/>
+    <input name="MealId" value="1" hidden readonly/>
     <h4>Selected Foods</h4>
     <table class="table table-bordered">
         <tbody id="selectedFood"></tbody>
