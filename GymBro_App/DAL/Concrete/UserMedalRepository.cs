@@ -25,6 +25,15 @@ namespace GymBro_App.DAL.Concrete
                                 .ToListAsync();
         }
 
+        public async Task AddBatchUserMedalsAsync(List<UserMedal> userMedals)
+        {
+            if (userMedals == null || !userMedals.Any()) return;
+
+            // Assuming _context is your database context (EF Core)
+            await _context.UserMedals.AddRangeAsync(userMedals);  // Bulk insert medals
+            await _context.SaveChangesAsync();  // Commit to the database
+        }
+
         public async Task AddUserMedalAsync(UserMedal userMedal)
         {
             // Add the new UserMedal to the DbSet

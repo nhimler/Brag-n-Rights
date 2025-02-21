@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
-namespace ExerciseDbAPIControllerTests
+namespace Controller_Tests
 {
     public class ExerciseDbAPIController_Tests
     {

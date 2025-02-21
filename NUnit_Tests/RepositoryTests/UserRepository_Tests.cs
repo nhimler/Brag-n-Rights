@@ -4,6 +4,8 @@ using GymBro_App.DAL.Abstract;
 using GymBro_App.DAL.Concrete;
 using GymBro_App.Models;
 
+namespace Repository_Tests;
+
 public class UserRepository_Tests
 {
     private Mock<GymBroDbContext> _mockContext;
