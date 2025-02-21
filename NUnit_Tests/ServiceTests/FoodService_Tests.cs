@@ -41,8 +41,6 @@ public class FoodService_Tests
             Content = new StringContent(jsonResponse)
         };
 
-
-
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req =>
@@ -57,6 +55,7 @@ public class FoodService_Tests
             .Protected()
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req =>
                 req.RequestUri.ToString() == FOOD_API_URL), ItExpr.IsAny<CancellationToken>())
+
             .ReturnsAsync(responseMessage);
 
         // Act
