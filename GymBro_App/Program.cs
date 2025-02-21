@@ -2,10 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using GymBro_App.Models;
 using GymBro_App.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
-using System.Net.Http.Headers;
 using GymBro_App.Services;
 using GymBro_App.DAL.Abstract;
 using GymBro_App.DAL.Concrete;
+using System.Diagnostics;
 
 namespace GymBro_App;
 
@@ -47,18 +47,20 @@ public class Program
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                         .AddEntityFrameworkStores<AuthGymBroDb>();
 
-        string foodApiUrl = "https://platform.fatsecret.com/rest/server.api";
-        string foodApiKey = builder.Configuration["FoodApiKey"] ?? "";
+        string? foodApiClientId = builder.Configuration["FoodApiClientId"];
+        string? foodApiClientSecret = builder.Configuration["FoodApiClientSecret"];
+
+        if(foodApiClientId == null || foodApiClientSecret == null)
+        {
+            Console.WriteLine("Food API Client ID and Secret must be set in the user secrets.");
+        }
 
         string exerciseDbAPIUrl = "https://exercisedb.p.rapidapi.com";
-        string exerciseDbAPIKey = builder.Configuration["ExerciseDbApiKey"];
+        string exerciseDbAPIKey = builder.Configuration["ExerciseDbApiKey"] ?? "";
 
         builder.Services.AddHttpClient<IFoodService, FoodService>((client, services) =>
         {
-            client.BaseAddress = new Uri(foodApiUrl);
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", foodApiKey);
-            return new FoodService(client, services.GetRequiredService<ILogger<FoodService>>());
+            return new FoodService(client, services.GetRequiredService<ILogger<FoodService>>(), foodApiClientId, foodApiClientSecret);
         });
 
         builder.Services.AddHttpClient<IExerciseService, ExerciseService>((client, services) =>
