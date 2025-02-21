@@ -5,9 +5,8 @@ function getPositionError(err) {
 }
 
 async function putUserPosition(position) {
-    console.log("Position: ", position);
     const coordinates = position.coords;
-    console.log(`Latitude: ${coordinates.latitude.toFixed(6)}, Longitude: ${coordinates.longitude.toFixed(6)}`);
+    console.log(`${coordinates.latitude.toFixed(6)}, ${coordinates.longitude.toFixed(6)}`);
 
     const user = {
         latitude : coordinates.latitude,
@@ -23,11 +22,7 @@ async function putUserPosition(position) {
         body: JSON.stringify(user)
     });
 
-    console.log('Response: ', response);
-    if (response.ok) {
-        console.log('User location updated successfully.');
-    }
-    else {
+    if (!response.ok) {
         console.log('Something went wrong when updating user location.');
     }
 }
@@ -39,4 +34,3 @@ function getUserPosition() {
         console.log('navigator.geolocation not found.');
     }
 }
-

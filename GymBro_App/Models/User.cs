@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GymBro_App.Models;
 
 [Table("User")]
-[Index("Email", Name = "UQ__User__A9D105344075B114", IsUnique = true)]
+[Index("Email", Name = "UQ__User__A9D10534601AE3A4", IsUnique = true)]
 public partial class User
 {
     [Key]
@@ -64,10 +64,10 @@ public partial class User
     public string? Location { get; set; }
 
     [Column(TypeName = "decimal(9, 6)")]
-    public decimal? Longitude { get; set; }
+    public decimal? Latitude { get; set; }
 
     [Column(TypeName = "decimal(9, 6)")]
-    public decimal? Latitude { get; set; }
+    public decimal? Longitude { get; set; }
 
     [InverseProperty("User")]
     public virtual ICollection<BiometricDatum> BiometricData { get; set; } = new List<BiometricDatum>();

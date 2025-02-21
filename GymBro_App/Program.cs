@@ -22,15 +22,13 @@ public class Program
         // This works with user secrets. 
         // When storing the connection string in appsettings, instead use builder.GetConnectionString("GymBroConnection");
         var connectionString = builder.Configuration.GetConnectionString("GymBroAzureConnection");
-        // Console.WriteLine(connectionString);
-        // var connectionPassword = builder.Configuration["GymBroPassword"];
-
-        // var connectionStringWithPassword = $"{connectionString};Password={connectionPassword}";
 
         builder.Services.AddDbContext<GymBroDbContext>(options => options
             .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
             .UseSqlServer(connectionString));
 
+        // Add repository scopes for controllers below:
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
         builder.Services.AddScoped<IFoodRepository, FoodRepository>();
         builder.Services.AddScoped<IMealRepository, MealRepository>();
@@ -90,10 +88,6 @@ public class Program
             options.Password.RequiredLength = 10;
             options.Password.RequiredUniqueChars = 0;
         });
-
-        // Add the dependency injections for controllers below:
-        // Register the IUserRepository service with UserRepository
-        builder.Services.AddScoped<IUserRepository, UserRepository>();
 
         var app = builder.Build();
 
