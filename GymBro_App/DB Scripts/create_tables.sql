@@ -17,7 +17,9 @@ CREATE TABLE [User] (
     [LastLogin]             DATETIME,
     [ProfilePicture]        VARBINARY(MAX),
     [PreferredWorkoutTime]  NVARCHAR(20)    CHECK (PreferredWorkoutTime IN ('Morning', 'Afternoon', 'Evening')),
-    [Location]              NVARCHAR(255)
+    [Location]              NVARCHAR(255),
+    [Latitude]              DECIMAL(9,6),
+    [Longitude]             DECIMAL(9,6)
 );
 
 -- Workout Plan table

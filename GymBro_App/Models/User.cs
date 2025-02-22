@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GymBro_App.Models;
 
 [Table("User")]
-[Index("Email", Name = "UQ__User__A9D105343E4A70F4", IsUnique = true)]
+[Index("Email", Name = "UQ__User__A9D10534601AE3A4", IsUnique = true)]
 public partial class User
 {
     [Key]
@@ -63,6 +63,12 @@ public partial class User
     [StringLength(255)]
     public string? Location { get; set; }
 
+    [Column(TypeName = "decimal(9, 6)")]
+    public decimal? Latitude { get; set; }
+
+    [Column(TypeName = "decimal(9, 6)")]
+    public decimal? Longitude { get; set; }
+
     [InverseProperty("User")]
     public virtual ICollection<BiometricDatum> BiometricData { get; set; } = new List<BiometricDatum>();
 
@@ -73,15 +79,14 @@ public partial class User
     public virtual ICollection<MealPlan> MealPlans { get; set; } = new List<MealPlan>();
 
     [InverseProperty("User")]
+    public virtual ICollection<UserMedal> UserMedals { get; set; } = new List<UserMedal>();
+
+    [InverseProperty("User")]
     public virtual ICollection<WorkoutPlan> WorkoutPlans { get; set; } = new List<WorkoutPlan>();
 
     [ForeignKey("UserId")]
     [InverseProperty("Users")]
     public virtual ICollection<FitnessChallenge> Challenges { get; set; } = new List<FitnessChallenge>();
-
-    [InverseProperty("User")]
-    public virtual ICollection<UserMedal> UserMedals { get; set; } = new List<UserMedal>();
-
 
     [ForeignKey("UserId")]
     [InverseProperty("Users")]
