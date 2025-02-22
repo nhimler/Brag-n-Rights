@@ -3,87 +3,136 @@ using GymBro_App.DAL.Abstract;
 using GymBro_App.Controllers;
 using GymBro_App.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace Controller_Tests;
 
 [TestFixture]
-    public class WorkoutsController_Tests
+public class WorkoutsController_Tests
+{
+    private Mock<IWorkoutPlanRepository> _mockRepo;
+    private WorkoutsController _controller;
+    private Mock<UserManager<IdentityUser>> _mockUserManager; 
+    private Mock<ILogger<WorkoutsController>> _mockLogger;
+    private Mock<IUserRepository> _mockUserRepository;
+
+    [SetUp]
+    public void SetUp()
     {
-        private Mock<IWorkoutPlanRepository> _mockRepo;
-        private WorkoutsController _controller;
-
-        [SetUp]
-        public void SetUp()
+        _mockRepo = new Mock<IWorkoutPlanRepository>();
+        _mockUserManager = new Mock<UserManager<IdentityUser>>(
+            Mock.Of<IUserStore<IdentityUser>>(), null, null, null, null, null, null, null, null);
+        _mockLogger = new Mock<ILogger<WorkoutsController>>();
+        _mockUserRepository = new Mock<IUserRepository>();
+        _controller = new WorkoutsController(
+            _mockRepo.Object,
+            _mockLogger.Object,
+            _mockUserManager.Object,
+            _mockUserRepository.Object);
+        
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
-            _mockRepo = new Mock<IWorkoutPlanRepository>();
-            _controller = new WorkoutsController(_mockRepo.Object);
-        }
-
-        [Test]
-        public void Index_ReturnsViewResult_WithTableOfWorkoutPlans()
+            new Claim(ClaimTypes.Name, "testuser"),
+            new Claim(ClaimTypes.NameIdentifier, "1"),
+            new Claim(ClaimTypes.Role, "User")
+        }, "mock"));
+        var httpContext = new DefaultHttpContext { User = user };
+        _controller.ControllerContext = new ControllerContext
         {
-            // Arrange
-            var workoutPlans = new List<WorkoutPlan> { new WorkoutPlan(), new WorkoutPlan() };
-            _mockRepo.Setup(repo => repo.GetAll()).Returns(workoutPlans.AsQueryable());
+            HttpContext = httpContext
+        };
+    }
 
-            // Act
-            var result = _controller.Index();
+    [Test]
+    public void Index_ReturnsViewResult_WithTableOfWorkoutPlans()
+    {
+        // Arrange
+        var workoutPlans = new List<WorkoutPlan> { new WorkoutPlan(), new WorkoutPlan() };
+        _mockRepo.Setup(repo => repo.GetAll()).Returns(workoutPlans.AsQueryable());
 
-            // Assert
-            var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
-            Assert.IsInstanceOf<List<WorkoutPlan>>(viewResult.Model);
-            Assert.That((List<WorkoutPlan>)viewResult.Model, Has.Count.EqualTo(2));
-        }
+        // Act
+        var result = _controller.Index();
 
-        [Test]
-        public void WorkoutCreationPage_ReturnsViewResult()
+        // Assert
+        var viewResult = result as ViewResult;
+        Assert.IsNotNull(viewResult);
+        Assert.IsInstanceOf<List<WorkoutPlan>>(viewResult.Model);
+        Assert.That((List<WorkoutPlan>)viewResult.Model, Has.Count.EqualTo(2));
+    }
+
+    [Test]
+    public void Create_ValidModel_RedirectsToIndex()
+    {
+        // Arrange
+        var workoutPlan = new WorkoutPlan();
+        _mockRepo.Setup(repo => repo.Add(It.IsAny<WorkoutPlan>()));
+
+        // Act
+        var result = _controller.Create(workoutPlan);
+
+        // Assert
+        var redirectToActionResult = result as RedirectToActionResult;
+        Assert.IsNotNull(redirectToActionResult);
+        Assert.That(redirectToActionResult.ActionName, Is.EqualTo("Index"));
+    }
+
+    [Test]
+    public void Create_InvalidModel_ReturnsViewResult()
+    {
+        // Arrange
+        var workoutPlan = new WorkoutPlan();
+        _controller.ModelState.AddModelError("Name", "Required");
+
+        // Act
+        var result = _controller.Create(workoutPlan);
+
+        // Assert
+        var viewResult = result as ViewResult;
+        Assert.IsNotNull(viewResult);
+        Assert.That(viewResult.Model, Is.EqualTo(workoutPlan));
+    }
+
+    [Test]
+    public void WorkoutCreationPage_UserNotAuthenticated_ReturnsView_RedirectsToIndex()
+    {
+        //Arrange
+        _controller.ControllerContext = new ControllerContext
         {
-            // Act
-            var result = _controller.WorkoutCreationPage();
+            HttpContext = new DefaultHttpContext {User = new ClaimsPrincipal()}
+        };
 
-            // Assert
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
+        //Act
+        var result = _controller.WorkoutCreationPage();
 
-        [Test]
-        public void Create_ValidModel_RedirectsToIndex()
-        {
-            // Arrange
-            var workoutPlan = new WorkoutPlan();
-            _mockRepo.Setup(repo => repo.Add(It.IsAny<WorkoutPlan>()));
+        //Assert
+        var redirectToActionResult = result as RedirectToActionResult;
+        Assert.IsNotNull(redirectToActionResult);
+        Assert.That(redirectToActionResult.ActionName, Is.EqualTo("Index"));
+    }
 
-            // Act
-            var result = _controller.Create(workoutPlan);
+    [Test]
+    public void WorkoutCreationPage_UserAUthenticated_ReturnsView()
+    {
+        //Arrange
+        var mockUser = new IdentityUser {Id = "1"};
+        _mockUserManager.Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(mockUser);
+        _mockUserRepository.Setup(repo => repo.GetIdFromIdentityId("1")).Returns(1);
 
-            // Assert
-            var redirectToActionResult = result as RedirectToActionResult;
-            Assert.IsNotNull(redirectToActionResult);
-            Assert.That(redirectToActionResult.ActionName, Is.EqualTo("Index"));
-        }
+        //Act
+        var result = _controller.WorkoutCreationPage();
 
-        [Test]
-        public void Create_InvalidModel_ReturnsViewResult()
-        {
-            // Arrange
-            var workoutPlan = new WorkoutPlan();
-            _controller.ModelState.AddModelError("Name", "Required");
+        //Assert
+        Assert.IsInstanceOf<ViewResult>(result);
+    }
 
-            // Act
-            var result = _controller.Create(workoutPlan);
-
-            // Assert
-            var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
-            Assert.That(viewResult.Model, Is.EqualTo(workoutPlan));
-        }
-
-
-        [TearDown]
-        public void TearDown()
-        {
-            _mockRepo = null;
-            _controller.Dispose();
-            _controller = null;
-        }
+    [TearDown]
+    public void TearDown()
+    {
+        _mockRepo = null;
+        _controller.Dispose();
+        _controller = null;
+    }
 }
