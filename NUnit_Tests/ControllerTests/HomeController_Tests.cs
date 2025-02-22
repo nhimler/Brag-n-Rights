@@ -1,9 +1,10 @@
-
 using Microsoft.AspNetCore.Mvc.Testing;
 using GymBro_App;
 
+namespace Controller_Tests;
+
 [TestFixture]
-public class MealPlanController_Tests
+public class HomeController_Tests
 {
     private WebApplicationFactory<Program> _factory;
 
@@ -14,18 +15,18 @@ public class MealPlanController_Tests
     }
 
     [Test]
-    public async Task Test_FoodSearch_HasSearchBar()
+    public async Task Test_IndexPage_ContainsWelcomeText()
     {
         // Arrange
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/MealPlan/AddFood");
+        var response = await client.GetAsync("/");
         var html = await response.Content.ReadAsStringAsync();
 
         // Assert
-        Assert.That(html, Does.Contain("Search"));
-        Assert.That(html, Does.Contain("<input"));
+        Assert.That(html, Does.Contain("Welcome"));
+        Assert.That(html, Does.Contain("src=\"GymBro.png\""));
     }
 
     [TearDown]
