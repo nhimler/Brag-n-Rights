@@ -34,6 +34,16 @@ namespace GymBro_App.Controllers
         [HttpGet]
         public IActionResult WorkoutCreationPage()
         {
+            if (!User.Identity?.IsAuthenticated ?? false)
+            {
+                return RedirectToAction("Index");
+            }
+            var user = _userManager.GetUserAsync(User).Result;
+            if (user == null)
+            {
+                return RedirectToAction("Index");
+            }
+            int userId = _userRepository.GetIdFromIdentityId(user.Id);
             return View();
         }
 
