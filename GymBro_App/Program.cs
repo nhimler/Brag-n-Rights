@@ -2,10 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using GymBro_App.Models;
 using GymBro_App.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
-using System.Net.Http.Headers;
 using GymBro_App.Services;
 using GymBro_App.DAL.Abstract;
 using GymBro_App.DAL.Concrete;
+using System.Diagnostics;
 
 namespace GymBro_App;
 
@@ -22,15 +22,13 @@ public class Program
         // This works with user secrets. 
         // When storing the connection string in appsettings, instead use builder.GetConnectionString("GymBroConnection");
         var connectionString = builder.Configuration.GetConnectionString("GymBroAzureConnection");
-        // Console.WriteLine(connectionString);
-        // var connectionPassword = builder.Configuration["GymBroPassword"];
-
-        // var connectionStringWithPassword = $"{connectionString};Password={connectionPassword}";
 
         builder.Services.AddDbContext<GymBroDbContext>(options => options
             .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
             .UseSqlServer(connectionString));
 
+        // Add repository scopes for controllers below:
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
         builder.Services.AddScoped<IFoodRepository, FoodRepository>();
         builder.Services.AddScoped<IMealRepository, MealRepository>();
@@ -49,18 +47,20 @@ public class Program
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                         .AddEntityFrameworkStores<AuthGymBroDb>();
 
-        string foodApiUrl = "https://platform.fatsecret.com/rest/server.api";
-        string foodApiKey = builder.Configuration["FoodApiKey"] ?? "";
+        string? foodApiClientId = builder.Configuration["FoodApiClientId"];
+        string? foodApiClientSecret = builder.Configuration["FoodApiClientSecret"];
+
+        if(foodApiClientId == null || foodApiClientSecret == null)
+        {
+            Console.WriteLine("Food API Client ID and Secret must be set in the user secrets.");
+        }
 
         string exerciseDbAPIUrl = "https://exercisedb.p.rapidapi.com";
-        string exerciseDbAPIKey = builder.Configuration["ExerciseDbApiKey"];
+        string exerciseDbAPIKey = builder.Configuration["ExerciseDbApiKey"] ?? "";
 
         builder.Services.AddHttpClient<IFoodService, FoodService>((client, services) =>
         {
-            client.BaseAddress = new Uri(foodApiUrl);
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", foodApiKey);
-            return new FoodService(client, services.GetRequiredService<ILogger<FoodService>>());
+            return new FoodService(client, services.GetRequiredService<ILogger<FoodService>>(), foodApiClientId, foodApiClientSecret);
         });
 
         builder.Services.AddHttpClient<IExerciseService, ExerciseService>((client, services) =>
@@ -90,10 +90,6 @@ public class Program
             options.Password.RequiredLength = 10;
             options.Password.RequiredUniqueChars = 0;
         });
-
-        // Add the dependency injections for controllers below:
-        // Register the IUserRepository service with UserRepository
-        builder.Services.AddScoped<IUserRepository, UserRepository>();
 
         var app = builder.Build();
 

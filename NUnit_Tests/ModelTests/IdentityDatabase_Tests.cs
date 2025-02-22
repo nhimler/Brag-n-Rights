@@ -1,7 +1,7 @@
 using GymBro_App.Areas.Identity.Pages.Account;
 using System.ComponentModel.DataAnnotations;
 
-namespace NUnit_Tests;
+namespace Model_Tests;
 
 public class IdentityDatabase_Tests
 {

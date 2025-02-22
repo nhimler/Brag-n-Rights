@@ -7,6 +7,8 @@ using GymBro_App.Models;
 using GymBro_App.Models.DTOs;
 using GymBro_App.DAL.Abstract;
 
+namespace Service_Tests;
+
 [TestFixture]
 public class AwardMedalServiceTests
 {
