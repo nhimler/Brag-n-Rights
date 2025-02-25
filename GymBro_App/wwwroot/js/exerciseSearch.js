@@ -88,38 +88,3 @@ async function displayExerciseSearchResults(result) {
     resultList.appendChild(table);
 }
 
-function addExerciseToSelectedList(exercise) {
-    let selectedWorkouts = document.getElementById("selectedWorkouts");
-    if (!selectedWorkouts) {
-        console.error("Selected workouts element not found");
-        return;
-    }
-
-    let row = document.createElement("tr");
-
-    let nameCell = document.createElement("td");
-    nameCell.textContent = exercise.name;
-    row.appendChild(nameCell);
-
-    let bodyPartCell = document.createElement("td");
-    bodyPartCell.textContent = exercise.bodyPart;
-    row.appendChild(bodyPartCell);
-
-    let equipmentCell = document.createElement("td");
-    equipmentCell.textContent = exercise.equipment;
-    row.appendChild(equipmentCell);
-
-    let targetCell = document.createElement("td");
-    targetCell.textContent = exercise.target;
-    row.appendChild(targetCell);
-
-    let gifCell = document.createElement("td");
-    let gifLink = document.createElement("a");
-    gifLink.href = exercise.gifUrl;
-    gifLink.textContent = "View GIF";
-    gifLink.target = "_blank";
-    gifCell.appendChild(gifLink);
-    row.appendChild(gifCell);
-
-    selectedWorkouts.appendChild(row);
-}
