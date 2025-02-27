@@ -118,7 +118,20 @@ function addExerciseToCart(exercise) {
     removeButton.addEventListener("click", function() {
          exerciseEntry.remove();
     });
-    
+
     exerciseEntry.appendChild(removeButton);
     exerciseCart.appendChild(exerciseEntry);
+
+    let addExerciseToCartButton = document.getElementById("addExerciseToCartButton");
+    if (!addExerciseToCartButton) {
+        addExerciseToCartButton = document.createElement("button");
+        addExerciseToCartButton.id = "addExerciseToCartButton";
+        addExerciseToCartButton.textContent = "Add Exercises to Workout";
+        addExerciseToCartButton.className = "btn btn-success";
+        addExerciseToCartButton.style.marginTop = "12px";
+        addExerciseToCartButton.addEventListener("click", function() {
+            window.location.href = "/Workouts";
+        });
+    }
+    exerciseCart.appendChild(addExerciseToCartButton);
 }
