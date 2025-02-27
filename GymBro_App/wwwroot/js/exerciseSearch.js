@@ -31,7 +31,13 @@ async function displayExerciseSearchResults(result) {
     }
     console.log("✅ Found #exerciseSearchResults in the DOM.");
 
-    let selectedWorkouts = document.getElementById("selectedWorkouts");
+        let selectedWorkouts = document.getElementById("selectedWorkouts");
+    if (!selectedWorkouts) {
+        selectedWorkouts = document.createElement("div");
+        selectedWorkouts.id = "selectedWorkouts";
+        document.body.appendChild(selectedWorkouts);
+    }
+    
     resultList.innerHTML = "";
 
     let heading = document.createElement("h2");
@@ -74,9 +80,11 @@ async function displayExerciseSearchResults(result) {
         addButton.className = "btn btn-primary";
         addButton.textContent = "Add";
         addButton.type = "button";
-        addButton.addEventListener("click", function(){
+        addButton.addEventListener("click", function(e){
             console.log("🆕 Add button clicked for:", exercise.name);
-            addExerciseToSelectedList(exercise);
+            let row = e.target.closest("tr");
+            if(row) row.remove();
+            addExerciseToCart(exercise);
         });
         addCell.appendChild(addButton);
         row.appendChild(addCell);
@@ -88,3 +96,29 @@ async function displayExerciseSearchResults(result) {
     resultList.appendChild(table);
 }
 
+function addExerciseToCart(exercise) {
+    let exerciseCart = document.getElementById("exerciseCart");
+    if (!exerciseCart) {
+        console.error("Exercise cart container not found.");
+        return;
+    }
+    
+    let exerciseEntry = document.createElement("div");
+    exerciseEntry.className = "selected-exercise entry";
+    exerciseEntry.style.border = "1px solid #ccc";
+    exerciseEntry.style.padding = "8px";
+    exerciseEntry.style.marginBottom = "4px";
+
+    exerciseEntry.innerHTML = `<strong>${exercise.name}</strong>`;
+    
+    let removeButton = document.createElement("button");
+    removeButton.innerText = "Remove";
+    removeButton.className = "btn btn-danger btn-sm";
+    removeButton.style.marginLeft = "8px";
+    removeButton.addEventListener("click", function() {
+         exerciseEntry.remove();
+    });
+    
+    exerciseEntry.appendChild(removeButton);
+    exerciseCart.appendChild(exerciseEntry);
+}
