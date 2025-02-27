@@ -122,6 +122,7 @@ function addExerciseToCart(exercise) {
     exerciseEntry.appendChild(removeButton);
     exerciseCart.appendChild(exerciseEntry);
 
+    // In a different user story, this button will be used to add the selected exercises to a workout in our db
     let addExerciseToCartButton = document.getElementById("addExerciseToCartButton");
     if (!addExerciseToCartButton) {
         addExerciseToCartButton = document.createElement("button");
