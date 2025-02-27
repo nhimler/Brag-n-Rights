@@ -19,13 +19,11 @@ namespace GymBro_App.Services
         }
 
         // Get the Google Maps API Key from the HttpClient. This is the best way I could think of to hide the API Key.
-        public string GetGoogleMapsApiKey()
+        public async Task<string> GetGoogleMapsApiKey()
         {
             string apiKey = _httpClient.DefaultRequestHeaders.GetValues("X-goog-api-key").FirstOrDefault() ?? "";
             return apiKey;
         }
-
-        
     }   
 
 }

@@ -81,8 +81,11 @@ public class Program
         builder.Services.AddHttpClient<IMapService, MapService>((client, services) =>
         {
             client.BaseAddress = new Uri(googleMapsApiUrl);
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-            client.DefaultRequestHeaders.Add("Content-Type", "application/json; charset=utf-8");
+
+            // Removed for now. Breaks when we're just grabbing the API key
+            // client.DefaultRequestHeaders.Add("Accept", "application/json");
+            // client.DefaultRequestHeaders.Add("Content-Type", "application/json; charset=utf-8");
+            
             client.DefaultRequestHeaders.Add("X-goog-api-key", googleMapsApiKey);
             return new MapService(client, services.GetRequiredService<ILogger<MapService>>());
         });

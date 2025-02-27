@@ -4,6 +4,6 @@ namespace GymBro_App.Services
 {
     public interface IMapService
     {
-        string GetGoogleMapsApiKey();
+        Task<string> GetGoogleMapsApiKey();
     }
 }
