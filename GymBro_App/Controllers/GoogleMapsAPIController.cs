@@ -21,6 +21,6 @@ public class GoogleMapsAPIController : ControllerBase
     {
         var apiKey = await _mapService.GetGoogleMapsApiKey();
         _logger.LogInformation("Google Maps API Key: {apiKey}", apiKey);
-        return Ok(apiKey);
+        return Ok(new { apiKey });
     }
 }

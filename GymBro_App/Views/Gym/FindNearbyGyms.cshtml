@@ -2,6 +2,21 @@
     ViewData["Title"] = "Find Nearby Gyms";
 }
 
-@* Google's Embed API requires us to include our key: https://developers.google.com/maps/documentation/embed/get-api-key#add_key
-This cannot be hidden for the "Embed" API*@
+<div class="container">
+    <iframe
+        id="nearby-gyms-map"
+        width="800"
+        height="600"
+        frameborder="0" style="border:0"
+        referrerpolicy="no-referrer-when-downgrade"
+        src=""
+        allowfullscreen
+        >
+    </iframe>
+</div>
 
+<button class="btn btn-primary" onclick="navigator.geolocation.getCurrentPosition(embedMapAtUserPosition, getPositionError)">Set My Location</button>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/userLocation.js"></script>
+}
