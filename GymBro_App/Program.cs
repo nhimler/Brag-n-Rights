@@ -3,6 +3,7 @@ using GymBro_App.Models;
 using GymBro_App.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using GymBro_App.Services;
+using GymBro_App.Helper; // Assuming EncryptionHelper is in the Helpers namespace
 using GymBro_App.DAL.Abstract;
 using GymBro_App.DAL.Concrete;
 using System.Diagnostics;
@@ -39,7 +40,9 @@ public class Program
         builder.Services.AddScoped<IUserMedalRepository, UserMedalRepository>();
         builder.Services.AddScoped<IBiometricDatumRepository, BiometricDatumRepository>();
         builder.Services.AddScoped<IOAuthService, OAuthService>();  
-        builder.Services.AddHttpContextAccessor(); // Add the HttpContextAccessor to the DI container
+        builder.Services.AddHttpContextAccessor(); 
+        builder.Services.AddScoped<EncryptionHelper>();
+
         
 
         // Configure the authentication/Identity database connection

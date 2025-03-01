@@ -5,6 +5,7 @@ using System.Text.Json;
 using GymBro_App.Models;
 using GymBro_App.DAL.Abstract;
 using Microsoft.EntityFrameworkCore;
+using GymBro_App.Helper;
 
 namespace GymBro_App.Services
 {
@@ -15,8 +16,11 @@ namespace GymBro_App.Services
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserRepository _userRepository;
     private readonly GymBroDbContext _context;
+    private readonly EncryptionHelper _encryptionHelper;
 
-    public OAuthService(IHttpClientFactory httpClientFactory, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, GymBroDbContext context)
+    public OAuthService(IHttpClientFactory httpClientFactory, IConfiguration configuration
+    , IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, GymBroDbContext context,
+    EncryptionHelper encryptionHelper)
     {
         _context = context;
     
@@ -24,6 +28,7 @@ namespace GymBro_App.Services
         _configuration = configuration;
         _httpContextAccessor = httpContextAccessor;
         _userRepository = userRepository;
+        _encryptionHelper = encryptionHelper;
     }
 
     public async Task ExchangeCodeForToken(string identityId, string code)
@@ -82,6 +87,9 @@ namespace GymBro_App.Services
 
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.IdentityUserId == identityId);
 
+                var encryptedAccessToken = _encryptionHelper.EncryptToken(accessToken);
+                var encryptedRefreshToken = _encryptionHelper.EncryptToken(refreshToken);
+                
 
                 // Check if a token already exists for this user and update it if necessary
                 var existingToken = await _context.Tokens.FirstOrDefaultAsync(t => t.UserId == user.UserId);
@@ -89,8 +97,8 @@ namespace GymBro_App.Services
                 if (existingToken != null)
                 {
                     // Update the existing token with new values
-                    existingToken.AccessToken = accessToken;
-                    existingToken.RefreshToken = refreshToken;
+                    existingToken.AccessToken = encryptedAccessToken;
+                    existingToken.RefreshToken = encryptedRefreshToken;
                     existingToken.ExpirationTime = expirationTime;
                     existingToken.Scope = scope;
                     existingToken.TokenType = tokenType;
@@ -102,8 +110,8 @@ namespace GymBro_App.Services
                     var newToken = new TokenEntity
                     {
                         UserId = user.UserId,
-                        AccessToken = accessToken,
-                        RefreshToken = refreshToken,
+                        AccessToken = encryptedAccessToken,
+                        RefreshToken = encryptedRefreshToken,
                         ExpirationTime = expirationTime,
                         Scope = scope,
                         TokenType = tokenType
