@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;  // For [Authorize]
 using System.Security.Claims;  // Add this namespace for ClaimsPrincipal and ClaimTypes
-using GymBro_App.Models.DTOs;
 using GymBro_App.Services;
-using System.Threading.Tasks;
 
 namespace GymBro_App.Controllers
 {
