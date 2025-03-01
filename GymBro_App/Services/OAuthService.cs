@@ -6,6 +6,7 @@ using GymBro_App.Models;
 using GymBro_App.DAL.Abstract;
 using Microsoft.EntityFrameworkCore;
 using GymBro_App.Helper;
+using Newtonsoft.Json;
 
 namespace GymBro_App.Services
 {
@@ -193,6 +194,140 @@ public class OAuthService : IOAuthService
                                 $"&redirect_uri={Uri.EscapeDataString(redirectUri)}";
 
             return authorizationUrl;
+        }
+
+        public async Task<string> GetAccessToken(string identityId)
+        {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.IdentityUserId == identityId);
+                if (user == null)
+                {
+                    throw new InvalidOperationException("User not found.");
+                }
+
+                var token = await _context.Tokens.FirstOrDefaultAsync(t => t.UserId == user.UserId);
+                if (token == null)
+                {
+                    throw new InvalidOperationException("Token not found.");
+                }
+
+                // Check if the token is expired
+                if (token.ExpirationTime < DateTime.Now)
+                {
+                    // Token is expired, refresh it
+                    return await RefreshAccessToken(token.RefreshToken);
+                }
+
+                var decryptedAccessToken = _encryptionHelper.DecryptToken(token.AccessToken);
+
+                return decryptedAccessToken; // Return the current access token if it's not expired
+        }
+
+        private async Task<string> RefreshAccessToken(string refreshToken)
+        {
+            var clientId = _configuration["OAuth:ClientId"];
+            var clientSecret = _configuration["OAuth:ClientSecret"];
+            var tokenEndpoint = _configuration["OAuth:TokenEndpoint"];
+            var DecryptedRefreshToken = _encryptionHelper.DecryptToken(refreshToken);
+
+
+            using (var client = _httpClientFactory.CreateClient())
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, tokenEndpoint)
+                {
+                    Content = new FormUrlEncodedContent(new Dictionary<string, string>
+                    {
+                        {"client_id", clientId},
+                        {"grant_type", "refresh_token"},
+                        {"refresh_token", DecryptedRefreshToken}
+                    })
+                };
+
+                // Set the Authorization header using Basic authentication
+                var basicAuth = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{clientId}:{clientSecret}"));
+                request.Headers.Authorization = new AuthenticationHeaderValue("Basic", basicAuth);
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+                // Send the request and get the response
+                var response = await client.SendAsync(request);
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Error refreshing token: {responseContent}");
+                }
+
+                // Parse the response JSON
+                var json = JsonDocument.Parse(responseContent).RootElement;
+                var newAccessToken = json.GetProperty("access_token").GetString();
+                var newRefreshToken = json.GetProperty("refresh_token").GetString();
+                var expiresIn = json.GetProperty("expires_in").GetInt32();
+
+                // Calculate the expiration time
+                var expirationTime = DateTime.Now.AddSeconds(expiresIn);
+
+                // Encrypt the tokens before saving them
+                var encryptedAccessToken = _encryptionHelper.EncryptToken(newAccessToken);
+                var encryptedRefreshToken = _encryptionHelper.EncryptToken(newRefreshToken);
+
+                // Update the token in the database
+                var token = await _context.Tokens.FirstOrDefaultAsync(t => t.RefreshToken == refreshToken);
+                if (token != null)
+                {
+                    token.AccessToken = encryptedAccessToken;
+                    token.RefreshToken = encryptedRefreshToken;
+                    token.ExpirationTime = expirationTime;
+                    _context.Tokens.Update(token);
+                }
+                else
+                {
+                    // If no existing token found, add a new one
+                    var newToken = new TokenEntity
+                    {
+                        AccessToken = encryptedAccessToken,
+                        RefreshToken = encryptedRefreshToken,
+                        ExpirationTime = expirationTime
+                    };
+                    await _context.Tokens.AddAsync(newToken);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return newAccessToken; // Return the new access token
+            }
+        }
+
+        public async Task<int> GetUserSteps(string accessToken, string date)
+        {
+            var url = $"https://api.fitbit.com/1/user/-/activities/date/{date}.json";
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                try
+                {
+                    var response = await client.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
+
+                    var responseContent = await response.Content.ReadAsStringAsync();
+
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true // Allows case-insensitive JSON parsing
+                    };
+
+                    var activityData = System.Text.Json.JsonSerializer.Deserialize<FitbitActivityResponse>(responseContent, options);
+
+                    int steps = activityData?.Summary?.Steps ?? 0;
+
+                    return steps;
+                }
+                catch (HttpRequestException ex)
+                {
+                    Console.WriteLine($"Request failed: {ex.Message}");
+                    return 0;
+                }
+            }
         }
     }
 }

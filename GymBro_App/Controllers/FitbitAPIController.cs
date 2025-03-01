@@ -1,22 +1,20 @@
 using GymBro_App.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-
 namespace GymBro_App.Controllers
 {
-     // Ensure that the controller requires authentication
     public class FitbitAPIController : Controller
     {
-
-        
         private readonly IOAuthService _oauthService;
-
+        
         public FitbitAPIController(IOAuthService oauthService)
         {
             _oauthService = oauthService;
         }
 
+        [Authorize]
         public IActionResult RedirectToFitbit()
         {
             var authorizationUrl = _oauthService.GetAuthorizationUrl();

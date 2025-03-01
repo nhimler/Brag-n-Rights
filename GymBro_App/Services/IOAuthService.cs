@@ -7,6 +7,9 @@ namespace GymBro_App.Services
         string GenerateState();
         string GetAuthorizationUrl();
 
+        public Task<string> GetAccessToken(string identityId);
+        public Task<int> GetUserSteps(string accessToken, string date);
+
         public Task ExchangeCodeForToken(string userId ,string code);
     }
 

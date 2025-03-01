@@ -49,7 +49,6 @@ public partial class GymBroDbContext : DbContext
     {
         modelBuilder.Entity<BiometricDatum>(entity =>
         {
-            entity.Property(b => b.LastUpdated).HasDefaultValueSql("GETUTCDATE()");
             entity.HasKey(e => e.BiometricId).HasName("PK__Biometri__9CF3DB06ACEB0EE9");
 
             entity.HasOne(d => d.User).WithMany(p => p.BiometricData).HasConstraintName("FK__Biometric__UserI__4F47C5E3");

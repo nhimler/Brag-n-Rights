@@ -1,6 +1,7 @@
 using GymBro_App.Models;
 using GymBro_App.Models.DTOs;
-using GymBro_App.DAL.Abstract; 
+using GymBro_App.DAL.Abstract;
+using Azure.Core;
 
 namespace GymBro_App.Services
 {
@@ -10,18 +11,22 @@ namespace GymBro_App.Services
         private readonly IMedalRepository _medalRepository;
         private readonly IUserMedalRepository _userMedalRepository;
         private readonly IBiometricDatumRepository _biometricDatumRepository;  // Declare the field
+        private readonly IOAuthService _oAuthService;
 
         public AwardMedalService(IUserRepository userRepository, IMedalRepository medalRepository, 
-            IUserMedalRepository userMedalRepository, IBiometricDatumRepository biometricDatumRepository)
+            IUserMedalRepository userMedalRepository, IBiometricDatumRepository biometricDatumRepository
+            , IOAuthService oAuthService)
         {
             _userRepository = userRepository;
             _medalRepository = medalRepository;
             _userMedalRepository = userMedalRepository;
             _biometricDatumRepository = biometricDatumRepository;  // Assign to field
+            _oAuthService = oAuthService;
         }
 
         public async Task<AwardMedal> AwardUserdMedalsAsync(string identityId)
         {
+            await SaveActivityData(identityId);
             var userId = _userRepository.GetIdFromIdentityId(identityId);
 
             var medals = await _medalRepository.GetAllMedalsAsync();// get all medals
@@ -71,8 +76,40 @@ namespace GymBro_App.Services
                 AwardedMedals = awardedMedals
             };
         } 
+        public async Task SaveActivityData(string identityId)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            var Token = await _oAuthService.GetAccessToken(identityId);
+            var steps = await _oAuthService.GetUserSteps(Token, today.ToString("yyyy-MM-dd"));
 
+            try
+            {
+                if (steps != null)
+                {
+                    var userId = _userRepository.GetIdFromIdentityId(identityId);
 
+                    if (userId == null)
+                    {
+                        Console.WriteLine("Error: User ID not found.");
+                        return;
+                    }
+
+                    var biometricData = new BiometricDatum
+                    {
+                        UserId = userId,
+                        Steps = steps,
+                        LastUpdated = DateTime.Now
+                    };
+
+                    await _biometricDatumRepository.AddAsync(biometricData);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving activity data: {ex.Message}");
+            }
+
+        }
 
     }
 }

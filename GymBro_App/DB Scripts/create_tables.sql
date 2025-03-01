@@ -107,10 +107,9 @@ CREATE TABLE [MealFood] (
 );
 
 -- Biometric Data table
-CREATE TABLE BiometricDatum (
+CREATE TABLE BiometricData (
     BiometricID INT PRIMARY KEY IDENTITY(1,1),        -- Auto-increment primary key
     UserID INT NULL,                                   -- Foreign key to User (nullable)
-    Date DATE NULL,                                    -- The date of the biometric data entry
     Steps INT NULL,                                    -- Number of steps for the day
     CaloriesBurned INT NULL,                           -- Number of calories burned
     HeartRate INT NULL,                                -- User's heart rate
