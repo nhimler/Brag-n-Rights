@@ -38,6 +38,10 @@ public class Program
         builder.Services.AddScoped<IAwardMedalService, AwardMedalService>();
         builder.Services.AddScoped<IUserMedalRepository, UserMedalRepository>();
         builder.Services.AddScoped<IBiometricDatumRepository, BiometricDatumRepository>();
+        builder.Services.AddScoped<IOAuthService, OAuthService>();  
+        builder.Services.AddHttpContextAccessor(); // Add the HttpContextAccessor to the DI container
+        
+
         // Configure the authentication/Identity database connection
         var authDbConnectionString = builder.Configuration.GetConnectionString("AuthGymBroAzureConnection");
 
@@ -91,6 +95,13 @@ public class Program
             options.Password.RequiredUniqueChars = 0;
         });
 
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(30); // Keep session for 30 minutes
+            options.Cookie.HttpOnly = true;                 // Protect against JavaScript access
+            options.Cookie.IsEssential = true;              // Needed for GDPR compliance
+        });
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -112,7 +123,16 @@ public class Program
 
         app.UseRouting();
 
+        app.UseSession();
+
         app.UseAuthorization();
+
+        app.MapControllerRoute(
+            name: "fitbitCallback",
+            pattern: "signin-fitbit",
+            defaults: new { controller = "FitbitAPI", action = "SigninFitbit" }
+        );
+
 
         app.MapControllerRoute(
             name: "default",
