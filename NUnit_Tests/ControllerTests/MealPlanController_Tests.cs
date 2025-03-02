@@ -43,7 +43,7 @@ public class MealPlanController_Tests
     [Test]
     public void Test_FoodSearchRedirectsWhenNotAuthenticated()
     {
-        var result = _controller.CreateMeal();
+        var result = _controller.CreateMeal("new");
 
         Assert.That(result, Is.TypeOf<RedirectToActionResult>());
         var redirectResult = (RedirectToActionResult)result;
@@ -73,7 +73,7 @@ public class MealPlanController_Tests
         };
 
         // Act: Call the CreateMeal action
-        var result = _controller.CreateMeal();
+        var result = _controller.CreateMeal("new");
 
         // Assert: Verify that the result is a redirect to "Index"
         Assert.That(result, Is.TypeOf<RedirectToActionResult>());
@@ -90,10 +90,9 @@ public class MealPlanController_Tests
         _userRepositoryMock.Setup(ur => ur.GetIdFromIdentityId(It.IsAny<string>())).Returns(0);
 
         var mealPlan = new MealPlan { MealPlanId = 123 };
-        _mealPlanRepositoryMock.Setup(mp => mp.GetFirstMealPlanForUser(0)).Returns(mealPlan);
-
-        var meal = new Meal { MealId = 123 };
-        _mealPlanRepositoryMock.Setup(mp => mp.FirstMeal(mealPlan.MealPlanId)).Returns(meal);
+        List<MealPlan> mealPlans = new List<MealPlan>();
+        mealPlans.Add(mealPlan);
+        _mealPlanRepositoryMock.Setup(mp => mp.GetMealPlansForUser(0)).Returns(mealPlans);
 
         // Set up the HttpContext.User to simulate the authenticated user
         var claims = new List<Claim>
@@ -110,7 +109,7 @@ public class MealPlanController_Tests
             HttpContext = new DefaultHttpContext { User = principal }
         };
 
-        var result = _controller.CreateMeal();
+        var result = _controller.CreateMeal("new");
 
         Assert.That(result, Is.TypeOf<ViewResult>());
 
