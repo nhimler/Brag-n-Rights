@@ -19,18 +19,11 @@ public partial class Meal
     [StringLength(20)]
     public string? MealType { get; set; }
 
-    public DateOnly? Date { get; set; }
-
-    public int? TotalCalories { get; set; }
-
-    public int? TotalProtein { get; set; }
-
-    public int? TotalCarbs { get; set; }
-
-    public int? TotalFats { get; set; }
-
     [Column("MealPlanID")]
     public int? MealPlanId { get; set; }
+
+    [StringLength(255)]
+    public string? Description { get; set; }
 
     [InverseProperty("Meal")]
     public virtual ICollection<Food> Foods { get; set; } = new List<Food>();

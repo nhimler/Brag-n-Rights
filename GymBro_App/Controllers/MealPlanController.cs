@@ -5,6 +5,7 @@ using GymBro_App.DAL.Abstract;
 using GymBro_App.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GymBro_App.Controllers;
 
@@ -46,63 +47,97 @@ public class MealPlanController : Controller
             return View(null);
         }
         int userId = _userRepository.GetIdFromIdentityId(user.Id);
-        var mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
-        if (mealPlan == null)
+        var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
+        if (mealPlans == null)
         {   
             return View(null);
         }
-        MealPlanView mealPlanView = new MealPlanView();
-        foreach(Meal meal in mealPlan.Meals){
-            if(mealPlanView.MealNames != null && meal.MealName != null && mealPlanView.Foods != null){
-            mealPlanView.MealNames.Add(meal.MealName);
-            List<long> foodIds = new List<long>();
-            foreach(Food food in meal.Foods){
-                foodIds.Add(food.ApiFoodId ?? -1);
+        MealPlanHomeView mealPlanView = new MealPlanHomeView();
+        foreach(MealPlan mealPlan in mealPlans){
+            List<string> mealPlanMeals = new List<string>();
+            List<List<long>> mealPlanFoods = new List<List<long>>();
+            mealPlanView.PlanNames.Add(mealPlan.PlanName ?? "");
+            foreach(Meal meal in mealPlan.Meals){
+                if(mealPlanView.MealNames != null && meal.MealName != null && mealPlanView.Foods != null){
+                mealPlanMeals.Add(meal.MealName);
+                List<long> foodIds = new List<long>();
+                foreach(Food food in meal.Foods){
+                    foodIds.Add(food.ApiFoodId ?? -1);
+                }
+                mealPlanFoods.Add(foodIds);
+                }
             }
-            mealPlanView.Foods.Add(foodIds);
-            }
+            mealPlanView.MealNames.Add(mealPlanMeals);
+            mealPlanView.Foods.Add(mealPlanFoods);
         }
         return View(mealPlanView);
     }
 
-    [HttpPost]
-    public IActionResult Index(MealPlan? mp = null)
+    [HttpGet ("CreateMealPlan/{id}")]
+    public IActionResult CreateMealPlan(string id)
     {
-        if (!(User.Identity?.IsAuthenticated ?? false))
+        if (User == null || User.Identity == null || !User.Identity.IsAuthenticated)
         {
-            return View(null);
+            return RedirectToAction("Index");
         }
         var user = _userManager.GetUserAsync(User).Result;
         if (user == null)
         {
-            return View(null);
+            return RedirectToAction("Index");
         }
-        var userId = _userRepository.GetIdFromIdentityId(user.Id);
-        var mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
+        if(id == "new"){
+            return View("CreateMealPlan", null);
+        }
+
+        if (!int.TryParse(id, out int mealPlanId))
+        {
+            return RedirectToAction("Index");
+        }
+
+        var mealPlan = _mealPlanRepository.FindById(mealPlanId);
         if (mealPlan == null)
         {
+            return RedirectToAction("Index");
+        }
+        return View("CreateMealPlan", new MealPlanView(mealPlan));
+    }
+
+    [HttpPost]
+    public IActionResult CreateMealPlan(MealPlanView mv)
+    {
+        if (ModelState.IsValid)
+        {
+            if (!(User.Identity?.IsAuthenticated ?? false))
+            {
+                return RedirectToAction("Index");
+            }
+            var user = _userManager.GetUserAsync(User).Result;
+            if (user == null)
+            {
+                return RedirectToAction("Index");
+            }
+            var userId = _userRepository.GetIdFromIdentityId(user.Id);
             _mealPlanRepository.Add(new MealPlan()
             {
                 UserId = userId,
-                PlanName = "New Meal Plan"
+                PlanName = mv.PlanName,
+                StartDate = mv.StartDate,
+                EndDate = mv.EndDate,
+                Frequency = mv.Frequency,
+                TargetCalories = mv.TargetCalories,
+                TargetProtein = mv.TargetProtein,
+                TargetCarbs = mv.TargetCarbs,
+                TargetFats = mv.TargetFats
             });
-            Debug.WriteLine("New meal plan added");
+            return RedirectToAction("Index");
         }
-        mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
-        if (mealPlan != null && !_mealPlanRepository.HasMeals(mealPlan.MealPlanId))
-        {
-            _mealRepository.Add(new Meal()
-            {
-                MealPlanId = mealPlan.MealPlanId,
-                MealName = "New Meal"
-            });
-            Debug.WriteLine("New meal added");
-        }
-        return View(null);
+        Debug.WriteLine("Food not added");
+        return RedirectToAction("Index");
     }
 
-    [HttpGet]
-    public IActionResult CreateMeal()
+
+    [HttpGet ("CreateMeal/{id}")]
+    public IActionResult CreateMeal(string id)
     {
         if (User == null || User.Identity == null || !User.Identity.IsAuthenticated)
         {
@@ -114,21 +149,44 @@ public class MealPlanController : Controller
             return RedirectToAction("Index");
         }
         var userId = _userRepository.GetIdFromIdentityId(user.Id);
-        var mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
-        if (mealPlan == null)
-        {   
+        if(id == "new"){
+            var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
+            MealView mv = new MealView();
+            if(mealPlans.IsNullOrEmpty()){
+                return RedirectToAction("Index");
+            }
+            foreach(MealPlan mp in mealPlans){
+                mv.PlanIds.Add(mp.MealPlanId);
+                mv.PlanNames.Add(mp.PlanName ?? "");
+            }
+            return View("CreateMeal", mv);
+        }
+
+        if (!int.TryParse(id, out int mealId))
+        {
             return RedirectToAction("Index");
         }
-        var meal = _mealPlanRepository.FirstMeal(mealPlan.MealPlanId);
+
+        var meal = _mealRepository.FindById(mealId);
         if (meal == null)
         {
             return RedirectToAction("Index");
         }
-        return View("CreateMeal", null);
+        var mealPlan = _mealPlanRepository.FindById(meal.MealPlanId ?? -1);
+        if (mealPlan == null || mealPlan.UserId != userId)
+        {
+            return RedirectToAction("Index");
+        }
+        return View("CreateMeal", new MealView()
+        {
+            MealId = meal.MealId,
+            MealName = meal.MealName ?? "",
+            MealType = meal.MealType ?? "",
+            Description = "",//meal.Description ?? "",
+            Foods = meal.Foods.Select(f => f.ApiFoodId ?? -1).ToList()
+        });
     }
 
-    // TODO: Actually create user defined meals here
-    // Currently only adds foods to the database
     [HttpPost]
     public IActionResult CreateMeal(MealView mv)
     {
@@ -144,16 +202,19 @@ public class MealPlanController : Controller
                 return RedirectToAction("Index");
             }
             var userId = _userRepository.GetIdFromIdentityId(user.Id);
-            var mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
-            if (mealPlan == null)
+            var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
+            if (mealPlans.IsNullOrEmpty() || !mealPlans.Select(mp => mp.MealPlanId).Contains(mv.MealPlanId))
             {   
                 return RedirectToAction("Index");
             }
-            var meal = _mealRepository.GetAll().Where(m => m.MealPlanId == mealPlan.MealPlanId).FirstOrDefault();
-            if (meal == null)
+            var meal = new Meal()
             {
-                return RedirectToAction("Index");
-            }
+                MealPlanId = mv.MealPlanId,
+                MealName = mv.MealName,
+                MealType = mv.MealType,
+                Description = mv.Description
+            };
+            _mealRepository.Add(meal);
             foreach (var food in mv.Foods)
             {
                 _foodRepository.Add(new Food
