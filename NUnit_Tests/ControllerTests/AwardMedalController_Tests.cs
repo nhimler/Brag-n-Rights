@@ -15,15 +15,15 @@ namespace Controller_Tests;
 public class AwardMedalControllerTests
 {
     private Mock<IAwardMedalService> _mockAwardMedalService;
+    private Mock<IOAuthService> _mockOAuthService;
     private AwardMedalController _controller;
     private ClaimsPrincipal _user;
 
     [SetUp]
     public void Setup()
     {
-        _mockAwardMedalService = new Mock<IAwardMedalService>();
-        _controller = new AwardMedalController(_mockAwardMedalService.Object);
-
+        _mockOAuthService = new Mock<IOAuthService>();
+        _controller = new AwardMedalController(_mockAwardMedalService.Object, _mockOAuthService.Object);
         _user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
             new Claim(ClaimTypes.NameIdentifier, "user123")
