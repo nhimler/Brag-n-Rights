@@ -7,4 +7,5 @@ public interface IMealPlanRepository : IRepository<MealPlan>
     MealPlan? GetFirstMealPlanForUser(int userId);
     bool HasMeals(int mealPlanId);
     Meal? FirstMeal(int mealPlanId);
+    List<MealPlan>? GetMealPlansForUser(int userId);
 }

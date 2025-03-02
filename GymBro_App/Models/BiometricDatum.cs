@@ -2,7 +2,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GymBro_App.Models;
+
 [Table("BiometricData")]
+
 public partial class BiometricDatum
 {
     [Key]

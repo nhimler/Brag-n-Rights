@@ -20,12 +20,10 @@ public class Program
         builder.Services.AddControllersWithViews();
         builder.Services.AddSwaggerGen();
 
-        // This works with user secrets. 
-        // When storing the connection string in appsettings, instead use builder.GetConnectionString("GymBroConnection");
         var connectionString = builder.Configuration.GetConnectionString("GymBroAzureConnection");
 
         builder.Services.AddDbContext<GymBroDbContext>(options => options
-            .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
+            .UseLazyLoadingProxies()
             .UseSqlServer(connectionString));
 
         // Add repository scopes for controllers below:
@@ -80,6 +78,21 @@ public class Program
             var logger = services.GetRequiredService<ILogger<ExerciseService>>();
             logger.LogInformation("Request: {0} - Headers: {1}", client.BaseAddress, client.DefaultRequestHeaders);
             return new ExerciseService(client, services.GetRequiredService<ILogger<ExerciseService>>());
+        });
+
+        // Google Maps API Configuration
+        string googleMapsApiKey = builder.Configuration["GoogleMapsApiKey"] ?? "";
+        string googleMapsApiUrl = "https://maps.googleapis.com/maps/api";
+        builder.Services.AddHttpClient<IMapService, MapService>((client, services) =>
+        {
+            client.BaseAddress = new Uri(googleMapsApiUrl);
+
+            // Removed for now. Breaks when we're just grabbing the API key
+            // client.DefaultRequestHeaders.Add("Accept", "application/json");
+            // client.DefaultRequestHeaders.Add("Content-Type", "application/json; charset=utf-8");
+            
+            client.DefaultRequestHeaders.Add("X-goog-api-key", googleMapsApiKey);
+            return new MapService(client, services.GetRequiredService<ILogger<MapService>>());
         });
 
 

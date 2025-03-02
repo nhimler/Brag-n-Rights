@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "Find Nearby Gyms";
+}
+<link rel="stylesheet" href="~/css/Gym.css" />
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 d-flex flex-column align-items-center">
+            <iframe
+                id="nearby-gyms-map"
+                frameborder="0" style="border:0"
+                referrerpolicy="no-referrer-when-downgrade"
+                src=""
+                allowfullscreen
+            ></iframe>
+            <button class="btn btn-primary mt-3" id="set-location-button" onclick="navigator.geolocation.getCurrentPosition(embedMapAtUserPosition, getPositionError)">Set My Location</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/userLocation.js"></script>
+}

@@ -49,32 +49,32 @@ public partial class GymBroDbContext : DbContext
     {
         modelBuilder.Entity<BiometricDatum>(entity =>
         {
-            entity.HasKey(e => e.BiometricId).HasName("PK__Biometri__9CF3DB06ACEB0EE9");
+            entity.HasKey(e => e.BiometricId).HasName("PK__Biometri__9CF3DB06F77DC49C");
 
-            entity.HasOne(d => d.User).WithMany(p => p.BiometricData).HasConstraintName("FK__Biometric__UserI__4F47C5E3");
+            entity.HasOne(d => d.User).WithMany(p => p.BiometricData).HasConstraintName("FK__Biometric__UserI__6319B466");
         });
 
         modelBuilder.Entity<Exercise>(entity =>
         {
-            entity.HasKey(e => e.ExerciseId).HasName("PK__Exercise__A074AD0F7ED94F8D");
+            entity.HasKey(e => e.ExerciseId).HasName("PK__Exercise__A074AD0F94A5BE33");
         });
 
         modelBuilder.Entity<FitnessChallenge>(entity =>
         {
-            entity.HasKey(e => e.ChallengeId).HasName("PK__FitnessC__C7AC81286253C2F9");
+            entity.HasKey(e => e.ChallengeId).HasName("PK__FitnessC__C7AC81287FCB9A1E");
 
             entity.HasMany(d => d.Users).WithMany(p => p.Challenges)
                 .UsingEntity<Dictionary<string, object>>(
                     "ChallengeUser",
                     r => r.HasOne<User>().WithMany()
                         .HasForeignKey("UserId")
-                        .HasConstraintName("FK__Challenge__UserI__43D61337"),
+                        .HasConstraintName("FK__Challenge__UserI__725BF7F6"),
                     l => l.HasOne<FitnessChallenge>().WithMany()
                         .HasForeignKey("ChallengeId")
-                        .HasConstraintName("FK__Challenge__Chall__42E1EEFE"),
+                        .HasConstraintName("FK__Challenge__Chall__7167D3BD"),
                     j =>
                     {
-                        j.HasKey("ChallengeId", "UserId").HasName("PK__Challeng__16D40DE2FB7FF4EE");
+                        j.HasKey("ChallengeId", "UserId").HasName("PK__Challeng__16D40DE2D144FF56");
                         j.ToTable("ChallengeUser");
                         j.IndexerProperty<int>("ChallengeId").HasColumnName("ChallengeID");
                         j.IndexerProperty<int>("UserId").HasColumnName("UserID");
@@ -83,29 +83,29 @@ public partial class GymBroDbContext : DbContext
 
         modelBuilder.Entity<Food>(entity =>
         {
-            entity.HasKey(e => e.FoodId).HasName("PK__Food__856DB3CB1BA8FF92");
+            entity.HasKey(e => e.FoodId).HasName("PK__Food__856DB3CB93DC706A");
 
             entity.HasOne(d => d.Meal).WithMany(p => p.Foods)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Food__MealID__46B27FE2");
+                .HasConstraintName("FK__Food__MealID__7AF13DF7");
         });
 
         modelBuilder.Entity<Gym>(entity =>
         {
-            entity.HasKey(e => e.GymId).HasName("PK__Gym__1A3A7CB623058297");
+            entity.HasKey(e => e.GymId).HasName("PK__Gym__1A3A7CB6E4A2A7E3");
 
             entity.HasMany(d => d.Users).WithMany(p => p.Gyms)
                 .UsingEntity<Dictionary<string, object>>(
                     "GymUser",
                     r => r.HasOne<User>().WithMany()
                         .HasForeignKey("UserId")
-                        .HasConstraintName("FK__GymUser__UserID__3A4CA8FD"),
+                        .HasConstraintName("FK__GymUser__UserID__68D28DBC"),
                     l => l.HasOne<Gym>().WithMany()
                         .HasForeignKey("GymId")
-                        .HasConstraintName("FK__GymUser__GymID__395884C4"),
+                        .HasConstraintName("FK__GymUser__GymID__67DE6983"),
                     j =>
                     {
-                        j.HasKey("GymId", "UserId").HasName("PK__GymUser__CB42F07C70D62B18");
+                        j.HasKey("GymId", "UserId").HasName("PK__GymUser__CB42F07C7D83C246");
                         j.ToTable("GymUser");
                         j.IndexerProperty<int>("GymId").HasColumnName("GymID");
                         j.IndexerProperty<int>("UserId").HasColumnName("UserID");
@@ -114,50 +114,50 @@ public partial class GymBroDbContext : DbContext
 
         modelBuilder.Entity<Leaderboard>(entity =>
         {
-            entity.HasKey(e => e.LeaderboardId).HasName("PK__Leaderbo__B358A1E6AD110D05");
+            entity.HasKey(e => e.LeaderboardId).HasName("PK__Leaderbo__B358A1E6E019A687");
 
             entity.HasOne(d => d.Challenge).WithMany(p => p.Leaderboards)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Leaderboa__Chall__3F115E1A");
+                .HasConstraintName("FK__Leaderboa__Chall__6D9742D9");
 
             entity.HasOne(d => d.User).WithMany(p => p.Leaderboards)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Leaderboa__UserI__40058253");
+                .HasConstraintName("FK__Leaderboa__UserI__6E8B6712");
         });
 
         modelBuilder.Entity<Meal>(entity =>
         {
-            entity.HasKey(e => e.MealId).HasName("PK__Meal__ACF6A65D9E8136AC");
+            entity.HasKey(e => e.MealId).HasName("PK__Meal__ACF6A65D50DCEE7D");
 
             entity.HasOne(d => d.MealPlan).WithMany(p => p.Meals)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Meal__MealPlanID__2BFE89A6");
+                .HasConstraintName("FK__Meal__MealPlanID__5A846E65");
         });
 
         modelBuilder.Entity<MealPlan>(entity =>
         {
-            entity.HasKey(e => e.MealPlanId).HasName("PK__MealPlan__0620DB562D4300E1");
+            entity.HasKey(e => e.MealPlanId).HasName("PK__MealPlan__0620DB5612915A52");
 
             entity.HasOne(d => d.User).WithMany(p => p.MealPlans)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__MealPlan__UserID__282DF8C2");
+                .HasConstraintName("FK__MealPlan__UserID__56B3DD81");
         });
 
         modelBuilder.Entity<Medal>(entity =>
         {
-            entity.HasKey(e => e.MedalId).HasName("PK__Medal__30F05186C8CD4ADE");
+            entity.HasKey(e => e.MedalId).HasName("PK__Medal__30F05186C2B3C2BC");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__User__1788CCAC2EC5A686");
+            entity.HasKey(e => e.UserId).HasName("PK__User__1788CCAC324F3449");
 
             entity.Property(e => e.AccountCreationDate).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<UserMedal>(entity =>
         {
-            entity.HasKey(e => e.UserMedalId).HasName("PK__UserMeda__EA2DA1A6F3BFED81");
+            entity.HasKey(e => e.UserMedalId).HasName("PK__UserMeda__EA2DA1A6AA39744F");
 
             entity.HasOne(d => d.Medal).WithMany(p => p.UserMedals).HasConstraintName("FK_UserMedal_Medal");
 
@@ -166,24 +166,24 @@ public partial class GymBroDbContext : DbContext
 
         modelBuilder.Entity<WorkoutPlan>(entity =>
         {
-            entity.HasKey(e => e.WorkoutPlanId).HasName("PK__WorkoutP__8C51605B28FF0CCA");
+            entity.HasKey(e => e.WorkoutPlanId).HasName("PK__WorkoutP__8C51605BDFE45092");
 
             entity.HasOne(d => d.User).WithMany(p => p.WorkoutPlans)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__WorkoutPl__UserI__1EA48E88");
+                .HasConstraintName("FK__WorkoutPl__UserI__4D2A7347");
 
             entity.HasMany(d => d.Exercises).WithMany(p => p.WorkoutPlans)
                 .UsingEntity<Dictionary<string, object>>(
                     "WorkoutPlanExercise",
                     r => r.HasOne<Exercise>().WithMany()
                         .HasForeignKey("ExerciseId")
-                        .HasConstraintName("FK__WorkoutPl__Exerc__25518C17"),
+                        .HasConstraintName("FK__WorkoutPl__Exerc__53D770D6"),
                     l => l.HasOne<WorkoutPlan>().WithMany()
                         .HasForeignKey("WorkoutPlanId")
-                        .HasConstraintName("FK__WorkoutPl__Worko__245D67DE"),
+                        .HasConstraintName("FK__WorkoutPl__Worko__52E34C9D"),
                     j =>
                     {
-                        j.HasKey("WorkoutPlanId", "ExerciseId").HasName("PK__WorkoutP__66562A8BF08D4BB4");
+                        j.HasKey("WorkoutPlanId", "ExerciseId").HasName("PK__WorkoutP__66562A8B13864FC1");
                         j.ToTable("WorkoutPlanExercise");
                         j.IndexerProperty<int>("WorkoutPlanId").HasColumnName("WorkoutPlanID");
                         j.IndexerProperty<int>("ExerciseId").HasColumnName("ExerciseID");
