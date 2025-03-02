@@ -5,6 +5,7 @@ using GymBro_App.DAL.Abstract;
 using GymBro_App.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GymBro_App.Controllers;
 
@@ -185,7 +186,16 @@ public class MealPlanController : Controller
         }
         var userId = _userRepository.GetIdFromIdentityId(user.Id);
         if(id == "new"){
-            return View("CreateMeal", null);
+            var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
+            MealView mv = new MealView();
+            if(mealPlans.IsNullOrEmpty()){
+                return RedirectToAction("Index");
+            }
+            foreach(MealPlan mp in mealPlans){
+                mv.PlanIds.Add(mp.MealPlanId);
+                mv.PlanNames.Add(mp.PlanName ?? "");
+            }
+            return View("CreateMeal", mv);
         }
 
         if (!int.TryParse(id, out int mealId))
@@ -230,16 +240,19 @@ public class MealPlanController : Controller
                 return RedirectToAction("Index");
             }
             var userId = _userRepository.GetIdFromIdentityId(user.Id);
-            var mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
-            if (mealPlan == null)
+            var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
+            if (mealPlans.IsNullOrEmpty() || !mealPlans.Select(mp => mp.MealPlanId).Contains(mv.MealPlanId))
             {   
                 return RedirectToAction("Index");
             }
-            var meal = _mealRepository.GetAll().Where(m => m.MealPlanId == mealPlan.MealPlanId).FirstOrDefault();
-            if (meal == null)
+            var meal = new Meal()
             {
-                return RedirectToAction("Index");
-            }
+                MealPlanId = mv.MealPlanId,
+                MealName = mv.MealName,
+                MealType = mv.MealType,
+                Description = mv.Description
+            };
+            _mealRepository.Add(meal);
             foreach (var food in mv.Foods)
             {
                 _foodRepository.Add(new Food
