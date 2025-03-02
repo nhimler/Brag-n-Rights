@@ -21,6 +21,7 @@ namespace GymBro_App.Controllers
             return Redirect(authorizationUrl);
         }
 
+        [HttpGet("signin-fitbit")]
         public async Task<IActionResult> SigninFitbit(string code, string state)
         {
             // Get the identityId from the logged-in user's claims
