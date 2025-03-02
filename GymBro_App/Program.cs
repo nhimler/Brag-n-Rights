@@ -19,12 +19,10 @@ public class Program
         builder.Services.AddControllersWithViews();
         builder.Services.AddSwaggerGen();
 
-        // This works with user secrets. 
-        // When storing the connection string in appsettings, instead use builder.GetConnectionString("GymBroConnection");
         var connectionString = builder.Configuration.GetConnectionString("GymBroAzureConnection");
 
         builder.Services.AddDbContext<GymBroDbContext>(options => options
-            .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
+            .UseLazyLoadingProxies()
             .UseSqlServer(connectionString));
 
         // Add repository scopes for controllers below:
