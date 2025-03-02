@@ -187,8 +187,6 @@ public class MealPlanController : Controller
         });
     }
 
-    // TODO: Actually create user defined meals here
-    // Currently only adds foods to the database
     [HttpPost]
     public IActionResult CreateMeal(MealView mv)
     {
