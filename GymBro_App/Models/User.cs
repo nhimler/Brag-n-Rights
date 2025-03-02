@@ -69,6 +69,9 @@ public partial class User
     [Column(TypeName = "decimal(9, 6)")]
     public decimal? Longitude { get; set; }
 
+    public virtual TokenEntity? Token { get; set; }
+        
+
     [InverseProperty("User")]
     public virtual ICollection<BiometricDatum> BiometricData { get; set; } = new List<BiometricDatum>();
 

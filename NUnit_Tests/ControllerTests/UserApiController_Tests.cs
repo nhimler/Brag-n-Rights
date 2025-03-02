@@ -1,17 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using GymBro_App.Controllers;
 using GymBro_App.DAL.Abstract;
 using Microsoft.AspNetCore.Identity;
 using GymBro_App.Models.DTOs;
-using GymBro_App.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Microsoft.Extensions.Options;
 
 namespace Controller_Tests
 {
@@ -29,7 +25,15 @@ namespace Controller_Tests
             _mockUserRepository = new Mock<IUserRepository>();
             _mockUserManager = new Mock<UserManager<IdentityUser>>(
                 new Mock<IUserStore<IdentityUser>>().Object,
-                null, null, null, null, null, null, null, null);
+                new Mock<IOptions<IdentityOptions>>().Object,
+                new Mock<IPasswordHasher<IdentityUser>>().Object,
+                new IUserValidator<IdentityUser>[0],
+                new IPasswordValidator<IdentityUser>[0],
+                new Mock<ILookupNormalizer>().Object,
+                new Mock<IdentityErrorDescriber>().Object,
+                new Mock<IServiceProvider>().Object,
+                new Mock<ILogger<UserManager<IdentityUser>>>().Object
+                );
 
             _userAPIController = new UserAPIController(_mockLogger.Object, _mockUserRepository.Object, _mockUserManager.Object);
 
@@ -54,6 +58,8 @@ namespace Controller_Tests
             // Arrange
             var userDTO = new UserDTO { Latitude = 45.0m, Longitude = -122.0m };
             var user = new GymBro_App.Models.User { IdentityUserId = "1", Latitude = 0.0m, Longitude = 0.0m };
+            var expectedLatitude = 45.0m;
+            var expectedLongitude = -122.0m;
 
             _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("1");
             _mockUserRepository.Setup(repo => repo.GetUserByIdentityUserId("1")).Returns(user);
@@ -63,8 +69,8 @@ namespace Controller_Tests
 
             // Assert
             Assert.IsInstanceOf<OkResult>(result);
-            Assert.That(45.0m, Is.EqualTo(user.Latitude));
-            Assert.That(-122.0m, Is.EqualTo(user.Longitude));
+            Assert.That(expectedLatitude, Is.EqualTo(user.Latitude));
+            Assert.That(expectedLongitude, Is.EqualTo(user.Longitude));
             _mockUserRepository.Verify(repo => repo.AddOrUpdate(It.Is<GymBro_App.Models.User>(u => u.Latitude == 45.0m && u.Longitude == -122.0m)), Times.Once);
         }
 
@@ -72,7 +78,7 @@ namespace Controller_Tests
         public void TearDown()
         {
             _userAPIController.Dispose();
-            _userAPIController = null;
+            _userAPIController = null!;
         }
     }
 }

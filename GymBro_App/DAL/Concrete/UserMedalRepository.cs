@@ -1,11 +1,8 @@
 using GymBro_App.Models;
 using GymBro_App.DAL.Abstract;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
+
 
 namespace GymBro_App.DAL.Concrete
 {

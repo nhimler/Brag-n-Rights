@@ -45,14 +45,13 @@
             <div class="card-body text-center">
                 <img src="https://placehold.co/350x200?text=Analytics+Chart" class="img-fluid mb-2 user-profile" alt="Analytics Graph" />
                 <p>Fitness Level: @Model.FitnessLevel</p>
-                <button onclick="getUserPosition()">Get My Location</button>
-                <p id="for-demo-only"></p>
+                <button class="btn btn-primary" onclick="navigator.geolocation.getCurrentPosition(putUserPosition, getPositionError)">Get My Location</button>
+                <a class="btn btn-secondary mt-3" asp-controller="Gym" asp-action="FindNearbyGyms">Find Nearby Gyms</a>
             </div>
         </div>
     </div>
-
 </div>
 
 @section Scripts {
-    <script type="text/javascript" src="~/js/UserPage Scripts/userLocation.js"></script>
+    <script type="text/javascript" src="~/js/userLocation.js"></script>
 }

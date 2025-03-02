@@ -16,6 +16,7 @@ public class AwardMedalServiceTests
     private Mock<IMedalRepository> _mockMedalRepo;
     private Mock<IUserMedalRepository> _mockUserMedalRepo;
     private Mock<IBiometricDatumRepository> _mockBiometricDatumRepo;
+    private Mock<IOAuthService> _mockOAuthService;
     private AwardMedalService _service;
 
     [SetUp]
@@ -25,12 +26,14 @@ public class AwardMedalServiceTests
         _mockMedalRepo = new Mock<IMedalRepository>();
         _mockUserMedalRepo = new Mock<IUserMedalRepository>();
         _mockBiometricDatumRepo = new Mock<IBiometricDatumRepository>();
+        _mockOAuthService = new Mock<IOAuthService>();
 
         _service = new AwardMedalService(
             _mockUserRepo.Object,
             _mockMedalRepo.Object,
             _mockUserMedalRepo.Object,
-            _mockBiometricDatumRepo.Object
+            _mockBiometricDatumRepo.Object,
+            _mockOAuthService.Object
         );
     }
 
