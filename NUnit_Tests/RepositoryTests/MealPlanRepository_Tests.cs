@@ -47,6 +47,30 @@ public class MealPlanRepository_Tests
     }
 
     [Test]
+    public void Test_GetMealPlansForUser()
+    {
+        IQueryable<MealPlan> mealPlans = new List<MealPlan>
+        {
+            new MealPlan { MealPlanId = 1, UserId = 1 },
+            new MealPlan { MealPlanId = 2, UserId = 2 },
+            new MealPlan { MealPlanId = 3, UserId = 1 }
+        }.AsQueryable();
+        _mealPlanRepositoryMock.Setup(mp => mp.GetAll()).Returns(mealPlans);
+
+        var result = _mealPlanRepositoryMock.Object.GetMealPlansForUser(1);
+
+        Assert.That(result?.Count(), Is.EqualTo(2));
+
+        result = _mealPlanRepositoryMock.Object.GetMealPlansForUser(2);
+
+        Assert.That(result?.Count(), Is.EqualTo(1));
+
+        result = _mealPlanRepositoryMock.Object.GetMealPlansForUser(3);
+
+        Assert.That(result?.Count(), Is.EqualTo(0));
+    }
+
+    [Test]
     public void Test_HasMeals()
     {
         MealPlan mealPlan = new MealPlan

@@ -25,73 +25,96 @@ async function displaySearchResults(result){
     selectedFood = document.getElementById("selectedFood");
     resultList.innerHTML = ""; 
 
-    let heading = document.createElement("h2");
+    let heading = document.createElement("h3");
     heading.textContent = "Results";
     resultList.appendChild(heading);
 
-    let table = document.createElement("table");
-    table.className = "table table-bordered";
-    let tbody = document.createElement("tbody");
+    let accordion = document.createElement("div");
+    accordion.id = "searchResultsAccordion";
+    accordion.className = "accordion";
     result.forEach(food => {
         if(!findValueInSelected(selectedFood, food.foodId)){
             // console.log("foodId: " + food.foodId + " not found in selectedFood");
-            let tr = document.createElement("tr");
-            let td = document.createElement("td");
-            let data = document.createElement("input");
-            td.colspan = 2;
-            data.setAttribute("value", food.foodId);
-            data.setAttribute("name", "Foods");
-            data.setAttribute("type", "number");
-            data.setAttribute("hidden", "true");
-            data.setAttribute("readonly", "true");
-            td.textContent = food.foodName;
-
-            let expandBtn = document.createElement("button");
-            expandBtn.className = "btn";
-            expandBtn.textContent = "v";
-            expandBtn.type = "button";
-            expandBtn.addEventListener("click", function(){
-                if(this.textContent === "v"){
-                    this.textContent = "^";
-                    let info = document.createElement("p");
-                    info.textContent = food.foodDescription;
-                    td.appendChild(info);
-                }else{
-                    this.textContent = "v";
-                    td.removeChild(td.lastChild);
-                }
-            });
-
-            td.appendChild(expandBtn);
-            td.appendChild(data);
-
-            let td2 = document.createElement("td");
-            let addBtn = document.createElement("button");
-            addBtn.className = "btn";
-            addBtn.textContent = "Add";
-            addBtn.type = "button";
-            addBtn.addEventListener("click", function(){
-                if(this.textContent === "Add"){
-                    this.textContent = "Remove";
-                    let movedTr = this.parentElement.parentElement;
-                    this.parentElement.parentElement.remove();
-                    selectedFood.appendChild(movedTr);
-                }else{
-                    this.textContent = "Add";
-                    let movedTr = this.parentElement.parentElement;
-                    this.parentElement.parentElement.remove();
-                    tbody.prepend(movedTr);
-
-                }
-            });
-            td2.appendChild(addBtn);
-            tr.appendChild(td);
-            tr.appendChild(td2);
-            tbody.appendChild(tr);
-            table.appendChild(tbody);
+            let row = generateAccordionItem(food);
+            accordion.appendChild(row);
         }
     });
-    resultList.appendChild(table);
+    resultList.appendChild(accordion);
+}
+
+function generateAccordionItem(food){
+    let accordionItem = document.createElement("div");
+    accordionItem.className = "accordion-item";
+    let accordionHeader = document.createElement("h3");
+    accordionHeader.className = "accordion-header";
+    accordionHeader.setAttribute("id", "heading" + food.foodId);
+
+    let accordionButton = document.createElement("button");
+    accordionButton.className = "accordion-button collapsed";
+    accordionButton.setAttribute("type", "button");
+    accordionButton.setAttribute("data-bs-toggle", "collapse");
+    accordionButton.setAttribute("data-bs-target", "#collapse" + food.foodId);
+    accordionButton.setAttribute("aria-expanded", "false");
+    accordionButton.setAttribute("aria-controls", "collapse" + food.foodId);
+    accordionButton.textContent = food.foodName;
+
+    accordionHeader.appendChild(accordionButton);
+
+    let data = document.createElement("input");
+    data.setAttribute("value", food.foodId);
+    data.setAttribute("name", "Foods");
+    data.setAttribute("type", "number");
+    data.setAttribute("hidden", "true");
+    data.setAttribute("readonly", "true");
+
+    accordionHeader.appendChild(data);
+
+    let accordionBody = document.createElement("div");
+    accordionBody.className = "accordion-collapse collapse";
+    accordionBody.setAttribute("id", "collapse" + food.foodId);
+    accordionBody.setAttribute("aria-labelledby", "heading" + food.foodId);
+    // accordionBody.setAttribute("data-bs-parent", "#searchResultsAccordion");
+
+    let bodyContent = document.createElement("div");
+    bodyContent.className = "accordion-body";
+
+    
+    let addBtn = generateAddButton();
+    bodyContent.appendChild(addBtn);
+
+    let bodyText = document.createElement("span");
+    bodyText.textContent = " " + food.foodDescription;
+
+    bodyContent.appendChild(bodyText);
+
+    accordionBody.appendChild(bodyContent);
+    
+    accordionItem.appendChild(accordionHeader);
+    accordionItem.appendChild(accordionBody);
+
+    return accordionItem;
+}
+
+function generateAddButton(){
+    let addBtn = document.createElement("button");
+    addBtn.className = "btn btn-secondary";
+    addBtn.textContent = "Add";
+    addBtn.type = "button";
+    addBtn.addEventListener("click", function(){
+        if(this.textContent === "Add"){
+            this.textContent = "Remove";
+            let movedItem = this.parentElement.parentElement.parentElement;
+            this.parentElement.parentElement.parentElement.remove();
+            document.getElementById("selectedFood").appendChild(movedItem);
+        }else{
+            this.textContent = "Add";
+            let movedItem = this.parentElement.parentElement.parentElement;
+            this.parentElement.parentElement.parentElement.remove();
+            document.getElementById("searchResultsAccordion").prepend(movedItem);
+        }
+    });
+
+    return addBtn;
 }
 
 function findValueInSelected(parent, value){
