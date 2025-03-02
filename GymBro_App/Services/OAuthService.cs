@@ -329,5 +329,12 @@ public class OAuthService : IOAuthService
                 }
             }
         }
+        public async Task<bool> UserHasFitbitToken(string identityId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.IdentityUserId == identityId);
+            if (user == null) return false;
+
+            return await _context.Tokens.AnyAsync(t => t.UserId == user.UserId);
+        }
     }
 }

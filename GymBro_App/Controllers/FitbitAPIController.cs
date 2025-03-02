@@ -43,7 +43,7 @@ namespace GymBro_App.Controllers
                 // Now call the ExchangeCodeForToken method to get the token and store it
                 await _oauthService.ExchangeCodeForToken(identityId, code);
 
-                return RedirectToAction("Index", "Home");  // Redirect to Home or another page
+                return RedirectToAction("AwardMedals", "AwardMedal");  // Redirect to Home or another page
             }
             catch (UnauthorizedAccessException)
             {
