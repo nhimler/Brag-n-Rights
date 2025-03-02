@@ -1,30 +1,36 @@
-@model GymBro_App.ViewModels.MealPlanView?
+@model GymBro_App.ViewModels.MealPlanHomeView?
 @{
     ViewData["Title"] = "Meal Plan";
 }
 
 
 <p>Welcome to the Meal Plan page!</p>
-<form method="post" asp-action="Index">
+<!--form method="post" asp-action="Index">
     <button type="submit" class="btn btn-primary">Create Meal Plan</button>
-</form>
+</form-->
+
+<a asp-action="CreateMealPlan" asp-route-id="new"><button class="btn btn-primary">Create Meal Plan</button></a>
 <hr>
-<a asp-action="CreateMeal"><button class="btn btn-primary">Add Food</button></a>
+<a asp-action="CreateMeal" asp-route-id="new"><button class="btn btn-primary">Add Food</button></a>
 <hr>
-@if(Model != null && Model.MealNames != null && Model.Foods != null){
-    <h2>Meals</h2>
-    <ol>
-        @for(int i = 0; i < Model.MealNames.Count; i++)
-        {
-            <li>
-                    <h3>@Model.MealNames[i]</h3>
-                    @for(int j = 0; j < Model.Foods[i].Count; j++)
-                    {
-                        <p data-api-id="@Model.Foods[i][j]">@j</p>
-                    }
-            </li>
-        }
-    </ol>
+@if(Model != null && Model.MealNames != null && Model.Foods != null && Model.PlanNames != null){
+    <h2>Meal Plans</h2>
+
+    @for(int k = 0; k < Model.PlanNames.Count; k++){
+        <h3>@Model.PlanNames[k]</h3>
+        <ol>
+            @for(int i = 0; i < Model.MealNames[k].Count; i++)
+            {
+                <li>
+                        <h3>@Model.MealNames[k][i]</h3>
+                        @for(int j = 0; j < Model.Foods[k][i].Count; j++)
+                        {
+                            <p data-api-id="@Model.Foods[k][i][j]">@j</p>
+                        }
+                </li>
+            }
+        </ol>
+    }
 }
 
 

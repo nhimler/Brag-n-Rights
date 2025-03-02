@@ -1,14 +1,25 @@
-@model GymBro_App.ViewModels.MealView?
+@model GymBro_App.ViewModels.MealView
 
 @{
     ViewData["Title"] = "Add Food";
 }
 
 <h2>Create Meal</h2>
-<form method="post" asp-action="CreateMeal">
+<form method="post" asp-action="CreateMeal" asp-route-id="">
     <button class="btn btn-primary" type="submit">Create</button>
-    <h4>Meal x</h4>
-    <input name="MealId" value="1" hidden readonly/>
+    <h4><label asp-for="MealName">Meal Name</label></h4>
+    @if(Model == null){
+        <input asp-for="MealName" class="form-control" value="New Meal"/>
+    } else {
+        <input asp-for="MealName" class="form-control" value="@Model.MealName"/>
+    }
+    <input asp-for="MealId" hidden readonly/>
+    <select asp-for="MealType" class="form-control">
+            <option value="Breakfast">Breakfast</option>
+            <option value="Lunch">Lunch</option>
+            <option value="Dinner">Dinner</option>
+            <option value="Snack">Snack</option>
+    </select>
     <h4>Selected Foods</h4>
     <table class="table table-bordered">
         <tbody id="selectedFood"></tbody>
