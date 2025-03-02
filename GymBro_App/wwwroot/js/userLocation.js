@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 })
 
-
 function getPositionError(err) {
     console.log(`Error ${err.code}: couldn't get location. Issue: ${err.message}`)
     return null
@@ -69,4 +68,11 @@ async function embedMapAtUserPosition(position) {
 
         mapFrame.src = `https://www.google.com/maps/embed/v1/view?key=${result.apiKey}&center=${lat},${long}&zoom=18`
     }
+}
+
+module.exports = {
+    getPositionError,
+    putUserPosition,
+    embedDefaultMap,
+    embedMapAtUserPosition
 }
