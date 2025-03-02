@@ -3,6 +3,7 @@ using GymBro_App.Models;
 using GymBro_App.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using GymBro_App.Services;
+using GymBro_App.Helper; // Assuming EncryptionHelper is in the Helpers namespace
 using GymBro_App.DAL.Abstract;
 using GymBro_App.DAL.Concrete;
 using System.Diagnostics;
@@ -36,6 +37,12 @@ public class Program
         builder.Services.AddScoped<IAwardMedalService, AwardMedalService>();
         builder.Services.AddScoped<IUserMedalRepository, UserMedalRepository>();
         builder.Services.AddScoped<IBiometricDatumRepository, BiometricDatumRepository>();
+        builder.Services.AddScoped<IOAuthService, OAuthService>();  
+        builder.Services.AddHttpContextAccessor(); 
+        builder.Services.AddScoped<EncryptionHelper>();
+
+        
+
         // Configure the authentication/Identity database connection
         var authDbConnectionString = builder.Configuration.GetConnectionString("AuthGymBroAzureConnection");
 
@@ -73,6 +80,21 @@ public class Program
             return new ExerciseService(client, services.GetRequiredService<ILogger<ExerciseService>>());
         });
 
+        // Google Maps API Configuration
+        string googleMapsApiKey = builder.Configuration["GoogleMapsApiKey"] ?? "";
+        string googleMapsApiUrl = "https://maps.googleapis.com/maps/api";
+        builder.Services.AddHttpClient<IMapService, MapService>((client, services) =>
+        {
+            client.BaseAddress = new Uri(googleMapsApiUrl);
+
+            // Removed for now. Breaks when we're just grabbing the API key
+            // client.DefaultRequestHeaders.Add("Accept", "application/json");
+            // client.DefaultRequestHeaders.Add("Content-Type", "application/json; charset=utf-8");
+            
+            client.DefaultRequestHeaders.Add("X-goog-api-key", googleMapsApiKey);
+            return new MapService(client, services.GetRequiredService<ILogger<MapService>>());
+        });
+
 
         // Configure the Identity registration requirements
         builder.Services.Configure<IdentityOptions>(options =>
@@ -87,6 +109,13 @@ public class Program
             options.Password.RequireUppercase = true;
             options.Password.RequiredLength = 10;
             options.Password.RequiredUniqueChars = 0;
+        });
+
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(30); // Keep session for 30 minutes
+            options.Cookie.HttpOnly = true;                 // Protect against JavaScript access
+            options.Cookie.IsEssential = true;              // Needed for GDPR compliance
         });
 
         var app = builder.Build();
@@ -110,7 +139,16 @@ public class Program
 
         app.UseRouting();
 
+        app.UseSession();
+
         app.UseAuthorization();
+
+        app.MapControllerRoute(
+            name: "fitbitCallback",
+            pattern: "signin-fitbit",
+            defaults: new { controller = "FitbitAPI", action = "SigninFitbit" }
+        );
+
 
         app.MapControllerRoute(
             name: "default",

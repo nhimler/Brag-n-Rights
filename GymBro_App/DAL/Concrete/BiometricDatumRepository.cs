@@ -1,21 +1,24 @@
 using GymBro_App.Models;
 using GymBro_App.DAL.Abstract;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace GymBro_App.DAL.Concrete
 {
-    public class BiometricDatumRepository : IBiometricDatumRepository
+    public class BiometricDatumRepository : IBiometricDatumRepository, IRepository<BiometricDatum>
     {
         private readonly GymBroDbContext _context;
 
         public BiometricDatumRepository(GymBroDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<BiometricDatum> AddAsync(BiometricDatum entity)
+        {
+            await _context.BiometricData.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         // Fetch the latest step count for a given user
@@ -33,7 +36,6 @@ namespace GymBro_App.DAL.Concrete
 
             return latestStep;
         }
-
 
         // Find a BiometricDatum by ID
         public BiometricDatum FindById(int id)
@@ -89,7 +91,7 @@ namespace GymBro_App.DAL.Concrete
         // Add or update a BiometricDatum
         public BiometricDatum AddOrUpdate(BiometricDatum entity)
         {
-            if (_context.BiometricData.Any(b => b.BiometricId == entity.BiometricId)) // Use BiometricId here
+            if (_context.BiometricData.Any(b => b.BiometricId == entity.BiometricId))
             {
                 _context.BiometricData.Update(entity);
             }
@@ -97,11 +99,26 @@ namespace GymBro_App.DAL.Concrete
             {
                 _context.BiometricData.Add(entity);
             }
+
+            _context.SaveChanges(); // Persist the changes to the database
+            return entity;
+        }
+        public async Task<BiometricDatum> AddOrUpdateAsync(BiometricDatum entity)
+        {
+            if (await _context.BiometricData.AnyAsync(b => b.BiometricId == entity.BiometricId))
+            {
+                _context.BiometricData.Update(entity);
+            }
+            else
+            {
+                await _context.BiometricData.AddAsync(entity);
+            }
+
+            await _context.SaveChangesAsync(); // Persist the changes to the database
             return entity;
         }
 
         // Get all biometric data for a user
-
         public async Task<IEnumerable<BiometricDatum>> GetUserBiometricDataAsync(int userId)
         {
             return await _context.BiometricData

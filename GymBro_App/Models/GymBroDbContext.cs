@@ -39,8 +39,11 @@ public partial class GymBroDbContext : DbContext
 
     public virtual DbSet<WorkoutPlan> WorkoutPlans { get; set; }
 
+    public DbSet<TokenEntity> Tokens { get; set; }
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=GymBroConnection");
+        => optionsBuilder.UseSqlServer("Name=GymBroAzureConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -185,6 +188,13 @@ public partial class GymBroDbContext : DbContext
                         j.IndexerProperty<int>("WorkoutPlanId").HasColumnName("WorkoutPlanID");
                         j.IndexerProperty<int>("ExerciseId").HasColumnName("ExerciseID");
                     });
+        });
+
+        modelBuilder.Entity<TokenEntity>(entity =>
+        {
+            entity.HasKey(e => e.UserId).HasName("PK__Token__1788CCAC2EC5A686");
+
+            entity.HasOne(d => d.User).WithOne(p => p.Token).HasForeignKey<TokenEntity>(d => d.UserId);
         });
 
         OnModelCreatingPartial(modelBuilder);
