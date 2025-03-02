@@ -12,7 +12,7 @@ namespace GymBro_App;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -149,11 +149,17 @@ public class Program
             defaults: new { controller = "FitbitAPI", action = "SigninFitbit" }
         );
 
-
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         app.MapRazorPages();
+
+        // Seed the Identity database
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            await IdentityDbInitializer.SeedUsers(services);
+        }
 
         app.Run();
     }
