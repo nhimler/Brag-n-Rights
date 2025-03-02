@@ -73,6 +73,21 @@ public class Program
             return new ExerciseService(client, services.GetRequiredService<ILogger<ExerciseService>>());
         });
 
+        // Google Maps API Configuration
+        string googleMapsApiKey = builder.Configuration["GoogleMapsApiKey"] ?? "";
+        string googleMapsApiUrl = "https://maps.googleapis.com/maps/api";
+        builder.Services.AddHttpClient<IMapService, MapService>((client, services) =>
+        {
+            client.BaseAddress = new Uri(googleMapsApiUrl);
+
+            // Removed for now. Breaks when we're just grabbing the API key
+            // client.DefaultRequestHeaders.Add("Accept", "application/json");
+            // client.DefaultRequestHeaders.Add("Content-Type", "application/json; charset=utf-8");
+            
+            client.DefaultRequestHeaders.Add("X-goog-api-key", googleMapsApiKey);
+            return new MapService(client, services.GetRequiredService<ILogger<MapService>>());
+        });
+
 
         // Configure the Identity registration requirements
         builder.Services.Configure<IdentityOptions>(options =>

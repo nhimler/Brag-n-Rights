@@ -40,7 +40,7 @@ public partial class GymBroDbContext : DbContext
     public virtual DbSet<WorkoutPlan> WorkoutPlans { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=GymBroConnection");
+        => optionsBuilder.UseSqlServer("Name=GymBroAzureConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
