@@ -73,42 +73,6 @@ public class MealPlanController : Controller
         return View(mealPlanView);
     }
 
-    [HttpPost]
-    public IActionResult Index(MealPlan? mp = null)
-    {
-        if (!(User.Identity?.IsAuthenticated ?? false))
-        {
-            return View(null);
-        }
-        var user = _userManager.GetUserAsync(User).Result;
-        if (user == null)
-        {
-            return View(null);
-        }
-        var userId = _userRepository.GetIdFromIdentityId(user.Id);
-        var mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
-        if (mealPlan == null)
-        {
-            _mealPlanRepository.Add(new MealPlan()
-            {
-                UserId = userId,
-                PlanName = "New Meal Plan"
-            });
-            Debug.WriteLine("New meal plan added");
-        }
-        mealPlan = _mealPlanRepository.GetFirstMealPlanForUser(userId);
-        if (mealPlan != null && !_mealPlanRepository.HasMeals(mealPlan.MealPlanId))
-        {
-            _mealRepository.Add(new Meal()
-            {
-                MealPlanId = mealPlan.MealPlanId,
-                MealName = "New Meal"
-            });
-            Debug.WriteLine("New meal added");
-        }
-        return View(null);
-    }
-
     [HttpGet ("CreateMealPlan/{id}")]
     public IActionResult CreateMealPlan(string id)
     {

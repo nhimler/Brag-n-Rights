@@ -15,6 +15,9 @@
 <hr>
 @if(Model != null && Model.MealNames != null && Model.Foods != null && Model.PlanNames != null){
     <h2>Meal Plans</h2>
+    <a href="https://www.fatsecret.com">
+        <img src="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret.png" srcset="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_2x.png 2x, https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_3x.png 3x" border="0"/>
+    </a>
 
     @for(int k = 0; k < Model.PlanNames.Count; k++){
         <h3>@Model.PlanNames[k]</h3>
