@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-    navigator.geolocation.getCurrentPosition(embedDefaultMap, embedDefaultMap)
+    if (document.getElementById("nearby-gyms-map")) {
+        navigator.geolocation.getCurrentPosition(embedDefaultMap, embedDefaultMap)
+    }
 })
 
 
@@ -10,6 +12,8 @@ function getPositionError(err) {
 
 async function putUserPosition(position) {
     const coordinates = position.coords
+    console.log(`${coordinates.latitude.toFixed(6)}, ${coordinates.longitude.toFixed(6)}`)
+
     const user = {
         latitude : coordinates.latitude,
         longitude : coordinates.longitude
@@ -29,15 +33,6 @@ async function putUserPosition(position) {
     }
 }
 
-function getUserPosition(successFunction) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(successFunction, getPositionError)
-    }
-    else {
-        console.log('navigator.geolocation not found.')
-    }
-}
-
 async function embedDefaultMap() {
     const mapFrame = document.getElementById("nearby-gyms-map")
     let response = await fetch(`/api/maps`, {
@@ -54,6 +49,7 @@ async function embedDefaultMap() {
 }
 
 async function embedMapAtUserPosition(position) {
+    console.log("Got to embedMap")
     const mapFrame = document.getElementById("nearby-gyms-map")
     let coordinates = position.coords
 
@@ -66,6 +62,8 @@ async function embedMapAtUserPosition(position) {
 
     if (response.ok) {
         let result = await response.json()
+        console.log("Got response")
+        
         let lat = coordinates.latitude.toFixed(6)
         let long = coordinates.longitude.toFixed(6)
 
