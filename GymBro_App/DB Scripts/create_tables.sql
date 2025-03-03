@@ -17,7 +17,9 @@ CREATE TABLE [User] (
     [LastLogin]             DATETIME,
     [ProfilePicture]        VARBINARY(MAX),
     [PreferredWorkoutTime]  NVARCHAR(20)    CHECK (PreferredWorkoutTime IN ('Morning', 'Afternoon', 'Evening')),
-    [Location]              NVARCHAR(255)
+    [Location]              NVARCHAR(255),
+    [Latitude]              DECIMAL(9,6),
+    [Longitude]             DECIMAL(9,6)
 );
 
 -- Workout Plan table
@@ -105,10 +107,9 @@ CREATE TABLE [MealFood] (
 );
 
 -- Biometric Data table
-CREATE TABLE BiometricDatum (
+CREATE TABLE BiometricData (
     BiometricID INT PRIMARY KEY IDENTITY(1,1),        -- Auto-increment primary key
     UserID INT NULL,                                   -- Foreign key to User (nullable)
-    Date DATE NULL,                                    -- The date of the biometric data entry
     Steps INT NULL,                                    -- Number of steps for the day
     CaloriesBurned INT NULL,                           -- Number of calories burned
     HeartRate INT NULL,                                -- User's heart rate
@@ -186,6 +187,16 @@ CREATE TABLE UserMedal (
     MedalID INT NOT NULL,                       -- Foreign key to Medal
     EarnedDate DATE NOT NULL,                   -- Date when the medal was earned
 
-    CONSTRAINT FK_UserMedal_User FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE,
-    CONSTRAINT FK_UserMedal_Medal FOREIGN KEY (MedalID) REFERENCES Medals(MedalID) ON DELETE CASCADE
+    CONSTRAINT FK_UserMedal_User FOREIGN KEY (UserID) REFERENCES [User](UserID) ON DELETE CASCADE,
+    CONSTRAINT FK_UserMedal_Medal FOREIGN KEY (MedalID) REFERENCES Medal(MedalID) ON DELETE CASCADE
+);
+
+CREATE TABLE Token (
+    UserId INT PRIMARY KEY,
+    AccessToken NVARCHAR(MAX) NOT NULL,
+    RefreshToken NVARCHAR(MAX) NOT NULL,
+    ExpirationTime DATETIME NOT NULL,
+    Scope NVARCHAR(MAX),
+    TokenType NVARCHAR(MAX),
+    CONSTRAINT FK_Token_User FOREIGN KEY (UserId) REFERENCES [User](UserID) ON DELETE CASCADE
 );

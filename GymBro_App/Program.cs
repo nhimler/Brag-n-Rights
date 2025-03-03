@@ -2,16 +2,17 @@ using Microsoft.EntityFrameworkCore;
 using GymBro_App.Models;
 using GymBro_App.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
-using System.Net.Http.Headers;
 using GymBro_App.Services;
+using GymBro_App.Helper; // Assuming EncryptionHelper is in the Helpers namespace
 using GymBro_App.DAL.Abstract;
 using GymBro_App.DAL.Concrete;
+using System.Diagnostics;
 
 namespace GymBro_App;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -19,18 +20,14 @@ public class Program
         builder.Services.AddControllersWithViews();
         builder.Services.AddSwaggerGen();
 
-        // This works with user secrets. 
-        // When storing the connection string in appsettings, instead use builder.GetConnectionString("GymBroConnection");
         var connectionString = builder.Configuration.GetConnectionString("GymBroAzureConnection");
-        // Console.WriteLine(connectionString);
-        // var connectionPassword = builder.Configuration["GymBroPassword"];
-
-        // var connectionStringWithPassword = $"{connectionString};Password={connectionPassword}";
 
         builder.Services.AddDbContext<GymBroDbContext>(options => options
-            .UseLazyLoadingProxies()    // Will use lazy loading, but not in LINQPad as it doesn't run Program.cs
+            .UseLazyLoadingProxies()
             .UseSqlServer(connectionString));
 
+        // Add repository scopes for controllers below:
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
         builder.Services.AddScoped<IFoodRepository, FoodRepository>();
         builder.Services.AddScoped<IMealRepository, MealRepository>();
@@ -40,6 +37,12 @@ public class Program
         builder.Services.AddScoped<IAwardMedalService, AwardMedalService>();
         builder.Services.AddScoped<IUserMedalRepository, UserMedalRepository>();
         builder.Services.AddScoped<IBiometricDatumRepository, BiometricDatumRepository>();
+        builder.Services.AddScoped<IOAuthService, OAuthService>();  
+        builder.Services.AddHttpContextAccessor(); 
+        builder.Services.AddScoped<EncryptionHelper>();
+
+        
+
         // Configure the authentication/Identity database connection
         var authDbConnectionString = builder.Configuration.GetConnectionString("AuthGymBroAzureConnection");
 
@@ -49,18 +52,20 @@ public class Program
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                         .AddEntityFrameworkStores<AuthGymBroDb>();
 
-        string foodApiUrl = "https://platform.fatsecret.com/rest/server.api";
-        string foodApiKey = builder.Configuration["FoodApiKey"] ?? "";
+        string? foodApiClientId = builder.Configuration["FoodApiClientId"];
+        string? foodApiClientSecret = builder.Configuration["FoodApiClientSecret"];
+
+        if(foodApiClientId == null || foodApiClientSecret == null)
+        {
+            Console.WriteLine("Food API Client ID and Secret must be set in the user secrets.");
+        }
 
         string exerciseDbAPIUrl = "https://exercisedb.p.rapidapi.com";
-        string exerciseDbAPIKey = builder.Configuration["ExerciseDbApiKey"];
+        string exerciseDbAPIKey = builder.Configuration["ExerciseDbApiKey"] ?? "";
 
         builder.Services.AddHttpClient<IFoodService, FoodService>((client, services) =>
         {
-            client.BaseAddress = new Uri(foodApiUrl);
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", foodApiKey);
-            return new FoodService(client, services.GetRequiredService<ILogger<FoodService>>());
+            return new FoodService(client, services.GetRequiredService<ILogger<FoodService>>(), foodApiClientId, foodApiClientSecret);
         });
 
         builder.Services.AddHttpClient<IExerciseService, ExerciseService>((client, services) =>
@@ -73,6 +78,21 @@ public class Program
             var logger = services.GetRequiredService<ILogger<ExerciseService>>();
             logger.LogInformation("Request: {0} - Headers: {1}", client.BaseAddress, client.DefaultRequestHeaders);
             return new ExerciseService(client, services.GetRequiredService<ILogger<ExerciseService>>());
+        });
+
+        // Google Maps API Configuration
+        string googleMapsApiKey = builder.Configuration["GoogleMapsApiKey"] ?? "";
+        string googleMapsApiUrl = "https://maps.googleapis.com/maps/api";
+        builder.Services.AddHttpClient<IMapService, MapService>((client, services) =>
+        {
+            client.BaseAddress = new Uri(googleMapsApiUrl);
+
+            // Removed for now. Breaks when we're just grabbing the API key
+            // client.DefaultRequestHeaders.Add("Accept", "application/json");
+            // client.DefaultRequestHeaders.Add("Content-Type", "application/json; charset=utf-8");
+            
+            client.DefaultRequestHeaders.Add("X-goog-api-key", googleMapsApiKey);
+            return new MapService(client, services.GetRequiredService<ILogger<MapService>>());
         });
 
 
@@ -91,9 +111,12 @@ public class Program
             options.Password.RequiredUniqueChars = 0;
         });
 
-        // Add the dependency injections for controllers below:
-        // Register the IUserRepository service with UserRepository
-        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(30); // Keep session for 30 minutes
+            options.Cookie.HttpOnly = true;                 // Protect against JavaScript access
+            options.Cookie.IsEssential = true;              // Needed for GDPR compliance
+        });
 
         var app = builder.Build();
 
@@ -116,12 +139,27 @@ public class Program
 
         app.UseRouting();
 
+        app.UseSession();
+
         app.UseAuthorization();
+
+        app.MapControllerRoute(
+            name: "fitbitCallback",
+            pattern: "signin-fitbit",
+            defaults: new { controller = "FitbitAPI", action = "SigninFitbit" }
+        );
 
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         app.MapRazorPages();
+
+        // Seed the Identity database
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            await IdentityDbInitializer.SeedUsers(services);
+        }
 
         app.Run();
     }

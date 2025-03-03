@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace GymBro_App.Models;
 
+[Table("BiometricData")]
 public partial class BiometricDatum
 {
     [Key]
@@ -14,8 +12,6 @@ public partial class BiometricDatum
 
     [Column("UserID")]
     public int? UserId { get; set; }
-
-    public DateOnly? Date { get; set; }
 
     public int? Steps { get; set; }
 

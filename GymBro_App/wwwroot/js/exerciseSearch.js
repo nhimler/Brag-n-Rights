@@ -29,11 +29,19 @@ async function displayExerciseSearchResults(result) {
         console.error("Elements not found");
         return;
     }
-    let selectedWorkouts = document.getElementById("selectedWorkouts");
+    console.log("✅ Found #exerciseSearchResults in the DOM.");
+
+        let selectedWorkouts = document.getElementById("selectedWorkouts");
+    if (!selectedWorkouts) {
+        selectedWorkouts = document.createElement("div");
+        selectedWorkouts.id = "selectedWorkouts";
+        document.body.appendChild(selectedWorkouts);
+    }
+    
     resultList.innerHTML = "";
 
     let heading = document.createElement("h2");
-    heading.textContent = "Results";
+    heading.textContent = "Here are our top 10 results";
     resultList.appendChild(heading);
 
     let table = document.createElement("table");
@@ -67,9 +75,64 @@ async function displayExerciseSearchResults(result) {
         gifCell.appendChild(gifLink);
         row.appendChild(gifCell);
 
+        let addCell = document.createElement("td");
+        let addButton = document.createElement("button");
+        addButton.className = "btn btn-primary";
+        addButton.textContent = "Add";
+        addButton.type = "button";
+        addButton.addEventListener("click", function(e){
+            console.log("🆕 Add button clicked for:", exercise.name);
+            let row = e.target.closest("tr");
+            if(row) row.remove();
+            addExerciseToCart(exercise);
+        });
+        addCell.appendChild(addButton);
+        row.appendChild(addCell);
+
         tbody.appendChild(row);
     });
 
     table.appendChild(tbody);
     resultList.appendChild(table);
+}
+
+function addExerciseToCart(exercise) {
+    let exerciseCart = document.getElementById("exerciseCart");
+    if (!exerciseCart) {
+        console.error("Exercise cart container not found.");
+        return;
+    }
+    
+    let exerciseEntry = document.createElement("div");
+    exerciseEntry.className = "selected-exercise entry";
+    exerciseEntry.style.border = "1px solid #ccc";
+    exerciseEntry.style.padding = "8px";
+    exerciseEntry.style.marginBottom = "4px";
+
+    exerciseEntry.innerHTML = `<strong>${exercise.name}</strong>`;
+    
+    let removeButton = document.createElement("button");
+    removeButton.innerText = "Remove";
+    removeButton.className = "btn btn-danger btn-sm";
+    removeButton.style.marginLeft = "8px";
+    removeButton.addEventListener("click", function() {
+         exerciseEntry.remove();
+    });
+
+    exerciseEntry.appendChild(removeButton);
+    exerciseCart.appendChild(exerciseEntry);
+
+    // In a different user story, this button will be used to add the selected exercises to a workout in our db
+    let addExerciseToCartButton = document.getElementById("addExerciseToCartButton");
+    if (!addExerciseToCartButton) {
+        addExerciseToCartButton = document.createElement("button");
+        addExerciseToCartButton.id = "addExerciseToCartButton";
+        addExerciseToCartButton.textContent = "Add Exercises to Workout";
+        addExerciseToCartButton.className = "btn btn-success";
+        addExerciseToCartButton.style.marginTop = "12px";
+        addExerciseToCartButton.addEventListener("click", function() {
+            window.location.href = "/Workouts";
+        });
+    }
+    exerciseCart.appendChild(addExerciseToCartButton);
 }

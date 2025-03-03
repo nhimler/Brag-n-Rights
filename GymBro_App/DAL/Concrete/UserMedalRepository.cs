@@ -1,11 +1,8 @@
 using GymBro_App.Models;
 using GymBro_App.DAL.Abstract;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
+
 
 namespace GymBro_App.DAL.Concrete
 {
@@ -23,6 +20,15 @@ namespace GymBro_App.DAL.Concrete
             return await _context.UserMedals
                                 .Where(um => um.UserId == userId)
                                 .ToListAsync();
+        }
+
+        public async Task AddBatchUserMedalsAsync(List<UserMedal> userMedals)
+        {
+            if (userMedals == null || !userMedals.Any()) return;
+
+            // Assuming _context is your database context (EF Core)
+            await _context.UserMedals.AddRangeAsync(userMedals);  // Bulk insert medals
+            await _context.SaveChangesAsync();  // Commit to the database
         }
 
         public async Task AddUserMedalAsync(UserMedal userMedal)
