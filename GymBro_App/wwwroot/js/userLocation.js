@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-    if (document.getElementById("nearby-gyms-map")) {
-        navigator.geolocation.getCurrentPosition(embedDefaultMap, embedDefaultMap)
+    const mapElement = document.getElementById("nearby-gyms-map");
+    if (mapElement) {
+        embedDefaultMap();
+        navigator.geolocation.getCurrentPosition(embedMapAtUserPosition, getPositionError)
     }
-})
+});
 
 function getPositionError(err) {
     console.log(`Error ${err.code}: couldn't get location. Issue: ${err.message}`)
@@ -48,7 +50,7 @@ async function embedDefaultMap() {
 }
 
 async function embedMapAtUserPosition(position) {
-    console.log("Got to embedMap")
+    // console.log("Got to embedMap")
     const mapFrame = document.getElementById("nearby-gyms-map")
     let coordinates = position.coords
 
@@ -61,7 +63,7 @@ async function embedMapAtUserPosition(position) {
 
     if (response.ok) {
         let result = await response.json()
-        console.log("Got response")
+        // console.log("Got response")
         
         let lat = coordinates.latitude.toFixed(6)
         let long = coordinates.longitude.toFixed(6)
@@ -70,9 +72,11 @@ async function embedMapAtUserPosition(position) {
     }
 }
 
-module.exports = {
-    getPositionError,
-    putUserPosition,
-    embedDefaultMap,
-    embedMapAtUserPosition
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        getPositionError,
+        putUserPosition,
+        embedDefaultMap,
+        embedMapAtUserPosition
+    };
 }

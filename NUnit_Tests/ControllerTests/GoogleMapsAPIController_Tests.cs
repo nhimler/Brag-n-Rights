@@ -8,16 +8,16 @@ namespace ControllerTests
 {
     public class GoogleMapsAPIController_Tests
     {
-        private Mock<IMapService> _mockMapService;
+        private Mock<IEmbedMapService> _mockEmbedMapService;
         private Mock<ILogger<GoogleMapsAPIController>> _mockILogger;
         private GoogleMapsAPIController _googleMapsAPIController;
 
         [SetUp]
         public void SetUp()
         {
-            _mockMapService = new Mock<IMapService>();
+            _mockEmbedMapService = new Mock<IEmbedMapService>();
             _mockILogger = new Mock<ILogger<GoogleMapsAPIController>>();
-            _googleMapsAPIController = new GoogleMapsAPIController(_mockMapService.Object, _mockILogger.Object);
+            _googleMapsAPIController = new GoogleMapsAPIController(_mockEmbedMapService.Object, _mockILogger.Object);
         }
 
         [Test]
@@ -26,7 +26,7 @@ namespace ControllerTests
             // Arrange
             var expectedApiKey = "test-api-key";
             var expectedStatusCode = 200;
-            _mockMapService.Setup(service => service.GetGoogleMapsApiKey()).ReturnsAsync(expectedApiKey);
+            _mockEmbedMapService.Setup(service => service.GetGoogleMapsApiKey()).ReturnsAsync(expectedApiKey);
 
             // Act
             var result = await _googleMapsAPIController.GetGoogleMapsApiKey() as OkObjectResult;

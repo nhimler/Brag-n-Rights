@@ -4,18 +4,18 @@ using Moq;
 
 namespace NUnit_Tests.Service_Tests
 {
-    public class MapService_Tests
+    public class EmbedMapService_Tests
     {
         private Mock<HttpClient> _mockHttpClient;
-        private Mock<ILogger<MapService>> _mockILogger;
-        private MapService _mapService;
+        private Mock<ILogger<EmbedMapService>> _mockILogger;
+        private EmbedMapService _embedMapService;
 
         [SetUp]
         public void SetUp()
         {
             _mockHttpClient = new Mock<HttpClient>();
-            _mockILogger = new Mock<ILogger<MapService>>();
-            _mapService = new MapService(_mockHttpClient.Object, _mockILogger.Object);
+            _mockILogger = new Mock<ILogger<EmbedMapService>>();
+            _embedMapService = new EmbedMapService(_mockHttpClient.Object, _mockILogger.Object);
         }
 
         [Test]
@@ -25,10 +25,10 @@ namespace NUnit_Tests.Service_Tests
             var expectedApiKey = "test-api-key";
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("X-goog-api-key", expectedApiKey);
-            _mapService = new MapService(httpClient, _mockILogger.Object);
+            _embedMapService = new EmbedMapService(httpClient, _mockILogger.Object);
 
             // Act
-            var apiKey = await _mapService.GetGoogleMapsApiKey();
+            var apiKey = await _embedMapService.GetGoogleMapsApiKey();
 
             // Assert
             Assert.That(expectedApiKey, Is.EqualTo(apiKey));
