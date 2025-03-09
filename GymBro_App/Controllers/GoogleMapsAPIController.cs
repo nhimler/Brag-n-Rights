@@ -8,11 +8,13 @@ namespace GymBro_App.Controllers;
 public class GoogleMapsAPIController : ControllerBase
 {
     private readonly IEmbedMapService _embedMapService;
+    private readonly INearbySearchMapService _nearbySearchMapService;
     private readonly ILogger<GoogleMapsAPIController> _logger;
 
-    public GoogleMapsAPIController(IEmbedMapService embedMapService, ILogger<GoogleMapsAPIController> logger)
+    public GoogleMapsAPIController(IEmbedMapService embedMapService, ILogger<GoogleMapsAPIController> logger, INearbySearchMapService nearbySearchMapService)
     {
         _embedMapService = embedMapService;
+        _nearbySearchMapService = nearbySearchMapService;
         _logger = logger;
     }
 
@@ -21,5 +23,12 @@ public class GoogleMapsAPIController : ControllerBase
     {
         var apiKey = await _embedMapService.GetGoogleMapsApiKey();
         return Ok(new { apiKey });
+    }
+
+    [HttpGet("nearby")]
+    public async Task<IActionResult> GetNearbyPlaces(double latitude, double longitude)
+    {
+        var nearbyPlaces = await _nearbySearchMapService.FindNearbyGyms(latitude, longitude);
+        return Ok(nearbyPlaces);
     }
 }
