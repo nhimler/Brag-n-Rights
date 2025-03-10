@@ -1,4 +1,4 @@
-let exerciseSearchButton = document.getElementById("exerciseSearchButton");
+let exerciseSearchButton = document.getElementById("exerciseSearchButtonAddon");
 
 exerciseSearchButton.addEventListener("click", async function(){
     let name = document.getElementById("exerciseInput").value;
@@ -41,7 +41,11 @@ async function displayExerciseSearchResults(result) {
     resultList.innerHTML = "";
 
     let heading = document.createElement("h2");
-    heading.textContent = "Here are our top 10 results";
+    if (exerciseInput.value === "") {
+        heading.textContent = "Here are our first 10 exercises:";
+    } else {
+        heading.textContent = "Here are our top 10 results for " + exerciseInput.value + ":";
+    }
     resultList.appendChild(heading);
 
     let table = document.createElement("table");
