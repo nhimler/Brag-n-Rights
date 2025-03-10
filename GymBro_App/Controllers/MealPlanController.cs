@@ -48,6 +48,8 @@ public class MealPlanController : Controller
         }
         int userId = _userRepository.GetIdFromIdentityId(user.Id);
         var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
+
+        mealPlans = mealPlans.OrderBy(mp => mp.StartDate).ToList();
         if (mealPlans == null)
         {   
             return View(null);
@@ -59,12 +61,12 @@ public class MealPlanController : Controller
             mealPlanView.PlanNames.Add(mealPlan.PlanName ?? "");
             foreach(Meal meal in mealPlan.Meals){
                 if(mealPlanView.MealNames != null && meal.MealName != null && mealPlanView.Foods != null){
-                mealPlanMeals.Add(meal.MealName);
-                List<long> foodIds = new List<long>();
-                foreach(Food food in meal.Foods){
-                    foodIds.Add(food.ApiFoodId ?? -1);
-                }
-                mealPlanFoods.Add(foodIds);
+                    mealPlanMeals.Add(meal.MealName);
+                    List<long> foodIds = new List<long>();
+                    foreach(Food food in meal.Foods){
+                        foodIds.Add(food.ApiFoodId ?? -1);
+                    }
+                    mealPlanFoods.Add(foodIds);
                 }
             }
             mealPlanView.MealNames.Add(mealPlanMeals);

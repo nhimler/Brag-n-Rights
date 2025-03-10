@@ -4,7 +4,7 @@ namespace GymBro_App.ViewModels
     {
         public List<string>? PlanNames { get; set; } = new List<string>();
         public List<List<string>>? MealNames { get; set; } = new List<List<string>>();
-
+        public List<DateOnly>? PlanDates { get; set; } = new List<DateOnly>();
         public List<List<List<long>>>? Foods { get; set; } = new List<List<List<long>>>();
     }
 }
