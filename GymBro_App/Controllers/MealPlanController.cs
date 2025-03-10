@@ -59,6 +59,7 @@ public class MealPlanController : Controller
             List<string> mealPlanMeals = new List<string>();
             List<List<long>> mealPlanFoods = new List<List<long>>();
             mealPlanView.PlanNames.Add(mealPlan.PlanName ?? "");
+            mealPlanView.PlanDates.Add(mealPlan.StartDate ?? DateOnly.MaxValue);
             foreach(Meal meal in mealPlan.Meals){
                 if(mealPlanView.MealNames != null && meal.MealName != null && mealPlanView.Foods != null){
                     mealPlanMeals.Add(meal.MealName);
