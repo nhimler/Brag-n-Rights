@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const mapElement = document.getElementById("nearby-gyms-map");
+    const mapElement = document.getElementById("nearby-gyms-map")
     if (mapElement) {
-        embedDefaultMap();
+        embedDefaultMap()
         navigator.geolocation.getCurrentPosition(embedMapAtUserPosition, getPositionError)
     }
-});
+})
 
 function getPositionError(err) {
     console.log(`Error ${err.code}: couldn't get location. Issue: ${err.message}`)
@@ -72,11 +72,51 @@ async function embedMapAtUserPosition(position) {
     }
 }
 
+async function getNearbyGyms(lat,long) {
+    // TODO: Call this method in a better way (ex: "api/maps/nearby?latitude=lat&longitude=long")
+    let response = await fetch(`/api/maps/nearby/${lat}/${long}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    if(response.ok){
+        let result = await response.json()
+        let gymList = document.getElementById("nearby-gym-search-list")
+        let gymListHTML = ""
+
+        for (let i = 0; i < result.length; i++) {
+            let gym = result[i]
+            // let gymOpenStatus = gym.openNow ? "Open" : "Closed"
+            
+            gymListHTML += `
+                <a target="_blank" rel="noopener noreferrer" href="#" class="card mb-3 text-decoration-none text-dark diplayed-gym-card">
+                    <div class="card-body">
+                        <h5 class="card-title">${gym.displayName.text}</h5>
+                        <p class="card-text"><small class="text-body-secondary">${gym.formattedAddress}</small></p>
+                        <p class="card-text">Time not implemented yet &centerdot; </p>
+                    </div>
+                </a>
+            `
+            gymList.innerHTML = gymListHTML
+            // console.log(gym)
+            console.log(gym.displayName.text)
+            console.log(gym.formattedAddress)
+            console.log("")
+        }
+    }
+    else {
+        console.log("Error: " + response.status)
+    }
+}
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         getPositionError,
         putUserPosition,
         embedDefaultMap,
-        embedMapAtUserPosition
-    };
+        embedMapAtUserPosition,
+        getNearbyGyms
+    }
 }

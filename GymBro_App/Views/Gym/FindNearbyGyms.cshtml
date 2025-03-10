@@ -4,8 +4,21 @@
 <link rel="stylesheet" href="~/css/Gym.css" />
 
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-10 d-flex flex-column align-items-center">
+    <div class="row">
+        <div class="col-4 col-md-4 d-flex flex-column">
+            <button class="btn btn-primary mb-3 col-5 col-md-5" id="find-gyms-button" onclick="getNearbyGyms(44.846178,-123.212461)">Find Nearby Gyms</button>
+            <div id="nearby-gym-search-list">
+                <a target="_blank" rel="noopener noreferrer" href="https://salem.kroccenter.org/" class="card mb-3 text-decoration-none text-dark diplayed-gym-card">
+                    <div class="card-body">
+                        <h5 class="card-title">The Kroc Center - Salem, OR</h5>
+                        <p class="card-text"><small class="text-body-secondary">1865 Bill Frey Dr, Salem, OR 97301, USA</small></p>
+                        <p class="card-text">Open &centerdot; 4:00 am</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-8 col-md-8 d-flex flex-column">
             <iframe
                 id="nearby-gyms-map"
                 frameborder="0" style="border:0"
@@ -13,7 +26,7 @@
                 src=""
                 allowfullscreen
             ></iframe>
-            <button class="btn btn-primary mt-3" id="set-location-button" onclick="navigator.geolocation.getCurrentPosition(embedMapAtUserPosition, getPositionError)">Set My Location</button>
+            <button class="btn btn-primary my-3" id="set-location-button" onclick="navigator.geolocation.getCurrentPosition(embedMapAtUserPosition, getPositionError)">Set My Location</button>
         </div>
     </div>
 </div>

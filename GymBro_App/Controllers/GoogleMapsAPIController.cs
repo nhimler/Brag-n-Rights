@@ -25,7 +25,8 @@ public class GoogleMapsAPIController : ControllerBase
         return Ok(new { apiKey });
     }
 
-    [HttpGet("nearby")]
+    // TODO: Call this method in a better way (ex: "api/maps/nearby?latitude=lat&longitude=long")
+    [HttpGet("nearby/{latitude}/{longitude}")]
     public async Task<IActionResult> GetNearbyPlaces(double latitude, double longitude)
     {
         var nearbyPlaces = await _nearbySearchMapService.FindNearbyGyms(latitude, longitude);
