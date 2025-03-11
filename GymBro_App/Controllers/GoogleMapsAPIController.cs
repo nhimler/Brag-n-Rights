@@ -25,7 +25,8 @@ public class GoogleMapsAPIController : ControllerBase
         return Ok(new { apiKey });
     }
 
-    // TODO: Call this method in a better way (ex: "api/maps/nearby?latitude=lat&longitude=long")
+    // TODO: Call this method in a better way (ex: "api/maps/nearby?latitude=lat&longitude=long"). We'll also need to 
+    // update this method to use a postal code and/or city and state instead.
     [HttpGet("nearby/{latitude}/{longitude}")]
     public async Task<IActionResult> GetNearbyPlaces(double latitude, double longitude)
     {

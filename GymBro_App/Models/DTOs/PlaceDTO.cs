@@ -2,6 +2,39 @@ using System.Text.Json.Serialization;
 
 namespace GymBro_App.Models.DTOs
 {
+    public class Close
+    {
+        [JsonPropertyName("day")]
+        public int Day { get; set; }
+
+        [JsonPropertyName("hour")]
+        public int Hour { get; set; }
+
+        [JsonPropertyName("minute")]
+        public int Minute { get; set; }
+    }
+
+    public class Open
+    {
+        [JsonPropertyName("day")]
+        public int Day { get; set; }
+
+        [JsonPropertyName("hour")]
+        public int Hour { get; set; }
+
+        [JsonPropertyName("minute")]
+        public int Minute { get; set; }
+    }
+
+    public class Period
+    {
+        [JsonPropertyName("open")]
+        public Open Open { get; set; } = new Open();
+
+        [JsonPropertyName("close")]
+        public Close Close { get; set; } = new Close();
+    }
+
     public class DisplayName
     {
         [JsonPropertyName("text")]
@@ -10,11 +43,21 @@ namespace GymBro_App.Models.DTOs
         [JsonPropertyName("languageCode")]
         public string LanguageCode { get; set; } = "";
     }
+
+    public class RegularOpeningHours
+    {
+        public bool OpenNow { get; set; } = false;
+        public List<Period> Periods { get; set; } = [];
+        public List<string> WeekdayDescriptions { get; set; } = [];
+        public DateTime NextCloseTime { get; set; } = new DateTime();
+    }
     
     public class PlaceDTO
     {
         public DisplayName DisplayName { get; set; } = new DisplayName();
         public string FormattedAddress { get; set; } = "";
+        public RegularOpeningHours RegularOpeningHours { get; set; } = new RegularOpeningHours();
+        public string WebsiteUri { get; set; } = "";
     }
 }
 

@@ -95,12 +95,13 @@ public class Program
 
         // NearbySearchMapService API Configuration
         string googleNearbySearchApiUrl = "https://places.googleapis.com/v1/places:searchNearby";
+        string googleNearbySearchFieldMask = "places.formattedAddress,places.displayName,places.regularOpeningHours,places.websiteUri";
         builder.Services.AddHttpClient<INearbySearchMapService, NearbySearchMapService>((client, services) =>
         {
             client.BaseAddress = new Uri(googleNearbySearchApiUrl);
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.DefaultRequestHeaders.Add("X-Goog-Api-Key", googleMapsApiKey);
-            client.DefaultRequestHeaders.Add("X-Goog-FieldMask", "places.formattedAddress,places.displayName");
+            client.DefaultRequestHeaders.Add("X-Goog-FieldMask", googleNearbySearchFieldMask);
             return new NearbySearchMapService(client, services.GetRequiredService<ILogger<NearbySearchMapService>>());
         });
 

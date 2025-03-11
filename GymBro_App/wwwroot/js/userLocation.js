@@ -4,6 +4,14 @@ document.addEventListener("DOMContentLoaded", () => {
         embedDefaultMap()
         navigator.geolocation.getCurrentPosition(embedMapAtUserPosition, getPositionError)
     }
+    const setLocationButton = document.getElementById("set-location-button");
+    if (setLocationButton) {
+        setLocationButton.addEventListener("click", () => {
+            // TODO: Find a way to update the map without having to call getCurrentPosition twice
+            navigator.geolocation.getCurrentPosition(embedMapAtUserPosition, getPositionError);
+            navigator.geolocation.getCurrentPosition(getNearbyGyms, getPositionError);
+        });
+    }
 })
 
 function getPositionError(err) {
@@ -68,12 +76,15 @@ async function embedMapAtUserPosition(position) {
         let lat = coordinates.latitude.toFixed(6)
         let long = coordinates.longitude.toFixed(6)
 
-        mapFrame.src = `https://www.google.com/maps/embed/v1/view?key=${result.apiKey}&center=${lat},${long}&zoom=18`
+        mapFrame.src = `https://www.google.com/maps/embed/v1/view?key=${result.apiKey}&center=${lat},${long}&zoom=10`
     }
 }
 
-async function getNearbyGyms(lat,long) {
-    // TODO: Call this method in a better way (ex: "api/maps/nearby?latitude=lat&longitude=long")
+async function getNearbyGyms(pos) {
+    // TODO: Call this method in a better way (ex: "api/maps/nearby?latitude=lat&longitude=long").
+    // This would also involve changing how this function is called in the event listener.
+    let lat = pos.coords.latitude
+    let long = pos.coords.longitude
     let response = await fetch(`/api/maps/nearby/${lat}/${long}`, {
         method: 'GET',
         headers: {
@@ -88,22 +99,37 @@ async function getNearbyGyms(lat,long) {
 
         for (let i = 0; i < result.length; i++) {
             let gym = result[i]
-            // let gymOpenStatus = gym.openNow ? "Open" : "Closed"
+            // console.log(gym.regularOpeningHours)
+            
+            // Gets open/close status and the next time it opens/closes. TODO: Fix this so it adjusts for UTC time and 24/7 gyms
+            // let gymOpenStatus = gym.regularOpeningHours.openNow ? "Open" : "Closed"
+            // console.log(`${gym.regularOpeningHours.nextCloseTime} ${gym.regularOpeningHours.nextOpenTime}`)
+            // let gymNextStatusHours = gymOpenStatus ? `Closes at ${gym.regularOpeningHours.nextCloseTime} ` : `Opens at ${gym.regularOpeningHours.nextOpenTime}`
+            // gymNextStatusHours = gymNextStatusHours.split("T")[1].slice(0, -1)
+            // console.log("Closes at: " + gym.regularOpeningHours.nextCloseTime)
+            // console.log("Opens at: " + gym.regularOpeningHours.nextOpenTime)
+
+
+            let gymHours = gym.regularOpeningHours.weekdayDescriptions
+            let gymHoursParagraphs = ""
+            gymHours.forEach(day => {
+                gymHoursParagraphs += `<p class="card-text my-1">${day}</p>`
+            });
             
             gymListHTML += `
-                <a target="_blank" rel="noopener noreferrer" href="#" class="card mb-3 text-decoration-none text-dark diplayed-gym-card">
+                <a target="_blank" rel="noopener noreferrer" href="${gym.websiteUri}" class="card mb-3 text-decoration-none text-dark diplayed-gym-card">
                     <div class="card-body">
                         <h5 class="card-title">${gym.displayName.text}</h5>
                         <p class="card-text"><small class="text-body-secondary">${gym.formattedAddress}</small></p>
-                        <p class="card-text">Time not implemented yet &centerdot; </p>
+                        ${gymHoursParagraphs}
                     </div>
                 </a>
             `
             gymList.innerHTML = gymListHTML
             // console.log(gym)
-            console.log(gym.displayName.text)
-            console.log(gym.formattedAddress)
-            console.log("")
+            // console.log(gym.displayName.text)
+            // console.log(gym.formattedAddress)
+            // console.log("")
         }
     }
     else {

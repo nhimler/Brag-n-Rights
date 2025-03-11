@@ -76,7 +76,9 @@ namespace GymBro_App.Services
                 var places = root.Places.Select(p => new PlaceDTO
                 {
                     DisplayName = p.DisplayName,
-                    FormattedAddress = p.FormattedAddress
+                    FormattedAddress = p.FormattedAddress,
+                    RegularOpeningHours = p.RegularOpeningHours,
+                    WebsiteUri = p.WebsiteUri
                 }).ToList();
                 return places;
             }
