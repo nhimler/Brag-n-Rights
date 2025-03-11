@@ -1,5 +1,6 @@
 using GymBro_App.Controllers;
 using GymBro_App.Services;
+using GymBro_App.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -10,6 +11,7 @@ namespace ControllerTests
     {
         private Mock<IEmbedMapService> _mockEmbedMapService;
         private Mock<ILogger<GoogleMapsAPIController>> _mockILogger;
+        private Mock<INearbySearchMapService> _mockNearbySearchMapService;
         private GoogleMapsAPIController _googleMapsAPIController;
 
         [SetUp]
@@ -17,7 +19,8 @@ namespace ControllerTests
         {
             _mockEmbedMapService = new Mock<IEmbedMapService>();
             _mockILogger = new Mock<ILogger<GoogleMapsAPIController>>();
-            _googleMapsAPIController = new GoogleMapsAPIController(_mockEmbedMapService.Object, _mockILogger.Object);
+            _mockNearbySearchMapService = new Mock<INearbySearchMapService>();
+            _googleMapsAPIController = new GoogleMapsAPIController(_mockEmbedMapService.Object, _mockILogger.Object, _mockNearbySearchMapService.Object);
         }
 
         [Test]
@@ -39,6 +42,36 @@ namespace ControllerTests
             Assert.That(expectedStatusCode, Is.EqualTo(result.StatusCode));
             Assert.IsInstanceOf<OkObjectResult>(result);
             Assert.That(expectedApiKey, Is.EqualTo(apiKeyValue));
+        }
+
+        [Test]
+        public async Task GetNearbyPlaces_ShouldReturnAJsonObjectWithPlacesNearTheLatitudeAndLongitude()
+        {
+            // Arrange
+            var latitude = 45.0;
+            var longitude = -122.0;
+            var expectedPlaces = new List<PlaceDTO>
+            {
+                new PlaceDTO { DisplayName = new DisplayName { Text = "Gym 1" }, FormattedAddress = "Address 1" },
+                new PlaceDTO { DisplayName = new DisplayName { Text = "Gym 2" }, FormattedAddress = "Address 2" }
+            };
+            _mockNearbySearchMapService.Setup(service => service.FindNearbyGyms(latitude, longitude)).ReturnsAsync(expectedPlaces);
+
+            // Act
+            var result = await _googleMapsAPIController.GetNearbyPlaces(latitude, longitude) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            var placesResult = result.Value as List<PlaceDTO>;
+            
+            Assert.That(placesResult, Is.Not.Null);
+            Assert.That(placesResult.Count, Is.EqualTo(expectedPlaces.Count));
+            Assert.That(placesResult[0].DisplayName.Text, Is.EqualTo(expectedPlaces[0].DisplayName.Text));
+            Assert.That(placesResult[0].FormattedAddress, Is.EqualTo(expectedPlaces[0].FormattedAddress));
+            Assert.That(placesResult[1].DisplayName.Text, Is.EqualTo(expectedPlaces[1].DisplayName.Text));
+            Assert.That(placesResult[1].FormattedAddress, Is.EqualTo(expectedPlaces[1].FormattedAddress));
         }
     }
 }
