@@ -2,7 +2,7 @@ using GymBro_App.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace NUnit_Tests.Service_Tests
+namespace Service_Tests
 {
     public class EmbedMapService_Tests
     {
