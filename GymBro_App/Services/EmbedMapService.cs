@@ -7,12 +7,12 @@ using GymBro_App.Services;
 
 namespace GymBro_App.Services
 {
-    public class MapService : IMapService
+    public class EmbedMapService : IEmbedMapService
     {
         readonly HttpClient _httpClient;
-        readonly ILogger<MapService> _logger;
+        readonly ILogger<EmbedMapService> _logger;
 
-        public MapService(HttpClient httpClient, ILogger<MapService> logger)
+        public EmbedMapService(HttpClient httpClient, ILogger<EmbedMapService> logger)
         {
             _httpClient = httpClient;
             _logger = logger;
@@ -24,6 +24,5 @@ namespace GymBro_App.Services
             string apiKey = _httpClient.DefaultRequestHeaders.GetValues("X-goog-api-key").FirstOrDefault() ?? "";
             return apiKey;
         }
-    }   
-
+    }
 }
