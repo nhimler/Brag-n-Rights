@@ -42,11 +42,19 @@ namespace GymBro_App.DAL.Concrete
 
         public async Task<List<UserMedal>> GetUserMedalsEarnedTodayAsync(int userId)
         {
-            var today = DateOnly.FromDateTime(DateTime.Now);  // Get today's date
+            // Convert to Pacific Time
+            var pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var todayPacific = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pacificZone).Date;
+
+            // Convert DateTime to DateOnly
+            var todayPacificDateOnly = DateOnly.FromDateTime(todayPacific);
+
             return await _context.UserMedals
-                                .Where(um => um.UserId == userId && um.EarnedDate == today)
+                                .Where(um => um.UserId == userId && um.EarnedDate == todayPacificDateOnly)
                                 .ToListAsync();
         }
+
+
 
         public UserMedal FindById(int id)
         {
