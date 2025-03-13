@@ -7,19 +7,30 @@ namespace GymBro_App.Controllers;
 [Route("api/maps")]
 public class GoogleMapsAPIController : ControllerBase
 {
-    private readonly IMapService _mapService;
+    private readonly IEmbedMapService _embedMapService;
+    private readonly INearbySearchMapService _nearbySearchMapService;
     private readonly ILogger<GoogleMapsAPIController> _logger;
 
-    public GoogleMapsAPIController(IMapService mapService, ILogger<GoogleMapsAPIController> logger)
+    public GoogleMapsAPIController(IEmbedMapService embedMapService, ILogger<GoogleMapsAPIController> logger, INearbySearchMapService nearbySearchMapService)
     {
-        _mapService = mapService;
+        _embedMapService = embedMapService;
+        _nearbySearchMapService = nearbySearchMapService;
         _logger = logger;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetGoogleMapsApiKey()
     {
-        var apiKey = await _mapService.GetGoogleMapsApiKey();
+        var apiKey = await _embedMapService.GetGoogleMapsApiKey();
         return Ok(new { apiKey });
+    }
+
+    // TODO: Call this method in a better way (ex: "api/maps/nearby?latitude=lat&longitude=long"). We'll also need to 
+    // update this method to use a postal code and/or city and state instead.
+    [HttpGet("nearby/{latitude}/{longitude}")]
+    public async Task<IActionResult> GetNearbyPlaces(double latitude, double longitude)
+    {
+        var nearbyPlaces = await _nearbySearchMapService.FindNearbyGyms(latitude, longitude);
+        return Ok(nearbyPlaces);
     }
 }

@@ -24,15 +24,21 @@ namespace GymBro_App.DAL.Concrete
         // Fetch the latest step count for a given user
         public async Task<int?> GetUserStepsAsync(int userId)
         {
-            // Get today's date (ignoring time, just date comparison)
-            var today = DateTime.Today;
+            // Get today's date in Pacific Time Zone (ignoring time)
+            var pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var todayPacific = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pacificZone).Date; // Get date part only
+
+            // Ensure we are considering only steps from today
+            var startOfToday = todayPacific;  // Start of today at 00:00:00 AM in Pacific Time
+            var endOfToday = todayPacific.AddDays(1).AddTicks(-1);  // End of today at 23:59:59.9999999
 
             // Fetch the latest step data for today (if any exists)
             var latestStep = await _context.BiometricData
-                .Where(b => b.UserId == userId && b.LastUpdated.HasValue && b.LastUpdated.Value.Date == today)
-                .OrderByDescending(b => b.LastUpdated)
-                .Select(b => b.Steps) // Select the Steps field
-                .FirstOrDefaultAsync(); // Get the first (most recent) value or default if none exists
+                .Where(b => b.UserId == userId && b.LastUpdated.HasValue &&
+                            b.LastUpdated.Value >= startOfToday && b.LastUpdated.Value <= endOfToday)  // Only steps from today
+                .OrderByDescending(b => b.LastUpdated)  // Order by the latest LastUpdated date
+                .Select(b => b.Steps)
+                .FirstOrDefaultAsync();
 
             return latestStep;
         }
