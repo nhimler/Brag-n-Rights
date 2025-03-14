@@ -66,7 +66,11 @@ namespace GymBro_App.Controllers
 
         public IActionResult WorkoutCreationActionsPartial()
         {
-            return PartialView("_WorkoutCreationActions");
+            if (User?.Identity?.IsAuthenticated ?? false)
+            {
+                return PartialView("_WorkoutCreationActions");
+            }
+            return Content("");
         }
     }
 }
