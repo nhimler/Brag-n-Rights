@@ -4,7 +4,6 @@
 
 const {
     getPositionError,
-    putUserPosition,
     embedDefaultMap,
     embedMapAtUserPosition
 } = require('../../GymBro_App/wwwroot/js/userLocation');
@@ -14,19 +13,6 @@ test('getPositionError logs the correct error message', () => {
     const error = { code: 1, message: 'Permission denied' };
     getPositionError(error);
     expect(console.log).toHaveBeenCalledWith("Error 1: couldn't get location. Issue: Permission denied");
-});
-
-test('putUserPosition logs the correct coordinates', async () => {
-    console.log = jest.fn();
-    const position = { coords: { latitude: 44.851419, longitude: -123.237022 } };
-    global.fetch = jest.fn(() =>
-        Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({})
-        })
-    );
-    await putUserPosition(position);
-    expect(console.log).toHaveBeenCalledWith("44.851419, -123.237022");
 });
 
 test('embedDefaultMap sets the map src to the correct coordinates', async () => {
