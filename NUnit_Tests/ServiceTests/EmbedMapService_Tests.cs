@@ -4,18 +4,18 @@ using Moq;
 
 namespace Service_Tests
 {
-    public class EmbedMapService_Tests
+    public class GoogleMapsService_Tests
     {
         private Mock<HttpClient> _mockHttpClient;
-        private Mock<ILogger<EmbedMapService>> _mockILogger;
-        private EmbedMapService _embedMapService;
+        private Mock<ILogger<GoogleMapsService>> _mockILogger;
+        private GoogleMapsService _googleMapsService;
 
         [SetUp]
         public void SetUp()
         {
             _mockHttpClient = new Mock<HttpClient>();
-            _mockILogger = new Mock<ILogger<EmbedMapService>>();
-            _embedMapService = new EmbedMapService(_mockHttpClient.Object, _mockILogger.Object);
+            _mockILogger = new Mock<ILogger<GoogleMapsService>>();
+            _googleMapsService = new GoogleMapsService(_mockHttpClient.Object, _mockILogger.Object);
         }
 
         [Test]
@@ -25,10 +25,10 @@ namespace Service_Tests
             var expectedApiKey = "test-api-key";
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("X-goog-api-key", expectedApiKey);
-            _embedMapService = new EmbedMapService(httpClient, _mockILogger.Object);
+            _googleMapsService = new GoogleMapsService(httpClient, _mockILogger.Object);
 
             // Act
-            var apiKey = await _embedMapService.GetGoogleMapsApiKey();
+            var apiKey = await _googleMapsService.GetGoogleMapsApiKey();
 
             // Assert
             Assert.That(expectedApiKey, Is.EqualTo(apiKey));

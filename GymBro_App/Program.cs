@@ -40,7 +40,7 @@ public class Program
         builder.Services.AddScoped<IOAuthService, OAuthService>();  
         builder.Services.AddHttpContextAccessor(); 
         builder.Services.AddScoped<EncryptionHelper>();
-        builder.Services.AddScoped<IEmbedMapService, EmbedMapService>();
+        builder.Services.AddScoped<IGoogleMapsService, GoogleMapsService>();
         builder.Services.AddScoped<INearbySearchMapService, NearbySearchMapService>();
 
         
@@ -85,14 +85,14 @@ public class Program
         // Google Maps API Configuration
         string googleMapsApiKey = builder.Configuration["GoogleMapsApiKey"] ?? "";
         
-        // EmbedMapService API Configuration
-        string googleEmbedMapsApiUrl = "https://maps.googleapis.com/maps/api";
-        builder.Services.AddHttpClient<IEmbedMapService, EmbedMapService>((client, services) =>
+        // GoogleMapsService API Configuration
+        string googleMapApiUrl = "https://maps.googleapis.com/maps/api";
+        builder.Services.AddHttpClient<IGoogleMapsService, GoogleMapsService>((client, services) =>
         {
-            client.BaseAddress = new Uri(googleEmbedMapsApiUrl);
+            client.BaseAddress = new Uri(googleMapApiUrl);
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.DefaultRequestHeaders.Add("X-goog-api-key", googleMapsApiKey);
-            return new EmbedMapService(client, services.GetRequiredService<ILogger<EmbedMapService>>());
+            return new GoogleMapsService(client, services.GetRequiredService<ILogger<GoogleMapsService>>());
         });
 
         // NearbySearchMapService API Configuration

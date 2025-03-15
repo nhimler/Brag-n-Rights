@@ -138,12 +138,12 @@ namespace GymBro_App.Services
         public Southwest Southwest { get; set; } = new Southwest();
     }
 
-    public class EmbedMapService : IEmbedMapService
+    public class GoogleMapsService : IGoogleMapsService
     {
         readonly HttpClient _httpClient;
-        readonly ILogger<EmbedMapService> _logger;
+        readonly ILogger<GoogleMapsService> _logger;
 
-        public EmbedMapService(HttpClient httpClient, ILogger<EmbedMapService> logger)
+        public GoogleMapsService(HttpClient httpClient, ILogger<GoogleMapsService> logger)
         {
             _httpClient = httpClient;
             _logger = logger;

@@ -7,13 +7,13 @@ namespace GymBro_App.Controllers;
 [Route("api/maps")]
 public class GoogleMapsAPIController : ControllerBase
 {
-    private readonly IEmbedMapService _embedMapService;
+    private readonly IGoogleMapsService _googleMapsService;
     private readonly INearbySearchMapService _nearbySearchMapService;
     private readonly ILogger<GoogleMapsAPIController> _logger;
 
-    public GoogleMapsAPIController(IEmbedMapService embedMapService, ILogger<GoogleMapsAPIController> logger, INearbySearchMapService nearbySearchMapService)
+    public GoogleMapsAPIController(IGoogleMapsService googleMapsService, ILogger<GoogleMapsAPIController> logger, INearbySearchMapService nearbySearchMapService)
     {
-        _embedMapService = embedMapService;
+        _googleMapsService = googleMapsService;
         _nearbySearchMapService = nearbySearchMapService;
         _logger = logger;
     }
@@ -21,7 +21,7 @@ public class GoogleMapsAPIController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetGoogleMapsApiKey()
     {
-        var apiKey = await _embedMapService.GetGoogleMapsApiKey();
+        var apiKey = await _googleMapsService.GetGoogleMapsApiKey();
         return Ok(new { apiKey });
     }
 
@@ -37,7 +37,7 @@ public class GoogleMapsAPIController : ControllerBase
     [HttpGet("reversegeocode/{latitude}/{longitude}")]
     public async Task<IActionResult> ReverseGeocode(double latitude, double longitude)
     {
-        var address = await _embedMapService.ReverseGeocode(latitude, longitude);
+        var address = await _googleMapsService.ReverseGeocode(latitude, longitude);
         return Ok(new { address });
     }
 }
