@@ -12,34 +12,24 @@ document.addEventListener("DOMContentLoaded", () => {
             navigator.geolocation.getCurrentPosition(getNearbyGyms, getPositionError);
         });
     }
+
+    const getUserLocation = document.getElementById("getUserLocation-btn")
+    if (getUserLocation) {
+        console.log("getUserLocation-btn found")
+        getUserLocation.addEventListener("click", () => {
+            navigator.geolocation.getCurrentPosition((position) => {
+                reverseGeocode(position.coords.latitude, position.coords.longitude)
+            }, getPositionError)
+        })
+    }
+    else {
+        console.log("getUserLocation-btn not found")
+    }
 })
 
 function getPositionError(err) {
     console.log(`Error ${err.code}: couldn't get location. Issue: ${err.message}`)
     return null
-}
-
-async function putUserPosition(position) {
-    const coordinates = position.coords
-    console.log(`${coordinates.latitude.toFixed(6)}, ${coordinates.longitude.toFixed(6)}`)
-
-    const user = {
-        latitude : coordinates.latitude,
-        longitude : coordinates.longitude
-    }
-
-    const response = await fetch('/api/users', {
-        method: 'PUT',
-        headers: {
-            'Accept': 'application/json application/problem+json charset=utf-8',
-            'Content-Type': 'application/json charset=UTF-8'
-        },
-        body: JSON.stringify(user)
-    })
-
-    if (!response.ok) {
-        console.log('Something went wrong when updating user location.')
-    }
 }
 
 async function embedDefaultMap() {
@@ -137,10 +127,29 @@ async function getNearbyGyms(pos) {
     }
 }
 
+async function reverseGeocode(lat, long) {
+    let response = await fetch(`/api/maps/reversegeocode/${lat}/${long}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    if(response.ok){
+        let result = await response.json()
+        console.log(result)
+        let userLocation = document.getElementById("user-location")
+        userLocation.innerHTML = `Location: ${result.address}`
+        
+    }
+    else {
+        console.log("Error: " + response.status)
+    }
+}
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         getPositionError,
-        putUserPosition,
         embedDefaultMap,
         embedMapAtUserPosition,
         getNearbyGyms
