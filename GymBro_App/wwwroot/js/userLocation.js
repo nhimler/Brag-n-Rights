@@ -12,6 +12,19 @@ document.addEventListener("DOMContentLoaded", () => {
             navigator.geolocation.getCurrentPosition(getNearbyGyms, getPositionError);
         });
     }
+
+    const getUserLocation = document.getElementById("getUserLocation-btn")
+    if (getUserLocation) {
+        console.log("getUserLocation-btn found")
+        getUserLocation.addEventListener("click", () => {
+            navigator.geolocation.getCurrentPosition((position) => {
+                reverseGeocode(position.coords.latitude, position.coords.longitude)
+            }, getPositionError)
+        })
+    }
+    else {
+        console.log("getUserLocation-btn not found")
+    }
 })
 
 function getPositionError(err) {
@@ -131,6 +144,26 @@ async function getNearbyGyms(pos) {
             // console.log(gym.formattedAddress)
             // console.log("")
         }
+    }
+    else {
+        console.log("Error: " + response.status)
+    }
+}
+
+async function reverseGeocode(lat, long) {
+    let response = await fetch(`/api/maps/reversegeocode/${lat}/${long}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    if(response.ok){
+        let result = await response.json()
+        console.log(result)
+        let userLocation = document.getElementById("user-location")
+        userLocation.innerHTML = `Location: ${result.address}`
+        
     }
     else {
         console.log("Error: " + response.status)

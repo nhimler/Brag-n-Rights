@@ -158,7 +158,6 @@ namespace GymBro_App.Services
 
         public async Task<string> ReverseGeocode(double latitude, double longitude)
         {
-            _logger.LogInformation("Reverse Geocoding location: {0}, {1}", latitude, longitude);
             string apiKey = _httpClient.DefaultRequestHeaders.GetValues("X-goog-api-key").FirstOrDefault() ?? "";
             string url = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={latitude},{longitude}&key={apiKey}";
             string response = await _httpClient.GetStringAsync(url);
