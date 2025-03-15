@@ -40,6 +40,8 @@ public class Program
         builder.Services.AddScoped<IOAuthService, OAuthService>();  
         builder.Services.AddHttpContextAccessor(); 
         builder.Services.AddScoped<EncryptionHelper>();
+        builder.Services.AddScoped<IEmbedMapService, EmbedMapService>();
+        builder.Services.AddScoped<INearbySearchMapService, NearbySearchMapService>();
 
         
 

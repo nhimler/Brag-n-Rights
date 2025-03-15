@@ -33,4 +33,11 @@ public class GoogleMapsAPIController : ControllerBase
         var nearbyPlaces = await _nearbySearchMapService.FindNearbyGyms(latitude, longitude);
         return Ok(nearbyPlaces);
     }
+
+    [HttpGet("reversegeocode/{latitude}/{longitude}")]
+    public async Task<IActionResult> ReverseGeocode(double latitude, double longitude)
+    {
+        var address = await _embedMapService.ReverseGeocode(latitude, longitude);
+        return Ok(new { address });
+    }
 }
