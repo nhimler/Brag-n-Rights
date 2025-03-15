@@ -32,29 +32,6 @@ function getPositionError(err) {
     return null
 }
 
-async function putUserPosition(position) {
-    const coordinates = position.coords
-    console.log(`${coordinates.latitude.toFixed(6)}, ${coordinates.longitude.toFixed(6)}`)
-
-    const user = {
-        latitude : coordinates.latitude,
-        longitude : coordinates.longitude
-    }
-
-    const response = await fetch('/api/users', {
-        method: 'PUT',
-        headers: {
-            'Accept': 'application/json application/problem+json charset=utf-8',
-            'Content-Type': 'application/json charset=UTF-8'
-        },
-        body: JSON.stringify(user)
-    })
-
-    if (!response.ok) {
-        console.log('Something went wrong when updating user location.')
-    }
-}
-
 async function embedDefaultMap() {
     const mapFrame = document.getElementById("nearby-gyms-map")
     let response = await fetch(`/api/maps`, {
@@ -173,7 +150,6 @@ async function reverseGeocode(lat, long) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         getPositionError,
-        putUserPosition,
         embedDefaultMap,
         embedMapAtUserPosition,
         getNearbyGyms

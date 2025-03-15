@@ -23,25 +23,5 @@ namespace GymBro_App.Controllers
             _userManager = userManager;
         }
 
-        [HttpPut]
-        public IActionResult UserLocation(UserDTO userDTO)
-        {
-            string identityId = _userManager.GetUserId(User) ?? "";
-            Models.User gymBroUser = _userRepository.GetUserByIdentityUserId(identityId);
-            gymBroUser.Latitude = userDTO.Latitude;
-            gymBroUser.Longitude = userDTO.Longitude;
-
-            try
-            {
-                _userRepository.AddOrUpdate(gymBroUser);
-                return Ok();
-            }
-
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"An error occurred while setting the user's coordinates");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
-            }
-        }
     }
 }
