@@ -73,5 +73,27 @@ namespace ControllerTests
             Assert.That(placesResult[1].DisplayName.Text, Is.EqualTo(expectedPlaces[1].DisplayName.Text));
             Assert.That(placesResult[1].FormattedAddress, Is.EqualTo(expectedPlaces[1].FormattedAddress));
         }
+
+        [Test]
+        public async Task ReverseGeocode_ShouldReturnTheFormattedAddressOfASetOfLatitudeAndLongitudeCoordinatesAsAJsonObject()
+        {
+            // Arrange
+            var latitude = 47.7510741;
+            var longitude = -120.7401385;
+            var expectedAddress = "123 Main St, Test City, TS 12345";
+            _mockGoogleMapsService.Setup(service => service.ReverseGeocode(latitude, longitude)).ReturnsAsync(expectedAddress);
+
+            // Act
+            var result = await _googleMapsAPIController.ReverseGeocode(latitude, longitude) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var addressResult = result.Value?.GetType().GetProperty("address")?.GetValue(result.Value, null);
+            Console.WriteLine($"Result: {addressResult}");
+            Console.WriteLine($"expectedAddress: {expectedAddress}");
+            Assert.That(addressResult, Is.EqualTo(expectedAddress));
+        }
     }
 }
