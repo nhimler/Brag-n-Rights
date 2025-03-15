@@ -14,6 +14,7 @@
                 <img src="https://placehold.co/125x125?text=Profile+Pic" class="img-fluid mb-2 user-profile" alt="User Image" />
                 <p class="mb-0">@Model.FirstName @Model.LastName</p>
                 <p class="text-muted">@Model.Email</p>
+                <p id="user-location">Location: </p>
             </div>
         </div>
     </div>
@@ -45,7 +46,7 @@
             <div class="card-body text-center">
                 <img src="https://placehold.co/350x200?text=Analytics+Chart" class="img-fluid mb-2 user-profile" alt="Analytics Graph" />
                 <p>Fitness Level: @Model.FitnessLevel</p>
-                <button class="btn btn-primary" onclick="navigator.geolocation.getCurrentPosition(putUserPosition, getPositionError)">Get My Location</button>
+                <button class="btn btn-primary" id="getUserLocation-btn">Get My Location</button>
                 <a class="btn btn-secondary mt-3" asp-controller="Gym" asp-action="FindNearbyGyms">Find Nearby Gyms</a>
             </div>
         </div>
