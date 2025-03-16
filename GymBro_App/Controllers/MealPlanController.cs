@@ -118,6 +118,39 @@ public class MealPlanController : Controller
     }
 
     [Authorize]
+    [HttpGet ("MealDetails/{id}")]
+    public IActionResult MealDetails(string id){
+        if (User == null || User.Identity == null || !User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Index");
+        }
+        var user = _userManager.GetUserAsync(User).Result;
+        if (user == null)
+        {
+            return RedirectToAction("Index");
+        }
+        var userId = _userRepository.GetIdFromIdentityId(user.Id);
+        if (!int.TryParse(id, out int mealId))
+        {
+            return RedirectToAction("Index");
+        }
+        var meal = _mealRepository.FindById(mealId);
+        if (meal == null || meal.MealPlan?.UserId != userId)
+        {
+            return RedirectToAction("Index");
+        }
+        MealView mealView = new MealView(meal);
+        List<long> foodIds = new List<long>();
+        foreach(Food food in meal.Foods){
+            foodIds.Add(food.ApiFoodId ?? -1);
+        }
+        mealView.Foods = foodIds;
+        mealView.PlanIds.Add(meal.MealPlanId ?? -1);
+        mealView.PlanNames.Add(meal.MealPlan?.PlanName ?? "");
+        return View("MealDetails", mealView);
+    }
+
+    [Authorize]
     [HttpGet ("CreateMealPlan/{id}")]
     public IActionResult CreateMealPlan(string id)
     {
