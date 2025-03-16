@@ -1,5 +1,18 @@
 let searchButton = document.getElementById("searchButton");
 
+document.querySelectorAll(".old-food").forEach(async function (f) {
+    console.log(f.getAttribute("data-api-id"));
+    let response =  await fetch("/api/food/" + f.getAttribute("data-api-id"));
+    if(response.ok){
+        let result = await response.json();
+        console.log(result);
+        document.getElementById("selectedFood").appendChild(generateAccordionItem(result, true));
+        f.remove();
+    } else {
+        console.log("Error: " + response.status);
+    }
+});
+
 searchButton.addEventListener("click", async function () {
     let query = document.getElementById("searchBar").value;
     console.log("searching for: " + query);
@@ -29,20 +42,28 @@ async function displaySearchResults(result){
     heading.textContent = "Results";
     resultList.appendChild(heading);
 
+    if (result.length === 0) {
+        let noResults = document.createElement("p");
+        noResults.className = "text-danger";
+        noResults.textContent = "No results found";
+        resultList.appendChild(noResults);
+        return;
+    }
+
     let accordion = document.createElement("div");
     accordion.id = "searchResultsAccordion";
     accordion.className = "accordion";
     result.forEach(food => {
         if(!findValueInSelected(selectedFood, food.foodId)){
             // console.log("foodId: " + food.foodId + " not found in selectedFood");
-            let row = generateAccordionItem(food);
+            let row = generateAccordionItem(food, false);
             accordion.appendChild(row);
         }
     });
     resultList.appendChild(accordion);
 }
 
-function generateAccordionItem(food){
+function generateAccordionItem(food, isSelected){
     let accordionItem = document.createElement("div");
     accordionItem.className = "accordion-item";
     let accordionHeader = document.createElement("h3");
@@ -79,7 +100,7 @@ function generateAccordionItem(food){
     bodyContent.className = "accordion-body";
 
     
-    let addBtn = generateAddButton();
+    let addBtn = generateAddButton(isSelected);
     bodyContent.appendChild(addBtn);
 
     let bodyText = document.createElement("span");
@@ -95,22 +116,31 @@ function generateAccordionItem(food){
     return accordionItem;
 }
 
-function generateAddButton(){
+function generateAddButton(isSelected){
     let addBtn = document.createElement("button");
     addBtn.className = "btn btn-secondary";
-    addBtn.textContent = "Add";
+    if(isSelected){
+        addBtn.textContent = "Remove";
+    }else{
+        addBtn.textContent = "Add";
+    }
     addBtn.type = "button";
     addBtn.addEventListener("click", function(){
-        if(this.textContent === "Add"){
-            this.textContent = "Remove";
-            let movedItem = this.parentElement.parentElement.parentElement;
-            this.parentElement.parentElement.parentElement.remove();
-            document.getElementById("selectedFood").appendChild(movedItem);
-        }else{
-            this.textContent = "Add";
-            let movedItem = this.parentElement.parentElement.parentElement;
-            this.parentElement.parentElement.parentElement.remove();
-            document.getElementById("searchResultsAccordion").prepend(movedItem);
+        try{
+            if(this.textContent === "Add"){
+                this.textContent = "Remove";
+                let movedItem = this.parentElement.parentElement.parentElement;
+                this.parentElement.parentElement.parentElement.remove();
+                document.getElementById("selectedFood").appendChild(movedItem);
+            }else{
+                this.textContent = "Add";
+                let movedItem = this.parentElement.parentElement.parentElement;
+                this.parentElement.parentElement.parentElement.remove();
+                document.getElementById("searchResultsAccordion").prepend(movedItem);
+            }
+        } catch (error) {
+            //console.error(error);
+            this.remove();
         }
     });
 
