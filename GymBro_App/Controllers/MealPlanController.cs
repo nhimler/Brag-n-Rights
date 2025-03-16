@@ -34,17 +34,18 @@ public class MealPlanController : Controller
         _userRepository = userRepository;
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult Index()
     {
         if (!(User.Identity?.IsAuthenticated ?? false))
         {
-            return View(null);
+            return View();
         }
         var user = _userManager.GetUserAsync(User).Result;
         if (user == null)
         {
-            return View(null);
+            return View();
         }
         int userId = _userRepository.GetIdFromIdentityId(user.Id);
         var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
@@ -76,6 +77,7 @@ public class MealPlanController : Controller
         return View(mealPlanView);
     }
 
+    [Authorize]
     [HttpGet ("CreateMealPlan/{id}")]
     public IActionResult CreateMealPlan(string id)
     {
@@ -105,6 +107,7 @@ public class MealPlanController : Controller
         return View("CreateMealPlan", new MealPlanView(mealPlan));
     }
 
+    [Authorize]
     [HttpPost]
     public IActionResult CreateMealPlan(MealPlanView mv)
     {
@@ -139,6 +142,7 @@ public class MealPlanController : Controller
     }
 
 
+    [Authorize]
     [HttpGet ("CreateMeal/{id}")]
     public IActionResult CreateMeal(string id)
     {
@@ -190,6 +194,7 @@ public class MealPlanController : Controller
         });
     }
 
+    [Authorize]
     [HttpPost]
     public IActionResult CreateMeal(MealView mv)
     {
