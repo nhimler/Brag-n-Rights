@@ -163,7 +163,7 @@ public class FoodService : IFoodService
             var result = await JsonSerializer.DeserializeAsync<GetFoodResponse>(await response.Content.ReadAsStreamAsync(), options);
             result = result ?? new GetFoodResponse();
             var food = result.food;
-            var serving = result.food.servings.serving.FirstOrDefault();
+            var serving = result.food.servings.serving.FirstOrDefault() ?? new Serving();
 
             return new FoodDTO
             {
