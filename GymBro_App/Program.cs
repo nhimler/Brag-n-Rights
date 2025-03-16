@@ -40,8 +40,10 @@ public class Program
         builder.Services.AddScoped<IOAuthService, OAuthService>();  
         builder.Services.AddHttpContextAccessor(); 
         builder.Services.AddScoped<EncryptionHelper>();
+        builder.Services.AddHostedService<MedalAwardingBackgroundService>();
         builder.Services.AddScoped<IGoogleMapsService, GoogleMapsService>();
         builder.Services.AddScoped<INearbySearchMapService, NearbySearchMapService>();
+
 
         
 
