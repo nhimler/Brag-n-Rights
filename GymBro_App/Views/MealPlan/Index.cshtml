@@ -17,12 +17,13 @@
     </a>
 
     @foreach(var plan in Model.MealPlans){
-        <h3>@plan.PlanName - @plan.StartDate.Month/@plan.StartDate.Day/@plan.StartDate.Year</h3>
+        <a asp-action="MealPlanDetails" asp-route-id="@plan.Id"><h3>@plan.PlanName - @plan.StartDate.Month/@plan.StartDate.Day/@plan.StartDate.Year</h3></a>
+        <h4>Meals</h4>
         <ol>
             @foreach(var meal in plan.Meals)
             {
                 <li>
-                        <h3>@meal.MealName</h3>
+                        <h3>@meal.MealName:</h3>
                         @foreach(long f in meal.Foods)
                         {
                             <p class="food-from-api" data-api-id="@f">-</p>
