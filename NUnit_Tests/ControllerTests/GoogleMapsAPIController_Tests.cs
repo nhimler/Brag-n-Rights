@@ -9,7 +9,7 @@ namespace ControllerTests
 {
     public class GoogleMapsAPIController_Tests
     {
-        private Mock<IEmbedMapService> _mockEmbedMapService;
+        private Mock<IGoogleMapsService> _mockGoogleMapsService;
         private Mock<ILogger<GoogleMapsAPIController>> _mockILogger;
         private Mock<INearbySearchMapService> _mockNearbySearchMapService;
         private GoogleMapsAPIController _googleMapsAPIController;
@@ -17,10 +17,10 @@ namespace ControllerTests
         [SetUp]
         public void SetUp()
         {
-            _mockEmbedMapService = new Mock<IEmbedMapService>();
+            _mockGoogleMapsService = new Mock<IGoogleMapsService>();
             _mockILogger = new Mock<ILogger<GoogleMapsAPIController>>();
             _mockNearbySearchMapService = new Mock<INearbySearchMapService>();
-            _googleMapsAPIController = new GoogleMapsAPIController(_mockEmbedMapService.Object, _mockILogger.Object, _mockNearbySearchMapService.Object);
+            _googleMapsAPIController = new GoogleMapsAPIController(_mockGoogleMapsService.Object, _mockILogger.Object, _mockNearbySearchMapService.Object);
         }
 
         [Test]
@@ -29,7 +29,7 @@ namespace ControllerTests
             // Arrange
             var expectedApiKey = "test-api-key";
             var expectedStatusCode = 200;
-            _mockEmbedMapService.Setup(service => service.GetGoogleMapsApiKey()).ReturnsAsync(expectedApiKey);
+            _mockGoogleMapsService.Setup(service => service.GetGoogleMapsApiKey()).ReturnsAsync(expectedApiKey);
 
             // Act
             var result = await _googleMapsAPIController.GetGoogleMapsApiKey() as OkObjectResult;
@@ -72,6 +72,28 @@ namespace ControllerTests
             Assert.That(placesResult[0].FormattedAddress, Is.EqualTo(expectedPlaces[0].FormattedAddress));
             Assert.That(placesResult[1].DisplayName.Text, Is.EqualTo(expectedPlaces[1].DisplayName.Text));
             Assert.That(placesResult[1].FormattedAddress, Is.EqualTo(expectedPlaces[1].FormattedAddress));
+        }
+
+        [Test]
+        public async Task ReverseGeocode_ShouldReturnTheFormattedAddressOfASetOfLatitudeAndLongitudeCoordinatesAsAJsonObject()
+        {
+            // Arrange
+            var latitude = 47.7510741;
+            var longitude = -120.7401385;
+            var expectedAddress = "123 Main St, Test City, TS 12345";
+            _mockGoogleMapsService.Setup(service => service.ReverseGeocode(latitude, longitude)).ReturnsAsync(expectedAddress);
+
+            // Act
+            var result = await _googleMapsAPIController.ReverseGeocode(latitude, longitude) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var addressResult = result.Value?.GetType().GetProperty("address")?.GetValue(result.Value, null);
+            Console.WriteLine($"Result: {addressResult}");
+            Console.WriteLine($"expectedAddress: {expectedAddress}");
+            Assert.That(addressResult, Is.EqualTo(expectedAddress));
         }
     }
 }
