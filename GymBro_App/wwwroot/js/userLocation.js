@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setLocationButton.addEventListener("click", () => {
             // TODO: Find a way to update the map without having to call getCurrentPosition twice
             navigator.geolocation.getCurrentPosition(embedMapAtUserPosition, getPositionError);
-            navigator.geolocation.getCurrentPosition(getNearbyGyms, getPositionError);
+            navigator.geolocation.getCurrentPosition(getNearbyGyms, noNearbyGyms);
         });
     }
 
@@ -26,6 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("getUserLocation-btn not found")
     }
 })
+
+function noNearbyGyms() {
+    let gymList = document.getElementById("nearby-gym-search-list")
+    gymList.innerHTML = `<p class="text-center">No nearby gyms found.</p>`
+}
 
 function getPositionError(err) {
     console.log(`Error ${err.code}: couldn't get location. Issue: ${err.message}`)
