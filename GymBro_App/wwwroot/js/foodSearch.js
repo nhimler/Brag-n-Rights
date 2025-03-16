@@ -42,6 +42,14 @@ async function displaySearchResults(result){
     heading.textContent = "Results";
     resultList.appendChild(heading);
 
+    if (result.length === 0) {
+        let noResults = document.createElement("p");
+        noResults.className = "text-danger";
+        noResults.textContent = "No results found";
+        resultList.appendChild(noResults);
+        return;
+    }
+
     let accordion = document.createElement("div");
     accordion.id = "searchResultsAccordion";
     accordion.className = "accordion";
