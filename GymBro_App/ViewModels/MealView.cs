@@ -16,7 +16,7 @@ namespace GymBro_App.ViewModels
             MealType = meal.MealType ?? "";
             Description = meal.Description ?? "";
         }
-        public List<long>? Foods { get; set; }
+        public List<long> Foods { get; set; } = new List<long>();
 
         public List<string> PlanNames { get; set; } = new List<string>();
 

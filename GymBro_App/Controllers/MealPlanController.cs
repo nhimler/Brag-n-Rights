@@ -57,22 +57,22 @@ public class MealPlanController : Controller
         }
         MealPlanHomeView mealPlanView = new MealPlanHomeView();
         foreach(MealPlan mealPlan in mealPlans){
-            List<string> mealPlanMeals = new List<string>();
-            List<List<long>> mealPlanFoods = new List<List<long>>();
-            mealPlanView.PlanNames.Add(mealPlan.PlanName ?? "");
-            mealPlanView.PlanDates.Add(mealPlan.StartDate ?? DateOnly.MaxValue);
+            HomeMealPlan homeMealPlan = new HomeMealPlan(){
+                PlanName = mealPlan.PlanName ?? "",
+                StartDate = mealPlan.StartDate ?? DateOnly.MaxValue,
+                Id = mealPlan.MealPlanId
+            };
             foreach(Meal meal in mealPlan.Meals){
-                if(mealPlanView.MealNames != null && meal.MealName != null && mealPlanView.Foods != null){
-                    mealPlanMeals.Add(meal.MealName);
-                    List<long> foodIds = new List<long>();
-                    foreach(Food food in meal.Foods){
-                        foodIds.Add(food.ApiFoodId ?? -1);
-                    }
-                    mealPlanFoods.Add(foodIds);
+                List<long> foodIds = new List<long>();
+                foreach(Food food in meal.Foods){
+                    foodIds.Add(food.ApiFoodId ?? -1);
                 }
+                homeMealPlan.Meals.Add(new HomeMeal(){
+                    MealName = meal.MealName ?? "",
+                    Foods = foodIds
+                });
             }
-            mealPlanView.MealNames.Add(mealPlanMeals);
-            mealPlanView.Foods.Add(mealPlanFoods);
+            mealPlanView.MealPlans.Add(homeMealPlan);
         }
         return View(mealPlanView);
     }
