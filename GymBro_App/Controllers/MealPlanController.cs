@@ -174,7 +174,7 @@ public class MealPlanController : Controller
         }
 
         var mealPlan = _mealPlanRepository.FindById(mealPlanId);
-        if (mealPlan == null)
+        if (mealPlan == null || mealPlan.UserId != _userRepository.GetIdFromIdentityId(user.Id))
         {
             return RedirectToAction("Index");
         }
@@ -197,18 +197,39 @@ public class MealPlanController : Controller
                 return RedirectToAction("Index");
             }
             var userId = _userRepository.GetIdFromIdentityId(user.Id);
-            _mealPlanRepository.Add(new MealPlan()
+
+            var mealPlan = _mealPlanRepository.FindById(mv.MealPlanId);
+            if (mealPlan != null && mealPlan.UserId != userId)
             {
-                UserId = userId,
-                PlanName = mv.PlanName,
-                StartDate = mv.StartDate,
-                EndDate = mv.EndDate,
-                Frequency = mv.Frequency,
-                TargetCalories = mv.TargetCalories,
-                TargetProtein = mv.TargetProtein,
-                TargetCarbs = mv.TargetCarbs,
-                TargetFats = mv.TargetFats
-            });
+                return RedirectToAction("Index");
+            }
+            if(mealPlan != null){
+                mealPlan.PlanName = mv.PlanName;
+                mealPlan.StartDate = mv.StartDate;
+                mealPlan.EndDate = mv.EndDate;
+                mealPlan.Frequency = mv.Frequency;
+                mealPlan.TargetCalories = mv.TargetCalories;
+                mealPlan.TargetProtein = mv.TargetProtein;
+                mealPlan.TargetCarbs = mv.TargetCarbs;
+                mealPlan.TargetFats = mv.TargetFats;
+                _mealPlanRepository.AddOrUpdate(mealPlan);
+                Debug.WriteLine("Meal Plan Updated");
+            }else{
+                _mealPlanRepository.AddOrUpdate(new MealPlan()
+                {
+                    UserId = userId,
+                    PlanName = mv.PlanName,
+                    StartDate = mv.StartDate,
+                    EndDate = mv.EndDate,
+                    Frequency = mv.Frequency,
+                    TargetCalories = mv.TargetCalories,
+                    TargetProtein = mv.TargetProtein,
+                    TargetCarbs = mv.TargetCarbs,
+                    TargetFats = mv.TargetFats
+                });
+                Debug.WriteLine("New Meal Plan added");
+            }
+            
             return RedirectToAction("Index");
         }
         Debug.WriteLine("Food not added");
