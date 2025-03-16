@@ -83,7 +83,9 @@ public class OAuthService : IOAuthService
             var tokenType = json.GetProperty("token_type").GetString();
             var userId = json.GetProperty("user_id").GetString();
 
-            var expirationTime = DateTime.Now.AddSeconds(expiresIn);
+            var pacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var expirationTimeUtc = DateTime.UtcNow.AddSeconds(expiresIn);  // Start with UTC
+            var expirationTime = TimeZoneInfo.ConvertTime(expirationTimeUtc, pacificTimeZone);  // Convert to Pacific Time
 
             // Fetch user from the database
             var user = await _context.Users.FirstOrDefaultAsync(u => u.IdentityUserId == identityId);
@@ -211,7 +213,10 @@ public class OAuthService : IOAuthService
                 }
 
                 // Check if the token is expired
-                if (token.ExpirationTime < DateTime.Now)
+                var pacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+                var currentPacificTime = TimeZoneInfo.ConvertTime(DateTime.Now, pacificTimeZone);
+
+                if (token.ExpirationTime < currentPacificTime)
                 {
                     // Token is expired, refresh it
                     return await RefreshAccessToken(token.RefreshToken);
@@ -263,7 +268,10 @@ public class OAuthService : IOAuthService
                 var expiresIn = json.GetProperty("expires_in").GetInt32();
 
                 // Calculate the expiration time
-                var expirationTime = DateTime.Now.AddSeconds(expiresIn);
+                var pacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+                var expirationTimeUtc = DateTime.UtcNow.AddSeconds(expiresIn);  // Start with UTC time
+                var expirationTime = TimeZoneInfo.ConvertTime(expirationTimeUtc, pacificTimeZone);  // Convert to Pacific Time
+
 
                 // Encrypt the tokens before saving them
                 var encryptedAccessToken = _encryptionHelper.EncryptToken(newAccessToken);
