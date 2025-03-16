@@ -1,0 +1,9 @@
+.title-link:hover {
+    color: black;
+    text-decoration: underline;
+}
+
+.title-link {
+    color: grey;
+    text-decoration: none;
+}

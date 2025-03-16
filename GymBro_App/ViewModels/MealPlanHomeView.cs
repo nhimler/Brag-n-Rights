@@ -2,9 +2,21 @@ namespace GymBro_App.ViewModels
 {
     public class MealPlanHomeView
     {
-        public List<string>? PlanNames { get; set; } = new List<string>();
-        public List<List<string>>? MealNames { get; set; } = new List<List<string>>();
+        public List<HomeMealPlan> MealPlans { get; set; } = new List<HomeMealPlan>();
+    }
 
-        public List<List<List<long>>>? Foods { get; set; } = new List<List<List<long>>>();
+    public class HomeMealPlan
+    {
+        public string PlanName { get; set; } = "";
+        public DateOnly StartDate { get; set; }
+        public int Id { get; set; }
+        public List<HomeMeal> Meals { get; set; } = new List<HomeMeal>();
+    }
+
+    public class HomeMeal
+    {
+        public string MealName { get; set; } = "";
+        public int Id { get; set; }
+        public List<long> Foods { get; set; }
     }
 }

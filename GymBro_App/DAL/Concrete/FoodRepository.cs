@@ -16,6 +16,16 @@ namespace GymBro_App.DAL.Concrete
             _context = context;
         }
 
+        public void DeleteInMeal(int mealId)
+        {
+            var foodsInMeal = GetAll().Where(x => x.MealId == mealId);
+            foreach(Food f in foodsInMeal)
+            {
+                _context.Foods.Remove(f);
+            }
+            _context.SaveChanges();
+        }
+
         public void Add(Food f)
         {
             _context.Foods.Add(f);

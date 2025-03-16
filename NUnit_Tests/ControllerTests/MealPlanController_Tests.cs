@@ -40,18 +40,22 @@ public class MealPlanController_Tests
         _controller = new MealPlanController(_loggerMock.Object, _foodRepositoryMock.Object, _mealRepositoryMock.Object, _mealPlanRepositoryMock.Object, _userManagerMock.Object, _userRepositoryMock.Object);
     }
 
+
+    // This is testing features that are implemented on top of Identity authentication, and not testing Identity authentication
     [Test]
     public void Test_FoodSearchRedirectsWhenNotAuthenticated()
     {
+        var context = new DefaultHttpContext();
+        _controller.ControllerContext = new ControllerContext { HttpContext = context };
         var result = _controller.CreateMeal("new");
 
         Assert.That(result, Is.TypeOf<RedirectToActionResult>());
-        var redirectResult = (RedirectToActionResult)result;
-        Assert.That(redirectResult.ActionName, Is.EqualTo("Index"));
+        var redirectedResult = (RedirectToActionResult)result;
+        Assert.That(redirectedResult.ActionName, Is.EqualTo("Index"));
     }
 
     [Test]
-    public void Test_FoodSearchRedirectsWhenMealNotFound()
+    public void Test_FoodSearchRedirectsWhenMealPlanNotFound()
     {
         var user = new IdentityUser { UserName = "testuser", Email = "testuser@example.com" };
         _userManagerMock.Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
