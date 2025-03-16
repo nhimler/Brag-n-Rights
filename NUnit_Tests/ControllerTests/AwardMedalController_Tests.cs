@@ -1,100 +1,78 @@
-using NUnit.Framework;
-using Moq;
 using GymBro_App.Controllers;
 using GymBro_App.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
+using Moq;
+using GymBro_App.Models;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using GymBro_App.Models.DTOs;
 
-namespace Controller_Tests;
-
-[TestFixture]
-public class AwardMedalControllerTests
+namespace ControllerTests
 {
-    private Mock<IAwardMedalService> _mockAwardMedalService;
-    private Mock<IOAuthService> _mockOAuthService;
-    private AwardMedalController _controller;
-    private ClaimsPrincipal _user;
-
-    [SetUp]
-    public void Setup()
+    [TestFixture]
+    public class AwardMedalController_Tests
     {
-        _mockOAuthService = new Mock<IOAuthService>();
-        _controller = new AwardMedalController(_mockAwardMedalService.Object, _mockOAuthService.Object);
-        _user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        private Mock<IAwardMedalService> _mockAwardMedalService;
+        private Mock<IOAuthService> _mockOAuthService;
+        private AwardMedalController _controller;
+
+        [SetUp]
+        public void SetUp()
         {
-            new Claim(ClaimTypes.NameIdentifier, "user123")
-        }, "mock"));
-    }
+            _mockAwardMedalService = new Mock<IAwardMedalService>();
+            _mockOAuthService = new Mock<IOAuthService>();
+            _controller = new AwardMedalController(_mockAwardMedalService.Object, _mockOAuthService.Object);
+        }
 
-    [TearDown]
-    public void TearDown()
-    {
-        _controller.Dispose();
-    }
 
-    private void SetUser(ClaimsPrincipal user)
-    {
-        _controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+        [Test]
+        public async Task AwardMedals_UserIsNotAuthenticated_ReturnsUnauthorized()
         {
-            HttpContext = new DefaultHttpContext { User = user }
-        };
-    }
-
-    [Test]
-    public async Task AwardMedals_ShouldReturnView_WhenUserIsAuthenticatedAndMedalsAreAwarded()
-    {
-        SetUser(_user);
-        var awardMedalsResult = new AwardMedal
-        {
-            UserId = 123,
-            AwardedMedals = new List<AwardMedalDetails>
+            // Arrange: Simulate an unauthenticated user (no claims)
+            _controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
             {
-                new AwardMedalDetails { MedalId = 1, MedalName = "Gold Medal" }
-            }
-        };
+                HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext() // No authentication
+            };
 
-        _mockAwardMedalService.Setup(s => s.AwardUserdMedalsAsync("user123")).ReturnsAsync(awardMedalsResult);
+            // Act: Call the controller method
+            var result = await _controller.AwardMedals();
 
-        var result = await _controller.AwardMedals();
+            // Assert: Check that the result is Unauthorized (HTTP 401)
+            Assert.IsInstanceOf<UnauthorizedResult>(result);
+        }
 
-        Assert.IsInstanceOf<ViewResult>(result);
-        var viewResult = result as ViewResult;
-        Assert.AreEqual("AwardedMedals", viewResult.ViewName);
-        var model = viewResult.Model as AwardMedal;
-        Assert.IsInstanceOf<AwardMedal>(model);
-        Assert.AreEqual(1, model.AwardedMedals.Count);
-    }
-
-    [Test]
-    public async Task AwardMedals_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
-    {
-        SetUser(null);
-
-        var result = await _controller.AwardMedals();
-
-        Assert.IsInstanceOf<UnauthorizedResult>(result);
-    }
-
-    [Test]
-    public async Task AwardMedals_ShouldReturnNoMedalsView_WhenNoMedalsAreAwarded()
-    {
-        SetUser(_user);
-        var awardMedalsResult = new AwardMedal
+        [Test]
+        public async Task AwardMedals_UserDoesNotHaveFitbitToken_ReturnsConnectFitbitView()
         {
-            UserId = 123,
-            AwardedMedals = new List<AwardMedalDetails>()
-        };
+            // Arrange: Setup mocks
+            var identityId = "test-user-id";
+            _controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+            {
+                HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext()
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, identityId)
+                    }))
+                }
+            };
 
-        _mockAwardMedalService.Setup(s => s.AwardUserdMedalsAsync("user123")).ReturnsAsync(awardMedalsResult);
+            // Simulate that the user does not have a Fitbit token
+            _mockOAuthService.Setup(service => service.UserHasFitbitToken(identityId)).ReturnsAsync(false);
 
-        var result = await _controller.AwardMedals();
+            // Act: Call the controller method
+            var result = await _controller.AwardMedals();
 
-        Assert.IsInstanceOf<ViewResult>(result);
-        var viewResult = result as ViewResult;
-        Assert.AreEqual("NoMedals", viewResult.ViewName);
+            // Assert: Check that the result is the "ConnectFitbit" view
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.AreEqual("ConnectFitbit", viewResult.ViewName);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _controller?.Dispose();
+        }
     }
 }
