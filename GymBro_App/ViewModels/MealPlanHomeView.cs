@@ -16,6 +16,7 @@ namespace GymBro_App.ViewModels
     public class HomeMeal
     {
         public string MealName { get; set; } = "";
+        public int Id { get; set; }
         public List<long> Foods { get; set; }
     }
 }

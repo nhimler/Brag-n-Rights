@@ -9,7 +9,7 @@
 <h2>Meal Details</h2>
 <h3>@Model.MealName </h3>
 <p><strong>Meal Type: </strong>@Model.MealType </p>
-<p><strong>Meal Plan:</strong> <a asp-action="MealPlanDetails" asp-route-id="@Model.PlanIds.FirstOrDefault()">@Model.PlanNames.FirstOrDefault()</a></p>
+<p><strong>Meal Plan:</strong> <a class="title-link" asp-action="MealPlanDetails" asp-route-id="@Model.PlanIds.FirstOrDefault()">@Model.PlanNames.FirstOrDefault()</a></p>
 <p><strong>Description: </strong> @Model.Description</p>
 <h4>Foods</h4>
 @foreach(long food in Model.Foods)
@@ -18,3 +18,4 @@
 }
 
 <script src="~/js/mealDisplay.js" asp-append-version="true"></script>
+<link rel="stylesheet" href="~/css/MealPlan.css" asp-append-version="true" />

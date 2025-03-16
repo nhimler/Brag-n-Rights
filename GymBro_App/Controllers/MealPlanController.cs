@@ -69,7 +69,8 @@ public class MealPlanController : Controller
                 }
                 homeMealPlan.Meals.Add(new HomeMeal(){
                     MealName = meal.MealName ?? "",
-                    Foods = foodIds
+                    Foods = foodIds,
+                    Id = meal.MealId
                 });
             }
             mealPlanView.MealPlans.Add(homeMealPlan);

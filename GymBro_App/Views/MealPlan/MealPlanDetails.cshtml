@@ -20,7 +20,7 @@
     @foreach(var meal in Model.Meals)
     {
         <li>
-            <h4>@meal.MealName</h4>
+            <a class="title-link" asp-action="MealDetails" asp-route-id="@meal.MealId"><h4>@meal.MealName</h4></a>
             <p><strong>Food:</strong></p>
             <ul>
                 @foreach(var food in meal.Foods)
@@ -33,3 +33,4 @@
 </ol>
 
 <script src="~/js/mealDisplay.js" asp-append-version="true"></script>
+<link rel="stylesheet" href="~/css/MealPlan.css" asp-append-version="true" />
