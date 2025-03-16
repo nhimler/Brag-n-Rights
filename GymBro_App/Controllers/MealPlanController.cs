@@ -78,6 +78,46 @@ public class MealPlanController : Controller
     }
 
     [Authorize]
+    [HttpGet ("MealPlanDetails/{id}")]
+    public IActionResult MealPlanDetails(string id){
+        if (User == null || User.Identity == null || !User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Index");
+        }
+        var user = _userManager.GetUserAsync(User).Result;
+        if (user == null)
+        {
+            return RedirectToAction("Index");
+        }
+        var userId = _userRepository.GetIdFromIdentityId(user.Id);
+        if (!int.TryParse(id, out int mealPlanId))
+        {
+            return RedirectToAction("Index");
+        }
+        var mealPlan = _mealPlanRepository.FindById(mealPlanId);
+        if (mealPlan == null || mealPlan.UserId != userId)
+        {
+            return RedirectToAction("Index");
+        }
+        List<MealView> meals = new List<MealView>();
+        foreach(Meal meal in mealPlan.Meals){
+            List<long> foodIds = new List<long>();
+            foreach(Food food in meal.Foods){
+                foodIds.Add(food.ApiFoodId ?? -1);
+            }
+            meals.Add(new MealView(meal){
+                Foods = foodIds,
+            });
+        }
+        MealPlanView mealPlanView = new MealPlanView(mealPlan);
+        MealPlanDetailsView mealPlanDetails = new MealPlanDetailsView(){
+            MealPlan = mealPlanView,
+            Meals = meals
+        };
+        return View("MealPlanDetails", mealPlanDetails);
+    }
+
+    [Authorize]
     [HttpGet ("CreateMealPlan/{id}")]
     public IActionResult CreateMealPlan(string id)
     {

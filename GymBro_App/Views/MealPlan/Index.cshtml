@@ -25,7 +25,7 @@
                         <h3>@Model.MealNames[k][i]</h3>
                         @for(int j = 0; j < Model.Foods[k][i].Count; j++)
                         {
-                            <p data-api-id="@Model.Foods[k][i][j]">@j</p>
+                            <p class="food-from-api" data-api-id="@Model.Foods[k][i][j]">@j</p>
                         }
                 </li>
             }
