@@ -12,6 +12,21 @@ class ExtFoodDTO
     public string food_name { get; set; } = "";
     public string food_description { get; set; } = "";
     public string brand_name { get; set; } = "";
+    public ServingList servings { get; set; } = new ServingList();
+}
+
+public class Serving
+{
+    public string serving_description { get; set; } = "";
+    public string calories { get; set; } = "";
+    public string protein { get; set; } = "";
+    public string carbs { get; set; } = "";
+    public string fat { get; set; } = "";
+}
+
+public class ServingList
+{
+    public List<Serving> serving { get; set; } = new List<Serving>();
 }
 
 class GetFoodResponse
@@ -145,15 +160,18 @@ public class FoodService : IFoodService
             {
                 PropertyNameCaseInsensitive = true
             };
-            var foods = await JsonSerializer.DeserializeAsync<GetFoodResponse>(await response.Content.ReadAsStreamAsync(), options);
-            foods = foods ?? new GetFoodResponse();
-            var food = foods.food;
+            var result = await JsonSerializer.DeserializeAsync<GetFoodResponse>(await response.Content.ReadAsStreamAsync(), options);
+            result = result ?? new GetFoodResponse();
+            var food = result.food;
+            var serving = result.food.servings.serving.FirstOrDefault();
 
             return new FoodDTO
             {
                 FoodName = food.food_name,
                 FoodId = food.food_id,
-                BrandName = food.brand_name
+                BrandName = food.brand_name,
+                FoodDescription = "Per " + serving.serving_description + " - Calories: " + serving.calories + "kcal | Fat: " + serving.fat 
+                    + "g | Carbs: " + serving.carbs + "g | Protein: "+ serving.protein  + "g"
             };
         }
         return null;

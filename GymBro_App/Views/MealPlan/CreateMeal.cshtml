@@ -41,6 +41,9 @@
     <hr>
     <h4>Selected Foods</h4>
     <div class="accordion" id="selectedFood">
+        @foreach(long food in Model.Foods){
+            <div class="old-food" data-api-id="@food">-</div>
+        }
     </div>
 
 </form>

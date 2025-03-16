@@ -251,16 +251,16 @@ public class MealPlanController : Controller
             return RedirectToAction("Index");
         }
         var userId = _userRepository.GetIdFromIdentityId(user.Id);
+        var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
+        MealView mv = new MealView();
+        if(mealPlans.IsNullOrEmpty()){
+            return RedirectToAction("Index");
+        }
+        foreach(MealPlan mp in mealPlans){
+            mv.PlanIds.Add(mp.MealPlanId);
+            mv.PlanNames.Add(mp.PlanName ?? "");
+        }
         if(id == "new"){
-            var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
-            MealView mv = new MealView();
-            if(mealPlans.IsNullOrEmpty()){
-                return RedirectToAction("Index");
-            }
-            foreach(MealPlan mp in mealPlans){
-                mv.PlanIds.Add(mp.MealPlanId);
-                mv.PlanNames.Add(mp.PlanName ?? "");
-            }
             return View("CreateMeal", mv);
         }
 
@@ -279,14 +279,12 @@ public class MealPlanController : Controller
         {
             return RedirectToAction("Index");
         }
-        return View("CreateMeal", new MealView()
-        {
-            MealId = meal.MealId,
-            MealName = meal.MealName ?? "",
-            MealType = meal.MealType ?? "",
-            Description = "",//meal.Description ?? "",
-            Foods = meal.Foods.Select(f => f.ApiFoodId ?? -1).ToList()
-        });
+        mv.MealId = meal.MealId;
+        mv.MealName = meal.MealName ?? "";
+        mv.MealType = meal.MealType ?? "";
+        mv.Description = meal.Description ?? "";
+        mv.Foods = meal.Foods.Select(f => f.ApiFoodId ?? -1).ToList();
+        return View("CreateMeal", mv);
     }
 
     [Authorize]
@@ -310,21 +308,44 @@ public class MealPlanController : Controller
             {   
                 return RedirectToAction("Index");
             }
-            var meal = new Meal()
+            var meal = _mealRepository.FindById(mv.MealId);
+            if (meal != null && meal.MealPlan?.UserId != userId)
             {
-                MealPlanId = mv.MealPlanId,
-                MealName = mv.MealName,
-                MealType = mv.MealType,
-                Description = mv.Description
-            };
-            _mealRepository.Add(meal);
-            foreach (var food in mv.Foods)
-            {
-                _foodRepository.Add(new Food
+                return RedirectToAction("Index");
+            }
+            if(meal != null){
+                meal.MealName = mv.MealName;
+                meal.MealType = mv.MealType;
+                meal.Description = mv.Description;
+                _mealRepository.AddOrUpdate(meal);
+                _foodRepository.DeleteInMeal(meal.MealId);
+                foreach (var food in mv.Foods)
                 {
-                    ApiFoodId = food,
-                    MealId = meal.MealId
-                });
+                    _foodRepository.Add(new Food
+                    {
+                        ApiFoodId = food,
+                        MealId = meal.MealId
+                    });
+                }
+                Debug.WriteLine("Meal Updated");
+            }else{
+                meal = new Meal()
+                {
+                    MealPlanId = mv.MealPlanId,
+                    MealName = mv.MealName,
+                    MealType = mv.MealType,
+                    Description = mv.Description
+                };
+                _mealRepository.Add(meal);
+                Debug.WriteLine("New Meal Created");
+                foreach (var food in mv.Foods)
+                {
+                    _foodRepository.Add(new Food
+                    {
+                        ApiFoodId = food,
+                        MealId = meal.MealId
+                    });
+                }
             }
             return RedirectToAction("Index");
         }

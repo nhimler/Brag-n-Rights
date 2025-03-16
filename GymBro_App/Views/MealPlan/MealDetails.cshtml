@@ -5,6 +5,8 @@
 }
 
 <a asp-action="Index"><button class="btn btn-primary">Back to Meal Plans</button></a>
+<hr>
+<a asp-action="CreateMeal" asp-route-id="@Model.MealId"><button class="btn btn-primary">Edit Meal</button></a>
 
 <h2>Meal Details</h2>
 <h3>@Model.MealName </h3>
