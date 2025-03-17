@@ -198,7 +198,7 @@ public class MealPlanController : Controller
             }
             var userId = _userRepository.GetIdFromIdentityId(user.Id);
 
-            var mealPlan = _mealPlanRepository.FindById(mv.MealPlanId);
+            var mealPlan = _mealPlanRepository.FindById(mv.MealPlanId ?? -1);
             if (mealPlan != null && mealPlan.UserId != userId)
             {
                 return RedirectToAction("Index");
