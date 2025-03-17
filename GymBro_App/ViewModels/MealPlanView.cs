@@ -22,7 +22,7 @@ namespace GymBro_App.ViewModels
             TargetFats = mp.TargetFats;
         }
 
-        public int MealPlanId { get; set; }
+        public int? MealPlanId { get; set; }
 
         public int? UserId { get; set; }
 
