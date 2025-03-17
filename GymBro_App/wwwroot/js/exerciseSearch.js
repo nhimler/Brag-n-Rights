@@ -1,4 +1,4 @@
-let exerciseSearchButton = document.getElementById("exerciseSearchButton");
+let exerciseSearchButton = document.getElementById("exerciseSearchButtonAddon");
 
 exerciseSearchButton.addEventListener("click", async function(){
     let name = document.getElementById("exerciseInput").value;
@@ -41,7 +41,11 @@ async function displayExerciseSearchResults(result) {
     resultList.innerHTML = "";
 
     let heading = document.createElement("h2");
-    heading.textContent = "Here are our top 10 results";
+    if (exerciseInput.value === "") {
+        heading.textContent = "Here are our first 10 exercises:";
+    } else {
+        heading.textContent = "Here are our top 10 results for " + exerciseInput.value + ":";
+    }
     resultList.appendChild(heading);
 
     let table = document.createElement("table");
@@ -122,17 +126,19 @@ function addExerciseToCart(exercise) {
     exerciseEntry.appendChild(removeButton);
     exerciseCart.appendChild(exerciseEntry);
 
-    // In a different user story, this button will be used to add the selected exercises to a workout in our db
-    let addExerciseToCartButton = document.getElementById("addExerciseToCartButton");
-    if (!addExerciseToCartButton) {
-        addExerciseToCartButton = document.createElement("button");
-        addExerciseToCartButton.id = "addExerciseToCartButton";
-        addExerciseToCartButton.textContent = "Add Exercises to Workout";
-        addExerciseToCartButton.className = "btn btn-success";
-        addExerciseToCartButton.style.marginTop = "12px";
-        addExerciseToCartButton.addEventListener("click", function() {
-            window.location.href = "/Workouts";
-        });
+    // Append button only if user is logged in
+    if (isLoggedIn) {
+        let addExerciseToCartButton = document.getElementById("addExerciseToCartButton");
+        if (!addExerciseToCartButton) {
+            addExerciseToCartButton = document.createElement("button");
+            addExerciseToCartButton.id = "addExerciseToCartButton";
+            addExerciseToCartButton.textContent = "Add Exercises to Workout";
+            addExerciseToCartButton.className = "btn btn-success";
+            addExerciseToCartButton.style.marginTop = "12px";
+            addExerciseToCartButton.addEventListener("click", function() {
+                window.location.href = "/Workouts";
+            });
+        }
+        exerciseCart.appendChild(addExerciseToCartButton);
     }
-    exerciseCart.appendChild(addExerciseToCartButton);
 }

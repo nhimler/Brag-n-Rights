@@ -52,27 +52,28 @@ namespace Controller_Tests
             };
         }
 
-        [Test]
-        public void UserLocationPut_ShouldUpdateUsersLatitudeAndLongitude()
-        {
-            // Arrange
-            var userDTO = new UserDTO { Latitude = 45.0m, Longitude = -122.0m };
-            var user = new GymBro_App.Models.User { IdentityUserId = "1", Latitude = 0.0m, Longitude = 0.0m };
-            var expectedLatitude = 45.0m;
-            var expectedLongitude = -122.0m;
+        // Removed test because method has been removed from UserAPIController
+        // [Test]
+        // public void UserLocationPut_ShouldUpdateUsersLatitudeAndLongitude()
+        // {
+        //     // Arrange
+        //     var userDTO = new UserDTO { Latitude = 45.0m, Longitude = -122.0m };
+        //     var user = new GymBro_App.Models.User { IdentityUserId = "1", Latitude = 0.0m, Longitude = 0.0m };
+        //     var expectedLatitude = 45.0m;
+        //     var expectedLongitude = -122.0m;
 
-            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("1");
-            _mockUserRepository.Setup(repo => repo.GetUserByIdentityUserId("1")).Returns(user);
+        //     _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("1");
+        //     _mockUserRepository.Setup(repo => repo.GetUserByIdentityUserId("1")).Returns(user);
 
-            // Act
-            var result = _userAPIController.UserLocation(userDTO);
+        //     // Act
+        //     var result = _userAPIController.UserLocation(userDTO);
 
-            // Assert
-            Assert.IsInstanceOf<OkResult>(result);
-            Assert.That(expectedLatitude, Is.EqualTo(user.Latitude));
-            Assert.That(expectedLongitude, Is.EqualTo(user.Longitude));
-            _mockUserRepository.Verify(repo => repo.AddOrUpdate(It.Is<GymBro_App.Models.User>(u => u.Latitude == 45.0m && u.Longitude == -122.0m)), Times.Once);
-        }
+        //     // Assert
+        //     Assert.IsInstanceOf<OkResult>(result);
+        //     Assert.That(expectedLatitude, Is.EqualTo(user.Latitude));
+        //     Assert.That(expectedLongitude, Is.EqualTo(user.Longitude));
+        //     _mockUserRepository.Verify(repo => repo.AddOrUpdate(It.Is<GymBro_App.Models.User>(u => u.Latitude == 45.0m && u.Longitude == -122.0m)), Times.Once);
+        // }
 
         [TearDown]
         public void TearDown()

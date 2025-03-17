@@ -8,4 +8,6 @@ public interface IUserRepository : IRepository<User>
     User GetUserByIdentityUserId(string identityId);
     List<WorkoutPlan> GetWorkoutPlansByIdentityUserId(string identityId);
     List<WorkoutPlan> GetWorkoutPlansByIdentityUserId(string identityId, int isCompleted);
+
+    Task<List<string>> GetAllUserIdentityIDAsync();
 }

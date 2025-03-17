@@ -31,7 +31,9 @@ namespace GymBro_App.Services
 
             var medals = await _medalRepository.GetAllMedalsAsync();// get all medals
             var userMedalsToday = await _userMedalRepository.GetUserMedalsEarnedTodayAsync(userId);// get all medals earned by the user today
-            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            var pacificTime = GetPacificTime();  // Use the helper method to get Pacific Time
+            var today = DateOnly.FromDateTime(pacificTime.Date);  // Extract date from Pacific Time
 
             var userSteps = await _biometricDatumRepository.GetUserStepsAsync(userId) ?? 0;  // get total user steps for today
             var awardedMedals = new List<AwardMedalDetails>();
@@ -78,7 +80,9 @@ namespace GymBro_App.Services
         } 
         public async Task SaveActivityData(string identityId)
         {
-            var today = DateOnly.FromDateTime(DateTime.Now);
+            var pacificTime = GetPacificTime();  // Use the helper method to get Pacific Time
+            var today = DateOnly.FromDateTime(pacificTime.Date); 
+
             var Token = await _oAuthService.GetAccessToken(identityId);
             var steps = await _oAuthService.GetUserSteps(Token, today.ToString("yyyy-MM-dd"));
 
@@ -98,7 +102,7 @@ namespace GymBro_App.Services
                     {
                         UserId = userId,
                         Steps = steps,
-                        LastUpdated = DateTime.Now
+                       LastUpdated = GetPacificTime() 
                     };
 
                     await _biometricDatumRepository.AddAsync(biometricData);
@@ -110,6 +114,13 @@ namespace GymBro_App.Services
             }
 
         }
+
+        private DateTime GetPacificTime()
+        {
+            var pacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            return TimeZoneInfo.ConvertTime(DateTime.Now, pacificTimeZone);
+        }
+
 
     }
 }

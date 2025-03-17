@@ -1,0 +1,38 @@
+@model GymBro_App.ViewModels.MealPlanDetailsView
+
+@{
+    ViewData["Title"] = "Meal Plan Details";
+}
+
+<a asp-action="Index"><button class="btn btn-primary">Back to Meal Plans</button></a>
+<hr>
+<a asp-action="CreateMealPlan" asp-route-id="@Model.MealPlan.MealPlanId"><button class="btn btn-primary">Edit Meal Plan</button></a>
+
+<h2>Meal Plan Details</h2>
+<h3>@Model.MealPlan.PlanName </h3>
+<h4>Time Frame:</h4> 
+<p>@Model.MealPlan.StartDate?.Month/@Model.MealPlan.StartDate?.Day/@Model.MealPlan.StartDate?.Year - @Model.MealPlan.EndDate?.Month/@Model.MealPlan.EndDate?.Day/@Model.MealPlan.EndDate?.Year</p>
+<p><strong>Frequency:</strong> @Model.MealPlan.Frequency</p>
+<p><strong>Target Calories:</strong> @Model.MealPlan.TargetCalories</p>
+<p><strong>Target Protein:</strong> @Model.MealPlan.TargetProtein</p>
+<p><strong>Target Carbs:</strong> @Model.MealPlan.TargetCarbs</p>
+<p><strong>Target Fats:</strong> @Model.MealPlan.TargetFats</p>
+<h3>Meals</h3>
+<ol>
+    @foreach(var meal in Model.Meals)
+    {
+        <li>
+            <a class="title-link" asp-action="MealDetails" asp-route-id="@meal.MealId"><h4>@meal.MealName</h4></a>
+            <p><strong>Food:</strong></p>
+            <ul>
+                @foreach(var food in meal.Foods)
+                {
+                    <li class="food-from-api" data-api-id="@food"></li>
+                }
+            </ul>
+        </li>
+    }
+</ol>
+
+<script src="~/js/mealDisplay.js" asp-append-version="true"></script>
+<link rel="stylesheet" href="~/css/MealPlan.css" asp-append-version="true" />

@@ -45,5 +45,12 @@ namespace GymBro_App.DAL.Concrete
             return _user.FirstOrDefault(u => u.IdentityUserId == identityId)?.WorkoutPlans
                          .Where(wp => wp.IsCompleted == isCompleted).ToList() ?? new List<WorkoutPlan>();
         }
+        public async Task<List<string>> GetAllUserIdentityIDAsync()
+        {
+            return await _context.Users
+                .Where(u => !string.IsNullOrEmpty(u.IdentityUserId)) // Ensure IdentityUserId is not null or empty
+                .Select(u => u.IdentityUserId!)
+                .ToListAsync();
+        }
     }
 }

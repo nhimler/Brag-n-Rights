@@ -3,13 +3,18 @@
 }
 
 <h1>Let's search our API for a workout</h1>
+<!-- Moving away from multiple buttons/modals to a persistent search bar at the top of the page that persists through queries-->
+<div class="input-group mb-3" id="exerciseSearchBar">
+    <input type="text" class="form-control" id="exerciseInput" placeholder="Search by an exercise name ex) bench press" aria-label="Search by an exercise name" aria-describedby="exerciseSearchButtonAddon">
+    <button class="btn btn-outline-secondary" type="button" id="exerciseSearchButtonAddon">Search</button>
+</div>
 
-<!-- Button trigger modal -->
+<!-- Button trigger modal 
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#dataExerciseModal">
     Exercise Search Window
 </button>
-
-<!-- Modal -->
+-->
+<!-- Modal
 <div class="modal fade" id="dataExerciseModal" tabindex="-1" role="dialog" aria-labelledby="exerciseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -34,6 +39,7 @@
         </div>
     </div>
 </div>
+-->
 <div id="exerciseSearchResults">
     
 </div>
@@ -41,5 +47,7 @@
 <div id="exerciseCart">
 
 </div>
-
+<script>
+    let isLoggedIn = @User.Identity.IsAuthenticated.ToString().ToLower();
+</script>
 <script src="~/js/exerciseSearch.js"></script>

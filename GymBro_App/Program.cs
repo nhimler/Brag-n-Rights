@@ -40,6 +40,10 @@ public class Program
         builder.Services.AddScoped<IOAuthService, OAuthService>();  
         builder.Services.AddHttpContextAccessor(); 
         builder.Services.AddScoped<EncryptionHelper>();
+        builder.Services.AddHostedService<MedalAwardingBackgroundService>();
+        builder.Services.AddScoped<IGoogleMapsService, GoogleMapsService>();
+        builder.Services.AddScoped<INearbySearchMapService, NearbySearchMapService>();
+
 
         
 
@@ -82,17 +86,27 @@ public class Program
 
         // Google Maps API Configuration
         string googleMapsApiKey = builder.Configuration["GoogleMapsApiKey"] ?? "";
-        string googleMapsApiUrl = "https://maps.googleapis.com/maps/api";
-        builder.Services.AddHttpClient<IMapService, MapService>((client, services) =>
+        
+        // GoogleMapsService API Configuration
+        string googleMapApiUrl = "https://maps.googleapis.com/maps/api";
+        builder.Services.AddHttpClient<IGoogleMapsService, GoogleMapsService>((client, services) =>
         {
-            client.BaseAddress = new Uri(googleMapsApiUrl);
-
-            // Removed for now. Breaks when we're just grabbing the API key
-            // client.DefaultRequestHeaders.Add("Accept", "application/json");
-            // client.DefaultRequestHeaders.Add("Content-Type", "application/json; charset=utf-8");
-            
+            client.BaseAddress = new Uri(googleMapApiUrl);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.DefaultRequestHeaders.Add("X-goog-api-key", googleMapsApiKey);
-            return new MapService(client, services.GetRequiredService<ILogger<MapService>>());
+            return new GoogleMapsService(client, services.GetRequiredService<ILogger<GoogleMapsService>>());
+        });
+
+        // NearbySearchMapService API Configuration
+        string googleNearbySearchApiUrl = "https://places.googleapis.com/v1/places:searchNearby";
+        string googleNearbySearchFieldMask = "places.formattedAddress,places.displayName,places.regularOpeningHours,places.websiteUri";
+        builder.Services.AddHttpClient<INearbySearchMapService, NearbySearchMapService>((client, services) =>
+        {
+            client.BaseAddress = new Uri(googleNearbySearchApiUrl);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add("X-Goog-Api-Key", googleMapsApiKey);
+            client.DefaultRequestHeaders.Add("X-Goog-FieldMask", googleNearbySearchFieldMask);
+            return new NearbySearchMapService(client, services.GetRequiredService<ILogger<NearbySearchMapService>>());
         });
 
 
