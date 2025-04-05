@@ -17,8 +17,6 @@ public partial class GymBroDbContext : DbContext
 
     public virtual DbSet<BiometricDatum> BiometricData { get; set; }
 
-    public virtual DbSet<Exercise> Exercises { get; set; }
-
     public virtual DbSet<FitnessChallenge> FitnessChallenges { get; set; }
 
     public virtual DbSet<Food> Foods { get; set; }
@@ -37,7 +35,11 @@ public partial class GymBroDbContext : DbContext
 
     public virtual DbSet<UserMedal> UserMedals { get; set; }
 
+    public virtual DbSet<WorkoutExercises> WorkoutExercises { get; set; }
+    
     public virtual DbSet<WorkoutPlan> WorkoutPlans { get; set; }
+
+    public virtual DbSet<WorkoutPlanExercise> WorkoutPlanExercises { get; set; }
 
     public DbSet<TokenEntity> Tokens { get; set; }
 
@@ -54,10 +56,10 @@ public partial class GymBroDbContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.BiometricData).HasConstraintName("FK__Biometric__UserI__6319B466");
         });
 
-        modelBuilder.Entity<Exercise>(entity =>
+        /*modelBuilder.Entity<Exercise>(entity =>
         {
             entity.HasKey(e => e.ExerciseId).HasName("PK__Exercise__A074AD0F94A5BE33");
-        });
+        });*/
 
         modelBuilder.Entity<FitnessChallenge>(entity =>
         {
@@ -172,7 +174,7 @@ public partial class GymBroDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__WorkoutPl__UserI__4D2A7347");
 
-            entity.HasMany(d => d.Exercises).WithMany(p => p.WorkoutPlans)
+            /*entity.HasMany(d => d.Exercises).WithMany(p => p.WorkoutPlans)
                 .UsingEntity<Dictionary<string, object>>(
                     "WorkoutPlanExercise",
                     r => r.HasOne<Exercise>().WithMany()
@@ -187,7 +189,7 @@ public partial class GymBroDbContext : DbContext
                         j.ToTable("WorkoutPlanExercise");
                         j.IndexerProperty<int>("WorkoutPlanId").HasColumnName("WorkoutPlanID");
                         j.IndexerProperty<int>("ExerciseId").HasColumnName("ExerciseID");
-                    });
+                    });*/
         });
 
         modelBuilder.Entity<TokenEntity>(entity =>

@@ -44,7 +44,4 @@ public partial class WorkoutPlan
     [InverseProperty("WorkoutPlans")]
     public virtual User? User { get; set; }
 
-    [ForeignKey("WorkoutPlanId")]
-    [InverseProperty("WorkoutPlans")]
-    public virtual ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
 }

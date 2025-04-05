@@ -87,6 +87,23 @@ namespace GymBro_App.Services
             }
             return new List<ExerciseDTO>();
         }
+        public async Task<ExerciseDTO> GetExerciseByIdAsync(int id)
+        {
+            string endpoint = $"/exercises/exercise/{id}";
+            var response = await _httpClient.GetAsync(endpoint);
+            _logger.LogInformation($"Response status code: {response.StatusCode}");
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var result = JsonSerializer.Deserialize<ExerciseDTO>(responseBody, options);
+                return result ?? new ExerciseDTO();
+            }
+            return new ExerciseDTO();
+        }
     }
 }
 
