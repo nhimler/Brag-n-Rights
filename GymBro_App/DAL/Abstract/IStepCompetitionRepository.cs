@@ -4,5 +4,5 @@ namespace GymBro_App.DAL.Abstract;
 public interface IStepCompetitionRepository : IRepository<StepCompetitionEntity>
 {
 
-    Task<StepCompetitionEntity> CreateCompetitionAsync(string creatorId);
+    Task AddAsync(StepCompetitionEntity competition);
 }

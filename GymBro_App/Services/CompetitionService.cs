@@ -1,31 +1,39 @@
 using GymBro_App.Models;
-using GymBro_App.Models.DTOs;
+using TimeZoneConverter;
 using GymBro_App.DAL.Abstract;
-using Azure.Core;
+
 
 namespace GymBro_App.Services
 {
     public class CompetitionService : ICompetitionService{
 
         private readonly GymBroDbContext _context;
+        private readonly IStepCompetitionRepository _competitionRepository;
 
-        public CompetitionService(GymBroDbContext context)
+        public CompetitionService(GymBroDbContext context, IStepCompetitionRepository competitionRepository)
         {
+            _competitionRepository = competitionRepository;
             _context = context;
-        }   
-        
-        public async Task<StepCompetitionEntity> CreateCompetitionAsync(string creatorIdentityId)
+        }
+        public async Task<StepCompetitionEntity> CreateCompetitionAsync(string creatorId)
         {
+            // Get Pacific Time zone
+            TimeZoneInfo pacificZone = TZConvert.GetTimeZoneInfo("Pacific Standard Time");
+
+            // Get current time in Pacific Time
+            DateTime pacificNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pacificZone);
+
+            // Create the competition
             var competition = new StepCompetitionEntity
             {
-                CreatorIdentityId = creatorIdentityId,
-                StartDate = DateTime.UtcNow,
-                EndDate = DateTime.UtcNow.AddDays(7),
+                CreatorIdentityId = creatorId,
+                StartDate = pacificNow,
+                EndDate = pacificNow.AddDays(7),
                 IsActive = true
             };
 
-            _context.StepCompetitions.Add(competition);
-            await _context.SaveChangesAsync();
+            // Add the competition to the database
+            await _competitionRepository.AddAsync(competition);
 
             return competition;
         }

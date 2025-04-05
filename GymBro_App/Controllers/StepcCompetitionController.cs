@@ -4,7 +4,7 @@ using GymBro_App.Models;
 using Microsoft.AspNetCore.Authorization;  // For [Authorize]
 using System.Security.Claims;  // Add this namespace for ClaimsPrincipal and ClaimTypes
 using GymBro_App.Services;
-using GymBro_App.DAL.Abstract;
+
 
 namespace GymBro_App.Controllers;
 
@@ -12,12 +12,12 @@ public class StepCompetitionController : Controller
 {
 
         private readonly IOAuthService _oauthService;
-        private readonly IStepCompetitionRepository _competitionRepository;  // Inject the repository
+        private readonly ICompetitionService _competitionService;
 
-        public StepCompetitionController(IOAuthService oauthService, IStepCompetitionRepository competitionRepository)
+        public StepCompetitionController(IOAuthService oauthService, ICompetitionService competitionService)
         {
             _oauthService = oauthService;
-            _competitionRepository = competitionRepository;  // Initialize the repository
+            _competitionService = competitionService;  // Initialize the repository
         }
         [Authorize]
         public async Task<IActionResult> Index()
@@ -50,7 +50,7 @@ public class StepCompetitionController : Controller
             }
 
             // Create the competition
-             await _competitionRepository.CreateCompetitionAsync(identityId);
+             await _competitionService.CreateCompetitionAsync(identityId);
 
             // Redirect to a view that shows the created competition details
             return RedirectToAction("Index");  // You can redirect to a competition details page if you have one
