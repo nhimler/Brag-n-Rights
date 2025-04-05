@@ -13,6 +13,12 @@ public partial class WorkoutPlan
     [Column("WorkoutPlanID")]
     public int WorkoutPlanId { get; set; }
 
+    [Column("WorkoutPlanExerciseID")]
+    public int? WorkoutPlanExerciseId { get; set; }
+
+    [Column("ApiID")]
+    public int? ApiId { get; set; }
+
     [Column("UserID")]
     public int? UserId { get; set; }
 
