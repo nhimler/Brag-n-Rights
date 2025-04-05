@@ -66,7 +66,7 @@ namespace Controller_Tests
         }
 
         [Test]
-        public async Task UpdateProfilePicture_ShouldUpdateUserProfilePicture()
+        public async Task UpdateProfilePicture_ShouldUpdateUserProfilePictureWhenPictureIsValid()
         {
             // Arrange
             var mockFile = new Mock<IFormFile>();
