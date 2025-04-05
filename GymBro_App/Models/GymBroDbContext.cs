@@ -40,7 +40,8 @@ public partial class GymBroDbContext : DbContext
     public virtual DbSet<WorkoutPlan> WorkoutPlans { get; set; }
 
     public DbSet<TokenEntity> Tokens { get; set; }
-
+    
+    public DbSet<StepCompetitionEntity> StepCompetitions { get; set; }  // Add this line to include the StepCompetitionEntity
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=GymBroAzureConnection");
@@ -163,6 +164,18 @@ public partial class GymBroDbContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.UserMedals).HasConstraintName("FK_UserMedal_User");
         });
+
+        modelBuilder.Entity<StepCompetitionEntity>(entity =>
+        {
+            entity.HasKey(e => e.CompetitionID);
+
+            entity.HasOne(e => e.Creator)
+                .WithMany(u => u.CreatedCompetitions)
+                .HasPrincipalKey(u => u.IdentityUserId)
+                .HasForeignKey(e => e.CreatorIdentityId)
+                .OnDelete(DeleteBehavior.Cascade); // Optional: adjust based on your needs
+        });
+
 
         modelBuilder.Entity<WorkoutPlan>(entity =>
         {

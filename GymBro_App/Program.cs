@@ -43,7 +43,8 @@ public class Program
         builder.Services.AddHostedService<MedalAwardingBackgroundService>();
         builder.Services.AddScoped<IGoogleMapsService, GoogleMapsService>();
         builder.Services.AddScoped<INearbySearchMapService, NearbySearchMapService>();
-
+        builder.Services.AddScoped<ICompetitionService, CompetitionService>();
+        builder.Services.AddScoped<IStepCompetitionRepository, StepCompetitionRepository>();
 
         
 
