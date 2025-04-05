@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = "User Page";
 }
+<link rel="stylesheet" href="~/css/UserPage.css" />
+
 
 <div class="text-left">
     <h1 class="display-4">Welcome @Model.Username</h1>
@@ -11,10 +13,12 @@
     <div class="col-md-2 col-sm-12 mb-3">
         <div class="card">
             <div class="card-body text-center">
-                <img src="https://placehold.co/125x125?text=Profile+Pic" class="img-fluid mb-2 user-profile" alt="User Image" />
+                <img id="profile-pic" src="https://placehold.co/125x125?text=Profile+Pic" class="img-fluid mb-2 user-profile" alt="User Image" />
                 <p class="mb-0">@Model.FirstName @Model.LastName</p>
                 <p class="text-muted">@Model.Email</p>
                 <p id="user-location">Location: </p>
+                <input type="file" id="profile-picture" accept="jpg,jpeg" class="form-control mb-2" />
+                <img id ="profile-picture-preview" alt="Profile Picture Preview" class="img-fluid mb-2" />
             </div>
         </div>
     </div>
@@ -34,7 +38,6 @@
                         {
                             <li class="list-group-item">@workout.PlanName</li>
                         }
-                    
                     </ul>
                 }
             </div>
@@ -44,7 +47,7 @@
     <div class="col-md-3 col-sm-12 mb-3">
         <div class="card">
             <div class="card-body text-center">
-                <img src="https://placehold.co/350x200?text=Analytics+Chart" class="img-fluid mb-2 user-profile" alt="Analytics Graph" />
+                <img src="https://placehold.co/350x200?text=Analytics+Chart" class="img-fluid mb-2" alt="Analytics Graph" />
                 <p>Fitness Level: @Model.FitnessLevel</p>
                 <button class="btn btn-primary" id="getUserLocation-btn">Get My Location</button>
                 <a class="btn btn-secondary mt-3" asp-controller="Gym" asp-action="FindNearbyGyms">Find Nearby Gyms</a>
@@ -55,4 +58,5 @@
 
 @section Scripts {
     <script type="text/javascript" src="~/js/userLocation.js"></script>
+    <script type="text/javascript" src="~/js/userPage.js"></script>
 }
