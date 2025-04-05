@@ -11,14 +11,6 @@ async function updateProfilePicture() {
     let file = document.getElementById("profile-picture").files[0]
     console.log(file)
 
-    const reader = new FileReader()
-
-    reader.onload = async (event) => {
-        document.getElementById("profile-picture-preview").src = event.target.result
-        document.getElementById("profile-pic").src = event.target.result
-    }
-    reader.readAsDataURL(files[0])
-    
     let formData = new FormData()
     formData.append("profilePicture", file)
 
