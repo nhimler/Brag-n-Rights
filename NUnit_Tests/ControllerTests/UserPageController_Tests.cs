@@ -63,6 +63,19 @@ public class UserPageController_Test
         Assert.IsInstanceOf<UserInfoModel>(viewResult.Model);
     }
 
+    [Test]
+    public void Settings_ShouldReturnSettingsViewResult()
+    {
+        // Act
+        var result = _userController.Settings();
+
+
+        // Assert
+        var viewResult = result as ViewResult;
+        Assert.IsNotNull(viewResult);
+        Assert.AreEqual("Settings", viewResult.ViewName);
+    }
+
     [TearDown]
     public void TearDown()
     {

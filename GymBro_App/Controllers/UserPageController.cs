@@ -37,6 +37,13 @@ public class UserPageController : Controller
         return View(userInfoModel);
     }
 
+    
+    [HttpGet]
+    public IActionResult Settings()
+    {
+        return View("Settings");
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

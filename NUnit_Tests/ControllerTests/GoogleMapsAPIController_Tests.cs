@@ -91,8 +91,6 @@ namespace ControllerTests
             Assert.That(result.StatusCode, Is.EqualTo(200));
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var addressResult = result.Value?.GetType().GetProperty("address")?.GetValue(result.Value, null);
-            Console.WriteLine($"Result: {addressResult}");
-            Console.WriteLine($"expectedAddress: {expectedAddress}");
             Assert.That(addressResult, Is.EqualTo(expectedAddress));
         }
     }
