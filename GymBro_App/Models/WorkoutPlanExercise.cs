@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,14 +19,14 @@ public partial class WorkoutPlanExercise
     [Column("ApiID")]
     public int? ApiId { get; set; }
 
-    [Column("Reps")]
     public int? Reps { get; set; }
 
-    [Column("Sets")]
     public int? Sets { get; set; }
+
+    [InverseProperty("WorkoutPlanExercise")]
+    public virtual ICollection<WorkoutExercise> WorkoutExercises { get; set; } = new List<WorkoutExercise>();
 
     [ForeignKey("WorkoutPlanId")]
     [InverseProperty("WorkoutPlanExercises")]
     public virtual WorkoutPlan? WorkoutPlan { get; set; }
-
 }

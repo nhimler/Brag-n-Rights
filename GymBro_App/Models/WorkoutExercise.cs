@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,24 +6,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymBro_App.Models;
 
-[Table("WorkoutExercises")]
-public partial class WorkoutExercises
+public partial class WorkoutExercise
 {
     [Key]
     [Column("WorkoutExercisesID")]
-    public int WorkoutExercisesID { get; set; }
+    public int WorkoutExercisesId { get; set; }
 
     [Column("WorkoutPlanID")]
-    public int WorkoutPlanId { get; set; }
+    public int? WorkoutPlanId { get; set; }
 
     [Column("WorkoutPlanExerciseID")]
-    public int WorkoutPlanExerciseId { get; set; }
+    public int? WorkoutPlanExerciseId { get; set; }
 
     [ForeignKey("WorkoutPlanId")]
     [InverseProperty("WorkoutExercises")]
-    public virtual WorkoutPlan WorkoutPlan { get; set; } = null!;
+    public virtual WorkoutPlan? WorkoutPlan { get; set; }
 
     [ForeignKey("WorkoutPlanExerciseId")]
     [InverseProperty("WorkoutExercises")]
-    public virtual WorkoutPlanExercise WorkoutPlanExercise { get; set; } = null!;
+    public virtual WorkoutPlanExercise? WorkoutPlanExercise { get; set; }
 }

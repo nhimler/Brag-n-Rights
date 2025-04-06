@@ -40,5 +40,18 @@ public class ExerciseDbAPIController : ControllerBase
         }
 
         return Ok(exercises);
-}
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetExerciseById(int id)
+    {
+        var exercises = await _exerciseService.GetExerciseByIdAsync(id);
+    
+        if (exercises == null)
+        {
+            return NotFound($"No exercise found with ID '{id}'.");
+        }
+
+        return Ok(exercises);
+    }
 }

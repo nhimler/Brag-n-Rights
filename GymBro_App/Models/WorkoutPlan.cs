@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GymBro_App.Models;
 
 [Table("WorkoutPlan")]
+[Index("ApiId", Name = "UQ__WorkoutP__024B3BD27618DEA4", IsUnique = true)]
 public partial class WorkoutPlan
 {
     [Key]
@@ -44,4 +45,9 @@ public partial class WorkoutPlan
     [InverseProperty("WorkoutPlans")]
     public virtual User? User { get; set; }
 
+    [InverseProperty("WorkoutPlan")]
+    public virtual ICollection<WorkoutExercise> WorkoutExercises { get; set; } = new List<WorkoutExercise>();
+
+    [InverseProperty("WorkoutPlan")]
+    public virtual ICollection<WorkoutPlanExercise> WorkoutPlanExercises { get; set; } = new List<WorkoutPlanExercise>();
 }
