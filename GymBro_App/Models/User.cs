@@ -79,7 +79,7 @@ public partial class User
     public virtual ICollection<MealPlan> MealPlans { get; set; } = new List<MealPlan>();
 
     [InverseProperty("User")]
-    public virtual Token? Token { get; set; }
+    public virtual TokenEntity? Token { get; set; }
 
     [InverseProperty("User")]
     public virtual ICollection<UserMedal> UserMedals { get; set; } = new List<UserMedal>();

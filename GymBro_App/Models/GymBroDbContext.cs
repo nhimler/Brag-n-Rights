@@ -31,7 +31,7 @@ public partial class GymBroDbContext : DbContext
 
     public virtual DbSet<Medal> Medals { get; set; }
 
-    public virtual DbSet<Token> Tokens { get; set; }
+    public virtual DbSet<TokenEntity> Tokens { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -144,7 +144,7 @@ public partial class GymBroDbContext : DbContext
             entity.HasKey(e => e.MedalId).HasName("PK__Medal__30F05186EFBE82FF");
         });
 
-        modelBuilder.Entity<Token>(entity =>
+        modelBuilder.Entity<TokenEntity>(entity =>
         {
             entity.HasKey(e => e.UserId).HasName("PK__Token__1788CC4C526EEF32");
 
