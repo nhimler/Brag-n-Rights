@@ -53,6 +53,30 @@ namespace Controller_Tests
         }
 
         [Test]
+        public async Task UpdateProfilePicture_ShouldReturnNotFoundWhenUserNotFound()
+        {
+            // Arrange
+            var mockFile = new Mock<IFormFile>();
+            var content = "fake image content";
+            var fileName = "profile.jpg";
+            var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
+
+            mockFile.Setup(f => f.OpenReadStream()).Returns(stream);
+            mockFile.Setup(f => f.FileName).Returns(fileName);
+            mockFile.Setup(f => f.Length).Returns(stream.Length);
+
+            // Mocking a user that does not exist
+            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("123");
+            _mockUserRepository.Setup(repo => repo.GetUserByIdentityUserId("123")).Returns((GymBro_App.Models.User)null);
+
+            // Act
+            var result = await _userAPIController.UpdateProfilePicture(mockFile.Object);
+
+            // Assert
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+        }
+
+        [Test]
         public async Task UpdateProfilePicture_ShouldReturnBadRequestWhenProfilePictureNullOrEmpty()
         {
             // Arrange
