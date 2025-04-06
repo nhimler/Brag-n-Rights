@@ -14,11 +14,20 @@ async function updateProfilePicture() {
     let formData = new FormData()
     formData.append("profilePicture", file)
 
+    showProfilePicture(file)
     
     let response = await fetch("/api/users/updateProfilePicture", {
         method: "POST",
         body: formData,
     })
+
+    if (document.getElementById("profile-picture-preview")) {
+        document.getElementById("profile-picture-preview").remove()
+    }
+    if (document.getElementById("upload-profile-picture")) {
+        document.getElementById("upload-profile-picture").remove()
+    }
+
 
     if (response.ok) {
         console.log("Profile picture updated successfully")
@@ -55,6 +64,15 @@ function previewProfilePicture() {
         updateProfileButton.addEventListener("click", () => {
             updateProfilePicture()
         })
+    }
+    reader.readAsDataURL(file)
+}
+
+function showProfilePicture(file) {
+    const reader = new FileReader()
+    reader.onload = (event) => {
+        let profilePicture = document.getElementById("profile-pic")
+        profilePicture.setAttribute("src", event.target.result)
     }
     reader.readAsDataURL(file)
 }
