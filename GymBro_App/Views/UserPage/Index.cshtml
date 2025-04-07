@@ -5,67 +5,70 @@
 <link rel="stylesheet" href="~/css/UserPage.css" />
 
 
-<div class="text-left">
-    <h1 class="display-4">Welcome @Model.Username</h1>
-    <hr/>
+<div class="d-flex flex-row mb-3 pt-4">
+    <div class="pe-4">
+        @if (Model.ProfilePicture != null && Model.ProfilePicture.Length > 0)
+        {
+            <img id="profile-pic" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ProfilePicture)" class="img-fluid mb-2 user-profile" alt="User Image" />
+        }
+        else
+        {
+            <img id="profile-pic" src="https://placehold.co/150x150?text=No+Image" class="img-fluid mb-2 user-profile" alt="User Image" />
+        }
+    </div>
+
+    <div class="col-md-2 align-self-center">
+        <h3 class="mb-0">@Model.FirstName @Model.LastName</h3>
+        <p class="text-muted">@Model.Email</p>
+    </div>
 </div>
-<div class="row">
-    <div class="col-md-2 col-sm-12 mb-3">
-        <div class="card">
-            <div class="card-body text-center">
-                @if (Model.ProfilePicture != null)
-                {
-                    <img id="profile-pic" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ProfilePicture)" class="img-fluid mb-2 user-profile" alt="User Image" />
-                }
-                else
-                {
-                    <img id="profile-pic" src="https://placehold.co/125x125?text=No+Image" class="img-fluid mb-2 user-profile" alt="User Image" />
-                }
-                
-                <p class="mb-0">@Model.FirstName @Model.LastName</p>
-                <p class="text-muted">@Model.Email</p>
-                <p id="user-location">Location: </p>
-                <!-- TODO: This is not a safe way to do this. Use a form and model to verify this server-side. -->
-                <input type="file" id="profile-picture" name="profile-picture" accept="jpg,jpeg" class="form-control mb-2" placeholder=""/>
-                <div id="preview-container">
-                    
-                </div>
-            </div>
+<hr/>
+
+<div class="row mb-3 justify-content-center">
+    <div class="card col-md-4 col-sm-12 mb-3 text-center">
+        <h5 class="card-title my-2">Completed Workouts</h5>
+        <div class="card-body">
+            @if (Model.WorkoutPlans.Count <= 0)
+            {
+                <p>You haven't completed any workouts yet</p>
+            }
+            else
+            {
+                <ul class="list-group">
+                    @foreach (var workout in Model.WorkoutPlans)
+                    {
+                        <li class="list-group-item">@workout.PlanName</li>
+                    }
+                </ul>
+            }
         </div>
     </div>
 
-    <div class="col-md-7 col-sm-12 mb-3 text-center">
-        <div class="card">
-            <h5 class="card-title my-2">Completed Workouts</h5>
-            <div class="card-body">
-                @if (Model.WorkoutPlans.Count <= 0)
-                {
-                    <p>You haven't completed any workouts yet</p>
-                }
-                else
-                {
-                    <ul class="list-group">
-                        @foreach (var workout in Model.WorkoutPlans)
-                        {
-                            <li class="list-group-item">@workout.PlanName</li>
-                        }
-                    </ul>
-                }
-            </div>
-        </div>
-    </div>
 
-    <div class="col-md-3 col-sm-12 mb-3">
+    <div class="col-md-4 col-sm-12 mb-3">
         <div class="card">
             <div class="card-body text-center">
                 <img src="https://placehold.co/350x200?text=Analytics+Chart" class="img-fluid mb-2" alt="Analytics Graph" />
                 <p>Fitness Level: @Model.FitnessLevel</p>
                 <button class="btn btn-primary" id="getUserLocation-btn">Get My Location</button>
-                <a class="btn btn-secondary mt-3" asp-controller="Gym" asp-action="FindNearbyGyms">Find Nearby Gyms</a>
+                <a class="btn btn-secondary" asp-controller="Gym" asp-action="FindNearbyGyms">Find Nearby Gyms</a>
+                <h3 class="mb-0" id="user-location">Location</h3>
+                <p class="text-muted" id="user-location-details">Not Set</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card col-md-4 col-sm-12 mb-3 text-center">
+        <h5 class="card-title my-2">Update Profile Picture</h5>
+        <div class="card-body">
+            <input type="file" id="profile-picture" name="profile-picture" accept="jpg,jpeg" class="form-control mb-2" placeholder=""/>
+            <div id="preview-container">
+                @* Space left empty for preview *@
             </div>
         </div>
     </div>
 </div>
+
 
 @section Scripts {
     <script type="text/javascript" src="~/js/userLocation.js"></script>
