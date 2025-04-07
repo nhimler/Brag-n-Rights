@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="~/css/UserPage.css" />
 
 
-<div class="d-flex flex-row mb-3 pt-4">
+<div class="d-flex flex-row mb-3 pt-3">
     <div class="pe-4">
         @if (Model.ProfilePicture != null && Model.ProfilePicture.Length > 0)
         {
@@ -61,7 +61,7 @@
     <div class="card col-md-4 col-sm-12 mb-3 text-center">
         <h5 class="card-title my-2">Update Profile Picture</h5>
         <div class="card-body">
-            <input type="file" id="profile-picture" name="profile-picture" accept="jpg,jpeg" class="form-control mb-2" placeholder=""/>
+            <input type="file" id="profile-picture" title="profile-picture" name="profile-picture" accept="jpg,jpeg" class="form-control mb-2" placeholder=""/>
             <div id="preview-container">
                 @* Space left empty for preview *@
             </div>
