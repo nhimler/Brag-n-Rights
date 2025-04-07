@@ -48,7 +48,7 @@ namespace GymBro_App.Services
             _logger = logger;
         }
 
-        public async Task<List<ExerciseDTO>> GetExercisesAsync()
+        /*public async Task<List<ExerciseDTO>> GetExercisesAsync()
         {
             string endpoint = $"/exercises?limit=10&offset=0";
             var response = await _httpClient.GetAsync(endpoint);
@@ -69,7 +69,7 @@ namespace GymBro_App.Services
                 
             }
             return new List<ExerciseDTO>();
-        }
+        }*/
         public async Task<List<ExerciseDTO>> GetExerciseAsync(string name)
         {
             string endpoint = $"/exercises/name/{name}";
@@ -87,22 +87,40 @@ namespace GymBro_App.Services
             }
             return new List<ExerciseDTO>();
         }
-        public async Task<ExerciseDTO> GetExerciseByIdAsync(int id)
+        public async Task<List<ExerciseDTO>> GetExerciseByIdAsync(string id)
         {
             string endpoint = $"/exercises/exercise/{id}";
             var response = await _httpClient.GetAsync(endpoint);
             _logger.LogInformation($"Response status code: {response.StatusCode}");
+            
             if (response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation($"Response body: {responseBody}");
+                
                 JsonSerializerOptions options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 };
-                var result = JsonSerializer.Deserialize<ExerciseDTO>(responseBody, options);
-                return result ?? new ExerciseDTO();
+                
+                try {
+                    var results = JsonSerializer.Deserialize<List<ExerciseDTO>>(responseBody, options);
+                    return results ?? new List<ExerciseDTO>();
+                }
+                catch {
+                    try {
+                        var singleResult = JsonSerializer.Deserialize<ExerciseDTO>(responseBody, options);
+                        if (singleResult != null) {
+                            return new List<ExerciseDTO> { singleResult };
+                        }
+                    }
+                    catch (Exception ex) {
+                        _logger.LogError($"Error deserializing response: {ex.Message}");
+                    }
+                }
             }
-            return new ExerciseDTO();
+            
+            return new List<ExerciseDTO>();
         }
     }
 }

@@ -5,7 +5,7 @@ namespace GymBro_App.Services
     public interface IExerciseService
     {
         Task<List<ExerciseDTO>> GetExerciseAsync(string name);
-        Task<List<ExerciseDTO>> GetExercisesAsync();
-        Task<ExerciseDTO> GetExerciseByIdAsync(int id);
+        //Task<List<ExerciseDTO>> GetExercisesAsync();
+        Task<List<ExerciseDTO>> GetExerciseByIdAsync(string id);
     }
 }
