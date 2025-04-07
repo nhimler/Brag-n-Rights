@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
 async function updateProfilePicture() {
     // Adapted from Samculo on StackOverflow
     // https://stackoverflow.com/a/67243169
-    let files = document.getElementById("profile-picture").files
     let file = document.getElementById("profile-picture").files[0]
     console.log(file)
 
@@ -21,13 +20,13 @@ async function updateProfilePicture() {
         body: formData,
     })
 
-    if (document.getElementById("profile-picture-preview")) {
-        document.getElementById("profile-picture-preview").remove()
-    }
-    if (document.getElementById("upload-profile-picture")) {
-        document.getElementById("upload-profile-picture").remove()
+    if (document.getElementById("preview-container")) {
+        document.getElementById("preview-container").innerHTML = ""
     }
 
+    if (document.getElementById("profile-picture")) {
+        document.getElementById("profile-picture").value = ""
+    }
 
     if (response.ok) {
         console.log("Profile picture updated successfully")
@@ -46,24 +45,22 @@ function previewProfilePicture() {
     reader.onload = (event) => {
         let preview = document.getElementById("preview-container")
         preview.innerHTML = ""
-        preview.appendChild(document.createElement("img"))
-        preview.lastChild.setAttribute("id", "profile-picture-preview")
-        
-        picturePreview = document.getElementById("profile-picture-preview")
-        picturePreview.setAttribute("class", "img-fluid mb-3")
-        picturePreview.setAttribute("alt", "Profile picture preview")
-        picturePreview.setAttribute("style", "width: 100px; height: 100px;")
-        picturePreview.setAttribute("src", event.target.result)
 
-        preview.appendChild(document.createElement("button"))
-        preview.lastChild.setAttribute("id", "upload-profile-picture")
-        let updateProfileButton = document.getElementById("upload-profile-picture")
-        updateProfileButton.setAttribute("class", "btn btn-primary")
-        
-        updateProfileButton.innerText = "Update Profile Picture"
+        let picturePreview = document.createElement("img");
+        picturePreview.setAttribute("id", "profile-picture-preview");
+        picturePreview.setAttribute("class", "img-fluid mb-2 user-profile");
+        picturePreview.setAttribute("alt", "Profile picture preview");
+        picturePreview.setAttribute("src", event.target.result);
+        preview.appendChild(picturePreview);
+
+        let updateProfileButton = document.createElement("button");
+        updateProfileButton.setAttribute("id", "upload-profile-picture");
+        updateProfileButton.setAttribute("class", "btn btn-primary my-3");
+        updateProfileButton.innerText = "Update Profile Picture";
         updateProfileButton.addEventListener("click", () => {
-            updateProfilePicture()
-        })
+            updateProfilePicture();
+        });
+        preview.appendChild(updateProfileButton);
     }
     reader.readAsDataURL(file)
 }
