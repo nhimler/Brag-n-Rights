@@ -44,18 +44,64 @@ namespace GymBro_App.Controllers
                 return RedirectToAction("Index");
             }
             int userId = _userRepository.GetIdFromIdentityId(user.Id);
-            return View();
+            var workoutPlan = new WorkoutPlan
+            {
+                UserId = userId
+            };
+            
+            return View(workoutPlan);
         }
 
         [HttpPost]
-        public IActionResult Create(WorkoutPlan workoutPlan)
+        public async Task<IActionResult> Create(WorkoutPlan workoutPlan)
         {
-            if (ModelState.IsValid)
+            try
             {
+                if (!User.Identity?.IsAuthenticated ?? false)
+                {
+                    return RedirectToAction("Index");
+                }
+                
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return RedirectToAction("Index");
+                }
+                
+                int userId = _userRepository.GetIdFromIdentityId(user.Id);
+                _logger.LogInformation($"Setting workout plan UserId to {userId}");
+                
+                if (userId <= 0)
+                {
+                    _logger.LogError($"Invalid user ID {userId} for identity ID {user.Id}");
+                    ModelState.AddModelError("", "Unable to find your user account. Please try logging in again.");
+                    return View("WorkoutCreationPage", workoutPlan);
+                }
+                
+                workoutPlan.UserId = userId;
+                
+                if (workoutPlan.IsCompleted == null)
+                {
+                    workoutPlan.IsCompleted = 0;
+                }
+                
+                if (string.IsNullOrEmpty(workoutPlan.ApiId))
+                {
+                    workoutPlan.ApiId = $"local-{Guid.NewGuid()}";
+                }
+                
+                _logger.LogInformation($"Saving WorkoutPlan: ID={workoutPlan.WorkoutPlanId}, UserId={workoutPlan.UserId}, " +
+                                      $"PlanName={workoutPlan.PlanName}");
+                
                 _workoutPlanRepository.Add(workoutPlan);
                 return RedirectToAction("Index");
             }
-            return View(workoutPlan);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error saving workout plan");
+                ModelState.AddModelError("", "An error occurred while saving the workout plan: " + ex.Message);
+                return View("WorkoutCreationPage", workoutPlan);
+            }
         }
 
         [HttpGet]

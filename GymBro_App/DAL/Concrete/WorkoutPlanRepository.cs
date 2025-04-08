@@ -23,8 +23,32 @@ namespace GymBro_App.DAL.Concrete
 
         public void Add(WorkoutPlan workoutPlan)
         {
-            _context.WorkoutPlans.Add(workoutPlan);
-            _context.SaveChanges();
+            try {
+                if (workoutPlan == null)
+                {
+                    throw new ArgumentNullException(nameof(workoutPlan), "WorkoutPlan cannot be null");
+                }
+                
+                if (workoutPlan.UserId == null || workoutPlan.UserId <= 0)
+                {
+                    throw new InvalidOperationException($"Invalid UserId: {workoutPlan.UserId}. User ID must be a positive number.");
+                }
+                
+                var userExists = _context.Users.Any(u => u.UserId == workoutPlan.UserId);
+                if (!userExists)
+                {
+                    throw new InvalidOperationException($"No user found with ID: {workoutPlan.UserId}");
+                }
+                
+                _context.WorkoutPlans.Add(workoutPlan);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                // Log the specific details of the error
+                var innerEx = ex.InnerException;
+                throw new Exception($"Failed to save workout plan. UserId: {workoutPlan.UserId}, Error: {innerEx?.Message}", ex);
+            }
         }
 
         public void Update(WorkoutPlan workoutPlan)
@@ -37,6 +61,6 @@ namespace GymBro_App.DAL.Concrete
                 _context.SaveChanges();
                 return;
             }
+        }
     }
-}
 }
