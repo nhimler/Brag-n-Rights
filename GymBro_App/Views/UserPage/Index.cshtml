@@ -24,6 +24,10 @@
 </div>
 <hr/>
 
+<div>
+    <partial name="_ProfileNav" />
+</div>
+
 <div class="row mb-3 justify-content-center">
     <div class="card col-md-4 col-sm-12 mb-3 text-center">
         <h5 class="card-title my-2">Completed Workouts</h5>
@@ -51,7 +55,6 @@
                 <img src="https://placehold.co/350x200?text=Analytics+Chart" class="img-fluid mb-2" alt="Analytics Graph" />
                 <p>Fitness Level: @Model.FitnessLevel</p>
                 <button class="btn btn-primary" id="getUserLocation-btn">Get My Location</button>
-                <a class="btn btn-secondary" asp-controller="Gym" asp-action="FindNearbyGyms">Find Nearby Gyms</a>
                 <h3 class="mb-0" id="user-location">Location</h3>
                 <p class="text-muted" id="user-location-details">Not Set</p>
             </div>
