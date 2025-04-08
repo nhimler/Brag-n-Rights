@@ -37,11 +37,45 @@ public class UserPageController : Controller
         return View(userInfoModel);
     }
 
-    
-    [HttpGet]
-    public IActionResult Settings()
+    [Authorize]
+    [HttpPost]
+    public IActionResult UpdateSettings(UserInfoModel userInfoModel)
     {
-        return View("Settings");
+        string identityId = _userManager.GetUserId(User) ?? "";
+        Models.User gymBroUser = _userRepository.GetUserByIdentityUserId(identityId);
+        gymBroUser.Age = userInfoModel.Age;
+        gymBroUser.Gender = userInfoModel.Gender;
+        gymBroUser.Weight = userInfoModel.Weight;
+        gymBroUser.Height = userInfoModel.Height;
+        gymBroUser.FitnessLevel = userInfoModel.FitnessLevel;
+        gymBroUser.Fitnessgoals = userInfoModel.Fitnessgoals;
+        gymBroUser.PreferredWorkoutTime = userInfoModel.PreferredWorkoutTime;
+
+        _userRepository.AddOrUpdate(gymBroUser);
+
+        return RedirectToAction("Index", "UserPage");
+    }
+    
+    [Authorize]
+    [HttpGet]
+    public IActionResult SettingsView(UserInfoModel userInfoModel)
+    {
+        string identityId = _userManager.GetUserId(User) ?? "";
+        Models.User gymBroUser = _userRepository.GetUserByIdentityUserId(identityId);
+        userInfoModel.Username = gymBroUser.Username ?? "";
+        userInfoModel.Email = gymBroUser.Email ?? "";
+        userInfoModel.FirstName = gymBroUser.FirstName ?? "";
+        userInfoModel.LastName = gymBroUser.LastName ?? "";
+
+        userInfoModel.Age = gymBroUser.Age ?? 0;
+        userInfoModel.Gender = gymBroUser.Gender ?? "";
+        userInfoModel.Weight = gymBroUser.Weight ?? 0;
+        userInfoModel.Height = gymBroUser.Height ?? 0;
+        userInfoModel.FitnessLevel = gymBroUser.FitnessLevel ?? "";
+        userInfoModel.Fitnessgoals = gymBroUser.Fitnessgoals ?? "";
+        userInfoModel.PreferredWorkoutTime = gymBroUser.PreferredWorkoutTime ?? "";
+        
+        return View("SettingsView", userInfoModel);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

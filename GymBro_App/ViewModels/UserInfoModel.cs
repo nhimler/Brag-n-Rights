@@ -35,4 +35,6 @@ public class UserInfoModel
 
     [StringLength(255)]
     public string? Fitnessgoals { get; set; }
+
+    public int? Age { get; set; }
 }

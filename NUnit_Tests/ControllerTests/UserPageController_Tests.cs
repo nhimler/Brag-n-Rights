@@ -64,16 +64,98 @@ public class UserPageController_Test
     }
 
     [Test]
-    public void Settings_ShouldReturnSettingsViewResult()
+    public void SettingsView_ShouldReturnSettingsViewResult()
     {
-        // Act
-        var result = _userController.Settings();
+        // Arrange
+        string expectedViewName = "SettingsView";
+        var userInfo = new UserInfoModel();
 
+        var user = new User
+        {
+            UserId = 1,
+            IdentityUserId = "12",
+            Age = 25,
+            Gender = "Male",
+            Weight = 70.5m,
+            Height = 175,
+            FitnessLevel = "Beginner",
+            Fitnessgoals = "Weight Loss",
+            PreferredWorkoutTime = "Morning",
+            Username = "testuser",
+            Email = "test@user.com",
+            FirstName = "Test",
+            LastName = "User"
+        };
+
+        _mockUserRepo.Setup(repo => repo.GetUserByIdentityUserId(It.IsAny<string>())).Returns(user);
+
+        // Act
+        var result = _userController.SettingsView(userInfo);
 
         // Assert
         var viewResult = result as ViewResult;
-        Assert.IsNotNull(viewResult);
-        Assert.AreEqual("Settings", viewResult.ViewName);
+        Assert.Multiple(() =>
+        {
+            Assert.That(viewResult, Is.Not.Null);
+            Assert.That(expectedViewName, Is.EqualTo(viewResult?.ViewName));
+        });
+
+        Assert.That(viewResult.Model, Is.InstanceOf<UserInfoModel>());
+
+        var model = viewResult.Model as UserInfoModel;
+        Assert.Multiple(() =>
+        {
+            Assert.That(model?.Username, Is.EqualTo(user.Username));
+            Assert.That(model?.Email, Is.EqualTo(user.Email));
+            Assert.That(model?.FirstName, Is.EqualTo(user.FirstName));
+            Assert.That(model?.LastName, Is.EqualTo(user.LastName));
+            Assert.That(model?.Age, Is.EqualTo(user.Age));
+            Assert.That(model?.Gender, Is.EqualTo(user.Gender));
+            Assert.That(model?.Weight, Is.EqualTo(user.Weight));
+            Assert.That(model?.Height, Is.EqualTo(user.Height));
+            Assert.That(model?.FitnessLevel, Is.EqualTo(user.FitnessLevel));
+            Assert.That(model?.Fitnessgoals, Is.EqualTo(user.Fitnessgoals));
+            Assert.That(model?.PreferredWorkoutTime, Is.EqualTo(user.PreferredWorkoutTime));
+        });
+    }
+
+    [Test]
+    public void UpdateSettings_ShouldReturnRedirectToActionResult()
+    {
+        // Arrange
+        var userInfoModel = new UserInfoModel
+        {
+            Age = 25,
+            Gender = "Male",
+            Weight = 70.5m,
+            Height = 175,
+            FitnessLevel = "Beginner",
+            Fitnessgoals = "Weight Loss",
+            PreferredWorkoutTime = "Morning"
+        };
+
+        var user = new User
+        {
+            UserId = 1,
+            IdentityUserId = "12",
+            Age = 25,
+            Gender = "Male",
+            Weight = 70.5m,
+            Height = 175,
+            FitnessLevel = "Beginner",
+            Fitnessgoals = "Weight Loss",
+            PreferredWorkoutTime = "Morning"
+        };
+
+        _mockUserRepo.Setup(repo => repo.GetUserByIdentityUserId(It.IsAny<string>())).Returns(user);
+
+        // Act
+        var result = _userController.UpdateSettings(userInfoModel);
+
+        // Assert
+        var redirectResult = result as RedirectToActionResult;
+        Assert.IsNotNull(redirectResult);
+        Assert.That(redirectResult.ActionName, Is.EqualTo("Index"));
     }
 
     [TearDown]
