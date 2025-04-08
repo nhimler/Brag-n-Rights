@@ -17,7 +17,8 @@ public partial class WorkoutPlanExercise
     public int? WorkoutPlanId { get; set; }
 
     [Column("ApiID")]
-    public int? ApiId { get; set; }
+    [StringLength(255)]
+    public string? ApiId { get; set; }
 
     public int? Reps { get; set; }
 

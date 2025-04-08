@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GymBro_App.Models;
 
 [Table("WorkoutPlan")]
-[Index("ApiId", Name = "UQ__WorkoutP__024B3BD27618DEA4", IsUnique = true)]
+[Index("ApiId", Name = "UQ__WorkoutP__024B3BD2C4BB05EE", IsUnique = true)]
 public partial class WorkoutPlan
 {
     [Key]
@@ -18,7 +18,8 @@ public partial class WorkoutPlan
     public int? WorkoutPlanExerciseId { get; set; }
 
     [Column("ApiID")]
-    public int? ApiId { get; set; }
+    [StringLength(255)]
+    public string? ApiId { get; set; }
 
     [Column("UserID")]
     public int? UserId { get; set; }

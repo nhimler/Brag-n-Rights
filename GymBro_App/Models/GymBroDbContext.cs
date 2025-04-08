@@ -171,35 +171,35 @@ public partial class GymBroDbContext : DbContext
 
         modelBuilder.Entity<WorkoutExercise>(entity =>
         {
-            entity.HasKey(e => e.WorkoutExercisesId).HasName("PK__WorkoutE__B81DE8C4DA17AB13");
+            entity.HasKey(e => e.WorkoutExercisesId).HasName("PK__WorkoutE__B81DE8C4FFF25C26");
 
             entity.Property(e => e.WorkoutExercisesId).ValueGeneratedNever();
 
-            entity.HasOne(d => d.WorkoutPlanExercise).WithMany(p => p.WorkoutExercises).HasConstraintName("FK__WorkoutEx__Worko__047AA831");
+            entity.HasOne(d => d.WorkoutPlanExercise).WithMany(p => p.WorkoutExercises).HasConstraintName("FK__WorkoutEx__Worko__12C8C788");
 
             entity.HasOne(d => d.WorkoutPlan).WithMany(p => p.WorkoutExercises)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__WorkoutEx__Worko__038683F8");
+                .HasConstraintName("FK__WorkoutEx__Worko__11D4A34F");
         });
 
         modelBuilder.Entity<WorkoutPlan>(entity =>
         {
-            entity.HasKey(e => e.WorkoutPlanId).HasName("PK__WorkoutP__8C51605BDD371CB6");
+            entity.HasKey(e => e.WorkoutPlanId).HasName("PK__WorkoutP__8C51605B23A3EE0F");
 
             entity.HasOne(d => d.User).WithMany(p => p.WorkoutPlans)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__WorkoutPl__UserI__7DCDAAA2");
+                .HasConstraintName("FK__WorkoutPl__UserI__0C1BC9F9");
         });
 
         modelBuilder.Entity<WorkoutPlanExercise>(entity =>
         {
-            entity.HasKey(e => e.WorkoutPlanExerciseId).HasName("PK__WorkoutP__8D1477A638AED716");
+            entity.HasKey(e => e.WorkoutPlanExerciseId).HasName("PK__WorkoutP__8D1477A608C795BF");
 
             entity.Property(e => e.WorkoutPlanExerciseId).ValueGeneratedNever();
 
             entity.HasOne(d => d.WorkoutPlan).WithMany(p => p.WorkoutPlanExercises)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__WorkoutPl__Worko__00AA174D");
+                .HasConstraintName("FK__WorkoutPl__Worko__0EF836A4");
         });
 
         OnModelCreatingPartial(modelBuilder);
