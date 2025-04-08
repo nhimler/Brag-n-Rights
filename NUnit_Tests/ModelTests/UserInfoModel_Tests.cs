@@ -1,9 +1,9 @@
-using GymBro_App.Models;
+using GymBro_App.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
-namespace Model_Tests;
+namespace NUnit_Tests.ModelTests;
 
-public class UserModel_Tests
+public class UserInfoModel_Tests
 {
     // ValidateModel method from Davide Bellone (https://www.code4it.dev/csharptips/unit-test-model-validation/)
     /// <summary>
@@ -23,12 +23,12 @@ public class UserModel_Tests
         return results;
     }
     
-    private User _userModel;
+    private GymBro_App.ViewModels.UserInfoModel _userInfoModel;
 
     [SetUp]
     public void Setup()
     {
-        _userModel = new User();
+        _userInfoModel = new GymBro_App.ViewModels.UserInfoModel();
     }
 
     // Gender Validation
@@ -40,10 +40,10 @@ public class UserModel_Tests
     public void Gender_ShouldBeValidWhenItIsMaleOrFemaleOrOther(string gender)
     {
         // Arrange
-        _userModel.Gender = gender;
+        _userInfoModel.Gender = gender;
 
         // Act
-        var validationResults = ValidateModel(_userModel);
+        var validationResults = ValidateModel(_userInfoModel);
 
         // Assert
         Assert.That(validationResults, Is.Empty);
@@ -56,10 +56,10 @@ public class UserModel_Tests
     public void Gender_ShouldNotBeValidWhenItIsNotMaleFemaleOrOther(string gender)
     {
         // Arrange
-        _userModel.Gender = gender;
+        _userInfoModel.Gender = gender;
 
         // Act
-        var validationResults = ValidateModel(_userModel);
+        var validationResults = ValidateModel(_userInfoModel);
 
         // Assert
         Assert.That(validationResults, Has.Count.GreaterThan(0));
@@ -70,10 +70,10 @@ public class UserModel_Tests
     public void Weight_ShouldBeValidWhenItIsADecimalWithTwoDecimalPlaces()
     {
         // Arrange
-        _userModel.Weight = 70.50m;
+        _userInfoModel.Weight = 70.50m;
 
         // Act
-        var validationResults = ValidateModel(_userModel);
+        var validationResults = ValidateModel(_userInfoModel);
 
         // Assert
         Assert.That(validationResults, Is.Empty);
@@ -84,10 +84,10 @@ public class UserModel_Tests
     public void Weight_ShouldNotBeValidWhenItExceedsFiveDigits()
     {
         // Arrange
-        _userModel.Weight = 123456.78m;
+        _userInfoModel.Weight = 123456.78m;
 
         // Act
-        var validationResults = ValidateModel(_userModel);
+        var validationResults = ValidateModel(_userInfoModel);
 
         // Assert
         Assert.That(validationResults, Has.Count.EqualTo(1));
@@ -98,10 +98,10 @@ public class UserModel_Tests
     public void Height_ShouldBeValidWhenItIsADecimalWithTwoDecimalPlaces()
     {
         // Arrange
-        _userModel.Height = 175.50m;
+        _userInfoModel.Height = 175.50m;
 
         // Act
-        var validationResults = ValidateModel(_userModel);
+        var validationResults = ValidateModel(_userInfoModel);
 
         // Assert
         Assert.That(validationResults, Is.Empty);
@@ -112,10 +112,10 @@ public class UserModel_Tests
     public void Height_ShouldNotBeValidWhenItExceedsFiveDigits()
     {
         // Arrange
-        _userModel.Height = 123456.78m;
+        _userInfoModel.Height = 123456.78m;
 
         // Act
-        var validationResults = ValidateModel(_userModel);
+        var validationResults = ValidateModel(_userInfoModel);
 
         // Assert
         Assert.That(validationResults, Has.Count.EqualTo(1));
@@ -130,10 +130,10 @@ public class UserModel_Tests
     public void FitnessLevel_ShouldBeValidWhenItIsBeginnerIntermediateOrAdvanced(string fitnessLevel)
     {
         // Arrange
-        _userModel.FitnessLevel = fitnessLevel;
+        _userInfoModel.FitnessLevel = fitnessLevel;
 
         // Act
-        var validationResults = ValidateModel(_userModel);
+        var validationResults = ValidateModel(_userInfoModel);
 
         // Assert
         Assert.That(validationResults, Is.Empty);
@@ -147,10 +147,10 @@ public class UserModel_Tests
     public void FitnessLevel_ShouldNotBeValidWhenItIsNotBeginnerIntermediateOrAdvanced(string fitnessLevel)
     {
         // Arrange
-        _userModel.FitnessLevel = fitnessLevel;
+        _userInfoModel.FitnessLevel = fitnessLevel;
 
         // Act
-        var validationResults = ValidateModel(_userModel);
+        var validationResults = ValidateModel(_userInfoModel);
 
         // Assert
         Assert.That(validationResults, Has.Count.EqualTo(1));
@@ -161,10 +161,10 @@ public class UserModel_Tests
     public void FitnessGoals_ShouldBeValidWhenItIs255CharactersOrLess()
     {
         // Arrange
-        _userModel.Fitnessgoals = new string('a', 255);
+        _userInfoModel.Fitnessgoals = new string('a', 255);
 
         // Act
-        var validationResults = ValidateModel(_userModel);
+        var validationResults = ValidateModel(_userInfoModel);
 
         // Assert
         Assert.That(validationResults, Is.Empty);
@@ -176,10 +176,10 @@ public class UserModel_Tests
     public void FitnessGoals_ShouldNotBeValidWhenItExceeds255Characters()
     {
         // Arrange
-        _userModel.Fitnessgoals = new string('a', 256);
+        _userInfoModel.Fitnessgoals = new string('a', 256);
 
         // Act
-        var validationResults = ValidateModel(_userModel);
+        var validationResults = ValidateModel(_userInfoModel);
 
         // Assert
         Assert.That(validationResults, Has.Count.EqualTo(1));
@@ -194,10 +194,10 @@ public class UserModel_Tests
     public void PreferredWorkoutTime_ShouldBeValidWhenItIsMorningAfternoonOrEvening(string workoutTime)
     {
         // Arrange
-        _userModel.PreferredWorkoutTime = workoutTime;
+        _userInfoModel.PreferredWorkoutTime = workoutTime;
 
         // Act
-        var validationResults = ValidateModel(_userModel);
+        var validationResults = ValidateModel(_userInfoModel);
 
         // Assert
         Assert.That(validationResults, Is.Empty);
@@ -206,14 +206,14 @@ public class UserModel_Tests
     // Preferred Workout Time Invalidation for invalid values
     // Valid values: Morning, Afternoon, Evening
     [Test]
-    [TestCase("InvalidTime")]
+    [TestCase("Midnight")]
     public void PreferredWorkoutTime_ShouldNotBeValidWhenItIsNotMorningAfternoonOrEvening(string workoutTime)
     {
         // Arrange
-        _userModel.PreferredWorkoutTime = workoutTime;
+        _userInfoModel.PreferredWorkoutTime = workoutTime;
 
         // Act
-        var validationResults = ValidateModel(_userModel);
+        var validationResults = ValidateModel(_userInfoModel);
 
         // Assert
         Assert.That(validationResults, Has.Count.EqualTo(1));

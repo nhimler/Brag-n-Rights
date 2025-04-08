@@ -35,19 +35,15 @@ public partial class User
     public int? Age { get; set; }
 
     [StringLength(10)]
-    [RegularExpression("^(Male|Female|Other)$", ErrorMessage = "Gender must be 'Male', 'Female', or 'Other'.")]
     public string? Gender { get; set; }
 
     [Column(TypeName = "decimal(5, 2)")]
-    [Range(0.01, 99999.99, ErrorMessage = "Weight must be between 0.01 and 99999.99.")]
     public decimal? Weight { get; set; }
 
     [Column(TypeName = "decimal(5, 2)")]
-    [Range(0.01, 99999.99, ErrorMessage = "Height must be between 0.01 and 99999.99.")]
     public decimal? Height { get; set; }
 
     [StringLength(20)]
-    [RegularExpression("^(Beginner|Intermediate|Advanced)$", ErrorMessage = "Fitness level must be 'Beginner', 'Intermediate', or 'Advanced'.")]
     public string? FitnessLevel { get; set; }
 
     [StringLength(255)]
@@ -62,7 +58,6 @@ public partial class User
     public byte[]? ProfilePicture { get; set; }
 
     [StringLength(20)]
-    [RegularExpression("^(Morning|Afternoon|Evening)$", ErrorMessage = "Preferred workout time must be 'Morning', 'Afternoon', or 'Evening'.")]
     public string? PreferredWorkoutTime { get; set; }
 
     [StringLength(255)]
