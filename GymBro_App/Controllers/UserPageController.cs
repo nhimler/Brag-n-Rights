@@ -33,6 +33,7 @@ public class UserPageController : Controller
         userInfoModel.LastName = gymBroUser.LastName ?? "";
         userInfoModel.FitnessLevel = gymBroUser.FitnessLevel ?? "";
         userInfoModel.WorkoutPlans = _userRepository.GetWorkoutPlansByIdentityUserId(identityId, 1);
+        userInfoModel.ProfilePicture = gymBroUser.ProfilePicture ?? [];
         return View(userInfoModel);
     }
 
