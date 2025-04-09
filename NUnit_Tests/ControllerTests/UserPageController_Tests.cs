@@ -64,10 +64,10 @@ public class UserPageController_Test
     }
 
     [Test]
-    public void SettingsView_ShouldReturnSettingsViewResult()
+    public void ChangeInfo_ShouldReturnChangeInfoResult()
     {
         // Arrange
-        string expectedViewName = "SettingsView";
+        string expectedViewName = "ChangeInfo";
         var userInfo = new UserInfoModel();
 
         var user = new User
@@ -90,14 +90,14 @@ public class UserPageController_Test
         _mockUserRepo.Setup(repo => repo.GetUserByIdentityUserId(It.IsAny<string>())).Returns(user);
 
         // Act
-        var result = _userController.SettingsView(userInfo);
+        var result = _userController.ChangeInfo(userInfo);
 
         // Assert
         var viewResult = result as ViewResult;
         Assert.Multiple(() =>
         {
             Assert.That(viewResult, Is.Not.Null);
-            Assert.That(expectedViewName, Is.EqualTo(viewResult?.ViewName));
+            Assert.That(viewResult?.ViewName, Is.EqualTo(expectedViewName));
         });
 
         Assert.That(viewResult.Model, Is.InstanceOf<UserInfoModel>());
@@ -150,7 +150,7 @@ public class UserPageController_Test
         _mockUserRepo.Setup(repo => repo.GetUserByIdentityUserId(It.IsAny<string>())).Returns(user);
 
         // Act
-        var result = _userController.UpdateSettings(userInfoModel);
+        var result = _userController.UpdateUserInfo(userInfoModel);
 
         // Assert
         var redirectResult = result as RedirectToActionResult;

@@ -39,7 +39,7 @@ public class UserPageController : Controller
 
     [Authorize]
     [HttpPost]
-    public IActionResult UpdateSettings(UserInfoModel userInfoModel)
+    public IActionResult UpdateUserInfo(UserInfoModel userInfoModel)
     {
         string identityId = _userManager.GetUserId(User) ?? "";
         Models.User gymBroUser = _userRepository.GetUserByIdentityUserId(identityId);
@@ -58,7 +58,7 @@ public class UserPageController : Controller
     
     [Authorize]
     [HttpGet]
-    public IActionResult SettingsView(UserInfoModel userInfoModel)
+    public IActionResult ChangeInfo(UserInfoModel userInfoModel)
     {
         string identityId = _userManager.GetUserId(User) ?? "";
         Models.User gymBroUser = _userRepository.GetUserByIdentityUserId(identityId);
@@ -75,7 +75,7 @@ public class UserPageController : Controller
         userInfoModel.Fitnessgoals = gymBroUser.Fitnessgoals ?? "";
         userInfoModel.PreferredWorkoutTime = gymBroUser.PreferredWorkoutTime ?? "";
         
-        return View("SettingsView", userInfoModel);
+        return View("ChangeInfo", userInfoModel);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
