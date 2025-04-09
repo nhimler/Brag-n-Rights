@@ -1,0 +1,7 @@
+@inject Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper HtmlHelper
+
+<ul class="nav nav-pills mb-3">
+    <li class="nav-item">
+        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="UserPage" asp-action="Index">Dashboard</a>
+    </li>
+</ul>

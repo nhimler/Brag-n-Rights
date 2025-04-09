@@ -9,4 +9,5 @@ public class UserInfoModel
     public string LastName { get; set; } = "";
     public string FitnessLevel { get; set; } = "";
     public List<WorkoutPlan> WorkoutPlans { get; set; } = [];
+    public byte[] ProfilePicture { get; set; } = [];
 }
