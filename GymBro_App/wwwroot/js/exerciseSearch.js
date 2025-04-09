@@ -1,5 +1,7 @@
 let exerciseSearchButton = document.getElementById("exerciseSearchButtonAddon");
 
+let exerciseIdList = [];
+
 exerciseSearchButton.addEventListener("click", async function(){
     let name = document.getElementById("exerciseInput").value;
     console.log("We are looking for: " + name);
@@ -85,7 +87,7 @@ async function displayExerciseSearchResults(result) {
         addButton.textContent = "Add";
         addButton.type = "button";
         addButton.addEventListener("click", function(e){
-            console.log("🆕 Add button clicked for:", exercise.name);
+            console.log("🆕 Add button clicked for:", exercise.name, "ID:", exercise.id);
             let row = e.target.closest("tr");
             if(row) row.remove();
             addExerciseToCart(exercise);
@@ -107,11 +109,17 @@ function addExerciseToCart(exercise) {
         return;
     }
     
+    exerciseIdList.push(exercise.id);
+    console.log("Exercise ID added to list:", exercise.id);
+    console.log("Current exercise ID list:", exerciseIdList);
+
     let exerciseEntry = document.createElement("div");
     exerciseEntry.className = "selected-exercise entry";
     exerciseEntry.style.border = "1px solid #ccc";
     exerciseEntry.style.padding = "8px";
     exerciseEntry.style.marginBottom = "4px";
+
+    exerciseEntry.dataset.exerciseId = exercise.id;
 
     exerciseEntry.innerHTML = `<strong>${exercise.name}</strong>`;
     
@@ -120,6 +128,13 @@ function addExerciseToCart(exercise) {
     removeButton.className = "btn btn-danger btn-sm";
     removeButton.style.marginLeft = "8px";
     removeButton.addEventListener("click", function() {
+        let exerciseId = exerciseEntry.dataset.exerciseId;
+        let idIndex = exerciseIdList.indexOf(exerciseId);
+        if (idIndex > -1) {
+            exerciseIdList.splice(idIndex, 1);
+            console.log("Exercise ID removed from list:", exerciseId);
+            console.log("Updated exercise ID list:", exerciseIdList);
+        }
          exerciseEntry.remove();
     });
 

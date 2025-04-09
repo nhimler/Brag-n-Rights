@@ -29,7 +29,7 @@ public class ExerciseDbAPIController : ControllerBase
         return Ok(exercises);
 } */
 
-    [HttpGet("name/{name}")]
+    [HttpGet("{name}")]
     public async Task<IActionResult> GetExercise(string name)
     {
         var exercises = await _exerciseService.GetExerciseAsync(name);
@@ -42,7 +42,7 @@ public class ExerciseDbAPIController : ControllerBase
         return Ok(exercises);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("id/{id}")]
     public async Task<IActionResult> GetExerciseById(string id)
     {
         var exercises = await _exerciseService.GetExerciseByIdAsync(id);

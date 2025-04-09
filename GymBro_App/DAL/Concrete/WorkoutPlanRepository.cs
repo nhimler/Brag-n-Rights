@@ -45,7 +45,6 @@ namespace GymBro_App.DAL.Concrete
             }
             catch (DbUpdateException ex)
             {
-                // Log the specific details of the error
                 var innerEx = ex.InnerException;
                 throw new Exception($"Failed to save workout plan. UserId: {workoutPlan.UserId}, Error: {innerEx?.Message}", ex);
             }
