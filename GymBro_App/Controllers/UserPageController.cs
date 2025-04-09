@@ -34,13 +34,18 @@ public class UserPageController : Controller
         userInfoModel.FitnessLevel = gymBroUser.FitnessLevel ?? "";
         userInfoModel.WorkoutPlans = _userRepository.GetWorkoutPlansByIdentityUserId(identityId, 1);
         userInfoModel.ProfilePicture = gymBroUser.ProfilePicture ?? [];
-        return View(userInfoModel);
+        return View("Index", userInfoModel);
     }
 
     [Authorize]
     [HttpPost]
     public IActionResult UpdateUserInfo(UserInfoModel userInfoModel)
     {
+        if (!ModelState.IsValid)
+        {
+            return RedirectToAction("ChangeInfo", userInfoModel);
+        }
+
         string identityId = _userManager.GetUserId(User) ?? "";
         Models.User gymBroUser = _userRepository.GetUserByIdentityUserId(identityId);
         gymBroUser.Age = userInfoModel.Age;

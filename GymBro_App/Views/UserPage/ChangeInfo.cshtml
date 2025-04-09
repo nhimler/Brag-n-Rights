@@ -10,10 +10,14 @@
         <partial name="_ProfileNav" />
     </div>
     <div>
-        <form asp-controller="UserPage" asp-action="UpdateSettings" method="post" >
+        <form asp-controller="UserPage" asp-action="UpdateUserInfo" method="post">
+            <!-- Display validation summary for the entire form -->
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="mb-3">
                 <label for="Age" class="form-label">Age</label>
                 <input type="number" class="form-control" id="Age-update" name="Age" value="@Model.Age" />
+                <span asp-validation-for="Age" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label for="Gender" class="form-label">Gender</label>
@@ -22,14 +26,17 @@
                     <option value="Female" selected="@(Model.Gender == "Female")">Female</option>
                     <option value="Other" selected="@(Model.Gender == "Other")">Other</option>
                 </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label for="Height" class="form-label">Height (in)</label>
                 <input type="number" step=".01" class="form-control" id="Height-update" name="Height" value="@Model.Height" />
+                <span asp-validation-for="Height" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label for="Weight" class="form-label">Weight (lbs)</label>
                 <input type="number" step=".01" class="form-control" id="Weight-update" name="Weight" value="@Model.Weight" />
+                <span asp-validation-for="Weight" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label for="FitnessLevel" class="form-label">Fitness Level</label>
@@ -38,10 +45,12 @@
                     <option value="Intermediate" selected="@(Model.FitnessLevel == "Intermediate")">Intermediate</option>
                     <option value="Advanced" selected="@(Model.FitnessLevel == "Advanced")">Advanced</option>
                 </select>
+                <span asp-validation-for="FitnessLevel" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label for="Fitnessgoals" class="form-label">Fitness Goals</label>
                 <input type="text" class="form-control" id="Fitnessgoals-update" name="Fitnessgoals" value="@Model.Fitnessgoals" />
+                <span asp-validation-for="Fitnessgoals" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label for="PreferredWorkoutTime" class="form-label">Preferred Workout Time</label>
@@ -50,11 +59,11 @@
                     <option value="Afternoon" selected="@(Model.PreferredWorkoutTime == "Afternoon")">Afternoon</option>
                     <option value="Evening" selected="@(Model.PreferredWorkoutTime == "Evening")">Evening</option>
                 </select>
+                <span asp-validation-for="PreferredWorkoutTime" class="text-danger"></span>
             </div>
             <div>
                 <button type="submit" class="btn btn-primary">Update Settings</button>
             </div>
         </form>
     </div>
-    
 </div>
