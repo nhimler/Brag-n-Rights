@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using GymBro_App.Models;
 namespace GymBro_App.ViewModels;
@@ -23,10 +24,10 @@ public class UserInfoModel
     [RegularExpression("^(Male|Female|Other)$", ErrorMessage = "Gender must be 'Male', 'Female', or 'Other'.")]
     public string? Gender { get; set; }
 
-    [Range(0.01, 99999.99, ErrorMessage = "Weight must be between 0.01 and 99999.99.")]
+    [Range(0.01, 999.99, ErrorMessage = "Weight must be between 0.01 and 999.99.")]
     public decimal? Weight { get; set; }
 
-    [Range(0.01, 99999.99, ErrorMessage = "Height must be between 0.01 and 99999.99.")]
+    [Range(0.01, 999.99, ErrorMessage = "Height must be between 0.01 and 999.99.")]
     public decimal? Height { get; set; }
 
     [StringLength(20)]
@@ -37,4 +38,20 @@ public class UserInfoModel
     public string? Fitnessgoals { get; set; }
 
     public int? Age { get; set; }
+
+    public void SetInfoFromUserModel(User user)
+    {
+        Username = user.Username ?? "";
+        Email = user.Email ?? "";
+        FirstName = user.FirstName ?? "";
+        LastName = user.LastName ?? "";
+        FitnessLevel = user.FitnessLevel ?? "";
+        ProfilePicture = user.ProfilePicture ?? [];
+        Gender = user.Gender ?? "";
+        Age = user.Age;
+        Weight = user.Weight;
+        Height = user.Height;
+        Fitnessgoals = user.Fitnessgoals ?? "";
+        PreferredWorkoutTime = user.PreferredWorkoutTime ?? "";
+    }
 }

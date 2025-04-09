@@ -27,13 +27,8 @@ public class UserPageController : Controller
     {
         string identityId = _userManager.GetUserId(User) ?? "";
         Models.User gymBroUser = _userRepository.GetUserByIdentityUserId(identityId);
-        userInfoModel.Username = gymBroUser.Username ?? "";
-        userInfoModel.Email = gymBroUser.Email ?? "";
-        userInfoModel.FirstName = gymBroUser.FirstName ?? "";
-        userInfoModel.LastName = gymBroUser.LastName ?? "";
-        userInfoModel.FitnessLevel = gymBroUser.FitnessLevel ?? "";
         userInfoModel.WorkoutPlans = _userRepository.GetWorkoutPlansByIdentityUserId(identityId, 1);
-        userInfoModel.ProfilePicture = gymBroUser.ProfilePicture ?? [];
+        userInfoModel.SetInfoFromUserModel(gymBroUser);
         return View("Index", userInfoModel);
     }
 
@@ -48,15 +43,7 @@ public class UserPageController : Controller
 
         string identityId = _userManager.GetUserId(User) ?? "";
         Models.User gymBroUser = _userRepository.GetUserByIdentityUserId(identityId);
-        gymBroUser.Age = userInfoModel.Age;
-        gymBroUser.Gender = userInfoModel.Gender;
-        gymBroUser.Weight = userInfoModel.Weight;
-        gymBroUser.Height = userInfoModel.Height;
-        gymBroUser.FitnessLevel = userInfoModel.FitnessLevel;
-        gymBroUser.Fitnessgoals = userInfoModel.Fitnessgoals;
-        gymBroUser.PreferredWorkoutTime = userInfoModel.PreferredWorkoutTime;
-
-        _userRepository.AddOrUpdate(gymBroUser);
+        _userRepository.UpdateUser(identityId, userInfoModel);
 
         return RedirectToAction("Index", userInfoModel);
     }
@@ -67,18 +54,7 @@ public class UserPageController : Controller
     {
         string identityId = _userManager.GetUserId(User) ?? "";
         Models.User gymBroUser = _userRepository.GetUserByIdentityUserId(identityId);
-        userInfoModel.Username = gymBroUser.Username ?? "";
-        userInfoModel.Email = gymBroUser.Email ?? "";
-        userInfoModel.FirstName = gymBroUser.FirstName ?? "";
-        userInfoModel.LastName = gymBroUser.LastName ?? "";
-
-        userInfoModel.Age = gymBroUser.Age ?? 0;
-        userInfoModel.Gender = gymBroUser.Gender ?? "";
-        userInfoModel.Weight = gymBroUser.Weight ?? 0;
-        userInfoModel.Height = gymBroUser.Height ?? 0;
-        userInfoModel.FitnessLevel = gymBroUser.FitnessLevel ?? "";
-        userInfoModel.Fitnessgoals = gymBroUser.Fitnessgoals ?? "";
-        userInfoModel.PreferredWorkoutTime = gymBroUser.PreferredWorkoutTime ?? "";
+        userInfoModel.SetInfoFromUserModel(gymBroUser);
         
         return View("ChangeInfo", userInfoModel);
     }

@@ -48,15 +48,18 @@
         </div>
     </div>
 
-
     <div class="col-md-4 col-sm-12 mb-3">
         <div class="card">
-            <div class="card-body text-center">
-                <img src="https://placehold.co/350x200?text=Analytics+Chart" class="img-fluid mb-2" alt="Analytics Graph" />
+            <h5 class="card-title my-2 text-center">User Information</h5>
+            <div class="card-body">
+                <p>Username: @Model.Username</p>
+                <p>Age: @Model.Age</p>
+                <p>Gender: @Model.Gender</p>
+                <p>Weight: @Model.Weight</p>
+                <p>Height: @Model.Height</p>
                 <p>Fitness Level: @Model.FitnessLevel</p>
-                <button class="btn btn-primary" id="getUserLocation-btn">Get My Location</button>
-                <h3 class="mb-0" id="user-location">Location</h3>
-                <p class="text-muted" id="user-location-details">Not Set</p>
+                <p>Fitness Goals: @Model.Fitnessgoals</p>
+                <p>Preferred Workout Time: @Model.PreferredWorkoutTime</p>
             </div>
         </div>
     </div>
@@ -72,17 +75,15 @@
     </div>
 </div>
 
+
+
 <div class="row mb-3">
     <div class="card col-md-4 col-sm-12 mb-3">
-        <h5 class="card-title my-2 text-center">User Information</h5>
         <div class="card-body">
-            <p>Age: @Model.Age</p>
-            <p>Gender: @Model.Gender</p>
-            <p>Weight: @Model.Weight</p>
-            <p>Height: @Model.Height</p>
-            <p>Fitness Level: @Model.FitnessLevel</p>
-            <p>Fitness Goals: @Model.Fitnessgoals</p>
-            <p>Preferred Workout Time: @Model.PreferredWorkoutTime</p>
+            <img src="https://placehold.co/350x200?text=Analytics+Chart" class="img-fluid mb-2" alt="Analytics Graph" />
+            <button class="btn btn-primary" id="getUserLocation-btn">Get My Location</button>
+            <h3 class="mb-0" id="user-location">Location</h3>
+            <p class="text-muted" id="user-location-details">Not Set</p>
         </div>
     </div>
 </div>

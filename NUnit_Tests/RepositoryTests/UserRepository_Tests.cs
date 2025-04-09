@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using GymBro_App.DAL.Abstract;
 using GymBro_App.DAL.Concrete;
 using GymBro_App.Models;
+using GymBro_App.ViewModels;
 
 namespace Repository_Tests;
 
@@ -36,8 +37,27 @@ public class UserRepository_Tests
 
         _users = new List<User>
         {
-            new User { UserId = 1, IdentityUserId = "FakeIdentityId1", Username = "Test_User1", Email = "test@email.com", Password = "Don't store passwords here", Age = 42, Gender = "Male", FitnessLevel = "Advanced", Height = 6.0M, Weight = 200.0M, Fitnessgoals = "Build muscle", AccountCreationDate = new DateTime(2025, 1, 1), LastLogin = new DateTime(2025, 1, 1), PreferredWorkoutTime = "Morning", Location = "Test Location", WorkoutPlans = _workoutPlans }
+            new User { UserId = 1, IdentityUserId = "FakeIdentityId1", Username = "Test_User1", Email = "test@email.com", Password = "Don't store passwords here", Age = 42, Gender = "Male", FitnessLevel = "Advanced", Height = 6.0M, Weight = 200.0M, Fitnessgoals = "Build muscle", AccountCreationDate = new DateTime(2025, 1, 1), LastLogin = new DateTime(2025, 1, 1), PreferredWorkoutTime = "Morning", Location = "Test Location", WorkoutPlans = _workoutPlans },
+            new User
+            {
+                UserId = 2,
+                IdentityUserId = "ValidIdentityId",
+                FirstName = "John",
+                LastName = "Doe",
+                Username = "johndoe",
+                Age = 30,
+                Gender = "Male",
+                Weight = 75.5m,
+                Height = 180.0m,
+                FitnessLevel = "Intermediate",
+                Fitnessgoals = "Build muscle",
+                PreferredWorkoutTime = "Morning"
+            }
         };
+
+        // Mock the DbSet<User>
+        var mockSet = GetMockDbSet(_users.AsQueryable());
+        _mockContext.Setup(c => c.Users).Returns(mockSet.Object);
     }
 
     [Test]
@@ -102,5 +122,93 @@ public class UserRepository_Tests
         // Assert
         int expectedCount = 1;
         Assert.That(expectedCount, Is.EqualTo(result.Count));
+    }
+
+    [Test]
+    public void UpdateUser_ShouldUpdateUserWhenIdentityIdIsValid()
+    {
+        // Arrange
+        var repository = new UserRepository(_mockContext.Object);
+        var userInfo = new UserInfoModel
+        {
+            FirstName = "Jane",
+            LastName = "Smith",
+            Username = "janesmith",
+            Age = 28,
+            Gender = "Female",
+            Weight = 65.0m,
+            Height = 170.0m,
+            FitnessLevel = "Advanced",
+            Fitnessgoals = "Lose weight",
+            PreferredWorkoutTime = "Evening"
+        };
+
+        // Act
+        repository.UpdateUser("ValidIdentityId", userInfo);
+
+        // Assert
+        var updatedUser = _users.FirstOrDefault(u => u.IdentityUserId == "ValidIdentityId");
+        Assert.That(updatedUser?.FirstName, Is.EqualTo("Jane"));
+        Assert.That(updatedUser?.LastName, Is.EqualTo("Smith"));
+        Assert.That(updatedUser?.Username, Is.EqualTo("janesmith"));
+        Assert.That(updatedUser?.Age, Is.EqualTo(28));
+        Assert.That(updatedUser?.Gender, Is.EqualTo("Female"));
+        Assert.That(updatedUser?.Weight, Is.EqualTo(65.0m));
+        Assert.That(updatedUser?.Height, Is.EqualTo(170.0m));
+        Assert.That(updatedUser?.FitnessLevel, Is.EqualTo("Advanced"));
+        Assert.That(updatedUser?.Fitnessgoals, Is.EqualTo("Lose weight"));
+        Assert.That(updatedUser?.PreferredWorkoutTime, Is.EqualTo("Evening"));
+    }
+
+    [Test]
+    public void UpdateUser_ShouldNotBeUpdatedWhenIdentityIdIsInvalid()
+    {
+        // Arrange
+        var repository = new UserRepository(_mockContext.Object);
+        var userInfo = new UserInfoModel
+        {
+            FirstName = "Jane",
+            LastName = "Smith",
+            Username = "janesmith",
+            Age = 28,
+            Gender = "Female",
+            Weight = 65.0m,
+            Height = 170.0m,
+            FitnessLevel = "Advanced",
+            Fitnessgoals = "Lose weight",
+            PreferredWorkoutTime = "Evening"
+        };
+
+        // Act
+        repository.UpdateUser("InvalidIdentityId", userInfo);
+
+        // Assert
+        Assert.That(_users[1].FirstName, Is.Not.EqualTo(userInfo.FirstName));
+        Assert.That(_users[1].LastName, Is.Not.EqualTo(userInfo.LastName));
+        Assert.That(_users[1].Username, Is.Not.EqualTo(userInfo.Username));
+        Assert.That(_users[1].Age, Is.Not.EqualTo(userInfo.Age));
+        Assert.That(_users[1].Gender, Is.Not.EqualTo(userInfo.Gender));
+        Assert.That(_users[1].Weight, Is.Not.EqualTo(userInfo.Weight));
+        Assert.That(_users[1].Height, Is.Not.EqualTo(userInfo.Height));
+        Assert.That(_users[1].FitnessLevel, Is.Not.EqualTo(userInfo.FitnessLevel));
+        Assert.That(_users[1].Fitnessgoals, Is.Not.EqualTo(userInfo.Fitnessgoals));
+        Assert.That(_users[1].PreferredWorkoutTime, Is.Not.EqualTo(userInfo.PreferredWorkoutTime));
+    }
+
+    [Test]
+    public void UpdateUser_ShouldNotBeUpdatedWhenUsernameIsAlreadyInTheDatabase()
+    {
+        // Arrange
+        var repository = new UserRepository(_mockContext.Object);
+        var userInfo = new UserInfoModel
+        {
+            Username = "janesmith"
+        };
+
+        // Act
+        repository.UpdateUser("ValidIdentityId", userInfo);
+
+        // Assert
+        Assert.That(_users[0].Username, Is.Not.EqualTo(userInfo.Username));
     }
 }

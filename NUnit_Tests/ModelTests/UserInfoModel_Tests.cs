@@ -1,4 +1,5 @@
 using GymBro_App.ViewModels;
+using GymBro_App.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace NUnit_Tests.ModelTests;
@@ -23,12 +24,12 @@ public class UserInfoModel_Tests
         return results;
     }
     
-    private GymBro_App.ViewModels.UserInfoModel _userInfoModel;
+    private UserInfoModel _userInfoModel;
 
     [SetUp]
     public void Setup()
     {
-        _userInfoModel = new GymBro_App.ViewModels.UserInfoModel();
+        _userInfoModel = new UserInfoModel();
     }
 
     // Gender Validation
@@ -217,5 +218,47 @@ public class UserInfoModel_Tests
 
         // Assert
         Assert.That(validationResults, Has.Count.EqualTo(1));
+    }
+
+    [Test]
+    public void SetInfoFromUserModel_ShouldSetPropertiesInUserInfoModelToValuesFromUserModel()
+    {
+        // Arrange
+        var user = new User
+        {
+            UserId = 1,
+            IdentityUserId = "12",
+            Age = 25,
+            Gender = "Male",
+            Weight = 70.5m,
+            Height = 175,
+            FitnessLevel = "Beginner",
+            Fitnessgoals = "Weight Loss",
+            PreferredWorkoutTime = "Morning",
+            Username = "testuser",
+            Email = "test@user.com",
+            FirstName = "Test",
+            LastName = "User"
+        };
+
+        // Act
+        _userInfoModel.SetInfoFromUserModel(user);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(_userInfoModel?.Username, Is.EqualTo(user.Username));
+            Assert.That(_userInfoModel?.Email, Is.EqualTo(user.Email));
+            Assert.That(_userInfoModel?.FirstName, Is.EqualTo(user.FirstName));
+            Assert.That(_userInfoModel?.LastName, Is.EqualTo(user.LastName));
+            Assert.That(_userInfoModel?.Age, Is.EqualTo(user.Age));
+            Assert.That(_userInfoModel?.Gender, Is.EqualTo(user.Gender));
+            Assert.That(_userInfoModel?.Weight, Is.EqualTo(user.Weight));
+            Assert.That(_userInfoModel?.Height, Is.EqualTo(user.Height));
+            Assert.That(_userInfoModel?.FitnessLevel, Is.EqualTo(user.FitnessLevel));
+            Assert.That(_userInfoModel?.Fitnessgoals, Is.EqualTo(user.Fitnessgoals));
+            Assert.That(_userInfoModel?.PreferredWorkoutTime, Is.EqualTo(user.PreferredWorkoutTime));
+        });
+        
     }
 }
