@@ -23,7 +23,9 @@ namespace GymBro_App.DAL.Concrete
         
         public WorkoutPlan FindById(int id)
         {
-            return _workoutplans.FirstOrDefault(wp => wp.WorkoutPlanId == id);
+            return _workoutplans
+                    .Include(wp => wp.WorkoutPlanExercises)
+                    .FirstOrDefault(wp => wp.WorkoutPlanId == id);
         }
 
         public void Add(WorkoutPlan workoutPlan)
@@ -57,14 +59,16 @@ namespace GymBro_App.DAL.Concrete
 
         public void Update(WorkoutPlan workoutPlan)
         {
-            var existingWorkoutPlan = _context.WorkoutPlans.FirstOrDefault(x => x.WorkoutPlanId == workoutPlan.WorkoutPlanId);
-            if (existingWorkoutPlan != null)
+            foreach (var exercise in workoutPlan.WorkoutPlanExercises)
             {
-                existingWorkoutPlan.PlanName = workoutPlan.PlanName;
-                _context.WorkoutPlans.Update(existingWorkoutPlan);
-                _context.SaveChanges();
-                return;
+                if (exercise.WorkoutPlanExerciseId == 0)
+                {
+                    _context.Entry(exercise).State = EntityState.Added;
+                }
             }
+
+            _context.WorkoutPlans.Update(workoutPlan);
+            _context.SaveChanges();
         }
     }
 }

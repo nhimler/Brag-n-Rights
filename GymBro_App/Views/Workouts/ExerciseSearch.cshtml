@@ -8,18 +8,24 @@
     <button class="btn btn-outline-secondary" type="button" id="exerciseSearchButtonAddon">Search</button>
 </div>
 
+<div id="workoutPlanSelector">
+    <label for="workoutPlanSelectorList">Select Workout Plan:</label>
+    <select id="workoutPlanSelectorList">
+        @if(ViewBag.WorkoutPlans != null)
+        {
+            foreach(var wp in ViewBag.WorkoutPlans)
+            {
+                <option value="@wp.WorkoutPlanId">@wp.PlanName</option>
+            }
+        }
+    </select>
+</div>
+
 <div id="exerciseSearchResults"></div>
 
-<div id="exerciseCart" class="mt-4 p-3 border rounded">
-
-</div>
-
-<div id="workoutPlanSelector">
-
-</div>
+<div id="exerciseCart" class="mt-4 p-3 border rounded"></div>
 
 <script>
     var isLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
-
 </script>
 <script src="~/js/exerciseSearch.js"></script>

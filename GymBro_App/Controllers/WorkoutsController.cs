@@ -134,5 +134,5 @@ namespace GymBro_App.Controllers
             return Content("");
         }
 
-        }
     }
+}

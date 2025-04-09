@@ -160,8 +160,39 @@ function addExerciseToCart(exercise) {
             addExerciseToCartButton.textContent = "Add Exercises to Workout";
             addExerciseToCartButton.className = "btn btn-success";
             addExerciseToCartButton.style.marginTop = "12px";
-addExerciseToCartButton.addEventListener("click", async function() {
-    window.location.href = "/index";
-});
-exerciseCart.appendChild(addExerciseToCartButton);
-}}}
+            addExerciseToCartButton.addEventListener("click", async function() {
+                let workoutPlanSelect = document.getElementById("workoutPlanSelectorList");
+                if (!workoutPlanSelect) {
+                    console.error("Workout plan selector not found.");
+                    return;
+                }
+                let selectedWorkoutPlanId = workoutPlanSelect.value;
+                if (!selectedWorkoutPlanId) {
+                    console.error("No workout plan selected.");
+                    return;
+                }
+                console.log("Adding exercises to workout plan ID:", selectedWorkoutPlanId);
+                
+                let payload = {
+                    workoutPlanId: parseInt(selectedWorkoutPlanId),
+                    exerciseApiIds: exerciseIdList
+                };
+                let response = await fetch('/api/Workouts/AddExercises', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if(response.ok){
+                    let updatedWorkout = await response.json();
+                    console.log("Exercises added successfully:", updatedWorkout);
+                    window.location.href = "/Workouts/Index";
+                } else {
+                    console.error("Error adding exercises to workout:", response.status);
+                }
+            });
+            exerciseCart.appendChild(addExerciseToCartButton);
+        }
+    }
+}
