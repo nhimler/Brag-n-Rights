@@ -52,22 +52,27 @@ public class MealPlanController : Controller
 
         mealPlans = mealPlans.OrderBy(mp => mp.StartDate).ToList();
         if (mealPlans == null)
-        {   
+        {
             return View(null);
         }
         MealPlanHomeView mealPlanView = new MealPlanHomeView();
-        foreach(MealPlan mealPlan in mealPlans){
-            HomeMealPlan homeMealPlan = new HomeMealPlan(){
+        foreach (MealPlan mealPlan in mealPlans)
+        {
+            HomeMealPlan homeMealPlan = new HomeMealPlan()
+            {
                 PlanName = mealPlan.PlanName ?? "",
                 StartDate = mealPlan.StartDate ?? DateOnly.MaxValue,
                 Id = mealPlan.MealPlanId
             };
-            foreach(Meal meal in mealPlan.Meals){
+            foreach (Meal meal in mealPlan.Meals)
+            {
                 List<long> foodIds = new List<long>();
-                foreach(Food food in meal.Foods){
+                foreach (Food food in meal.Foods)
+                {
                     foodIds.Add(food.ApiFoodId ?? -1);
                 }
-                homeMealPlan.Meals.Add(new HomeMeal(){
+                homeMealPlan.Meals.Add(new HomeMeal()
+                {
                     MealName = meal.MealName ?? "",
                     Foods = foodIds,
                     Id = meal.MealId
@@ -79,8 +84,9 @@ public class MealPlanController : Controller
     }
 
     [Authorize]
-    [HttpGet ("MealPlanDetails/{id}")]
-    public IActionResult MealPlanDetails(string id){
+    [HttpGet("MealPlanDetails/{id}")]
+    public IActionResult MealPlanDetails(string id)
+    {
         if (User == null || User.Identity == null || !User.Identity.IsAuthenticated)
         {
             return RedirectToAction("Index");
@@ -101,17 +107,21 @@ public class MealPlanController : Controller
             return RedirectToAction("Index");
         }
         List<MealView> meals = new List<MealView>();
-        foreach(Meal meal in mealPlan.Meals){
+        foreach (Meal meal in mealPlan.Meals)
+        {
             List<long> foodIds = new List<long>();
-            foreach(Food food in meal.Foods){
+            foreach (Food food in meal.Foods)
+            {
                 foodIds.Add(food.ApiFoodId ?? -1);
             }
-            meals.Add(new MealView(meal){
+            meals.Add(new MealView(meal)
+            {
                 Foods = foodIds,
             });
         }
         MealPlanView mealPlanView = new MealPlanView(mealPlan);
-        MealPlanDetailsView mealPlanDetails = new MealPlanDetailsView(){
+        MealPlanDetailsView mealPlanDetails = new MealPlanDetailsView()
+        {
             MealPlan = mealPlanView,
             Meals = meals
         };
@@ -119,8 +129,9 @@ public class MealPlanController : Controller
     }
 
     [Authorize]
-    [HttpGet ("MealDetails/{id}")]
-    public IActionResult MealDetails(string id){
+    [HttpGet("MealDetails/{id}")]
+    public IActionResult MealDetails(string id)
+    {
         if (User == null || User.Identity == null || !User.Identity.IsAuthenticated)
         {
             return RedirectToAction("Index");
@@ -142,7 +153,8 @@ public class MealPlanController : Controller
         }
         MealView mealView = new MealView(meal);
         List<long> foodIds = new List<long>();
-        foreach(Food food in meal.Foods){
+        foreach (Food food in meal.Foods)
+        {
             foodIds.Add(food.ApiFoodId ?? -1);
         }
         mealView.Foods = foodIds;
@@ -152,7 +164,7 @@ public class MealPlanController : Controller
     }
 
     [Authorize]
-    [HttpGet ("CreateMealPlan/{id}")]
+    [HttpGet("CreateMealPlan/{id}")]
     public IActionResult CreateMealPlan(string id)
     {
         if (User == null || User.Identity == null || !User.Identity.IsAuthenticated)
@@ -164,7 +176,8 @@ public class MealPlanController : Controller
         {
             return RedirectToAction("Index");
         }
-        if(id == "new"){
+        if (id == "new")
+        {
             return View("CreateMealPlan", null);
         }
 
@@ -203,7 +216,8 @@ public class MealPlanController : Controller
             {
                 return RedirectToAction("Index");
             }
-            if(mealPlan != null){
+            if (mealPlan != null)
+            {
                 mealPlan.PlanName = mv.PlanName;
                 mealPlan.StartDate = mv.StartDate;
                 mealPlan.EndDate = mv.EndDate;
@@ -214,7 +228,9 @@ public class MealPlanController : Controller
                 mealPlan.TargetFats = mv.TargetFats;
                 _mealPlanRepository.AddOrUpdate(mealPlan);
                 Debug.WriteLine("Meal Plan Updated");
-            }else{
+            }
+            else
+            {
                 _mealPlanRepository.AddOrUpdate(new MealPlan()
                 {
                     UserId = userId,
@@ -229,7 +245,7 @@ public class MealPlanController : Controller
                 });
                 Debug.WriteLine("New Meal Plan added");
             }
-            
+
             return RedirectToAction("Index");
         }
         Debug.WriteLine("Food not added");
@@ -238,7 +254,7 @@ public class MealPlanController : Controller
 
 
     [Authorize]
-    [HttpGet ("CreateMeal/{id}")]
+    [HttpGet("CreateMeal/{id}")]
     public IActionResult CreateMeal(string id)
     {
         if (User == null || User.Identity == null || !User.Identity.IsAuthenticated)
@@ -253,14 +269,17 @@ public class MealPlanController : Controller
         var userId = _userRepository.GetIdFromIdentityId(user.Id);
         var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
         MealView mv = new MealView();
-        if(mealPlans.IsNullOrEmpty()){
+        if (mealPlans.IsNullOrEmpty())
+        {
             return RedirectToAction("Index");
         }
-        foreach(MealPlan mp in mealPlans){
+        foreach (MealPlan mp in mealPlans)
+        {
             mv.PlanIds.Add(mp.MealPlanId);
             mv.PlanNames.Add(mp.PlanName ?? "");
         }
-        if(id == "new"){
+        if (id == "new")
+        {
             return View("CreateMeal", mv);
         }
 
@@ -305,7 +324,7 @@ public class MealPlanController : Controller
             var userId = _userRepository.GetIdFromIdentityId(user.Id);
             var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
             if (mealPlans.IsNullOrEmpty() || !mealPlans.Select(mp => mp.MealPlanId).Contains(mv.MealPlanId))
-            {   
+            {
                 return RedirectToAction("Index");
             }
             var meal = _mealRepository.FindById(mv.MealId);
@@ -313,7 +332,8 @@ public class MealPlanController : Controller
             {
                 return RedirectToAction("Index");
             }
-            if(meal != null){
+            if (meal != null)
+            {
                 meal.MealName = mv.MealName;
                 meal.MealType = mv.MealType;
                 meal.Description = mv.Description;
@@ -328,7 +348,9 @@ public class MealPlanController : Controller
                     });
                 }
                 Debug.WriteLine("Meal Updated");
-            }else{
+            }
+            else
+            {
                 meal = new Meal()
                 {
                     MealPlanId = mv.MealPlanId,
@@ -353,6 +375,68 @@ public class MealPlanController : Controller
         return RedirectToAction("Index");
     }
 
+    [Authorize]
+    [HttpPost]
+    public IActionResult DeleteMeal(MealView mv)
+    {
+        if (ModelState.IsValid && mv.Foods != null)
+        {
+            if (!(User.Identity?.IsAuthenticated ?? false))
+            {
+                return RedirectToAction("Index");
+            }
+            var user = _userManager.GetUserAsync(User).Result;
+            if (user == null)
+            {
+                return RedirectToAction("Index");
+            }
+            var userId = _userRepository.GetIdFromIdentityId(user.Id);
+            var meal = _mealRepository.FindById(mv.MealId);
+            if (meal != null && meal.MealPlan?.UserId != userId)
+            {
+                return RedirectToAction("Index");
+            }
+            if (meal != null)
+            {
+                _mealRepository.Delete(meal);
+            }
+            return RedirectToAction("Index");
+        }
+        Debug.WriteLine("Food not deleted");
+        return RedirectToAction("Index");
+    }
+    
+    [Authorize]
+    [HttpPost]
+    public IActionResult DeleteMealPlan(MealPlanDetailsView mv){
+        if (ModelState.IsValid)
+        {
+            Debug.WriteLine("Deleting meal plan with id " + mv.id);
+            if (!(User.Identity?.IsAuthenticated ?? false))
+            {
+                return RedirectToAction("Index");
+            }
+            var user = _userManager.GetUserAsync(User).Result;
+            if (user == null)
+            {
+                return RedirectToAction("Index");
+            }
+            var userId = _userRepository.GetIdFromIdentityId(user.Id);
+            var mealPlan = _mealPlanRepository.FindById(mv.id ?? -1);
+            if (mealPlan != null && mealPlan.UserId != userId)
+            {
+                return RedirectToAction("Index");
+            }
+            if (mealPlan != null)
+            {
+                Debug.WriteLine("Meal Plan deleted");
+                _mealPlanRepository.Delete(mealPlan);
+            }
+            return RedirectToAction("Index");
+        }
+        Debug.WriteLine("Meal Plan not deleted");
+        return RedirectToAction("Index");
+    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
