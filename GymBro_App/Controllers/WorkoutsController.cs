@@ -3,6 +3,9 @@ using GymBro_App.Models;
 using GymBro_App.DAL.Abstract;
 using GymBro_App.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using GymBro_App.Models.DTOs;
+using System.Security.Claims;
 
 namespace GymBro_App.Controllers
 {
@@ -107,6 +110,18 @@ namespace GymBro_App.Controllers
         [HttpGet]
         public IActionResult ExerciseSearch()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = _userRepository.GetIdFromIdentityId(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                
+                var userWorkoutPlans = _workoutPlanRepository.GetAll()
+                    .Where(wp => wp.UserId == userId)
+                    .Select(wp => new { wp.WorkoutPlanId, wp.PlanName })
+                    .ToList();
+                
+                ViewBag.WorkoutPlans = userWorkoutPlans;
+            }
+            
             return View();
         }
 
@@ -118,5 +133,6 @@ namespace GymBro_App.Controllers
             }
             return Content("");
         }
+
+        }
     }
-}

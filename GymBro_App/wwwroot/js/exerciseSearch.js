@@ -1,6 +1,17 @@
 let exerciseSearchButton = document.getElementById("exerciseSearchButtonAddon");
-
 let exerciseIdList = [];
+
+let isUserLoggedIn = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof isLoggedIn !== 'undefined') {
+        isUserLoggedIn = isLoggedIn;
+        console.log("Login status detected:", isUserLoggedIn);
+    } else {
+        console.log("No login status detected, assuming not logged in");
+    }
+});
+
 
 exerciseSearchButton.addEventListener("click", async function(){
     let name = document.getElementById("exerciseInput").value;
@@ -112,7 +123,7 @@ function addExerciseToCart(exercise) {
     exerciseIdList.push(exercise.id);
     console.log("Exercise ID added to list:", exercise.id);
     console.log("Current exercise ID list:", exerciseIdList);
-
+    
     let exerciseEntry = document.createElement("div");
     exerciseEntry.className = "selected-exercise entry";
     exerciseEntry.style.border = "1px solid #ccc";
@@ -141,8 +152,7 @@ function addExerciseToCart(exercise) {
     exerciseEntry.appendChild(removeButton);
     exerciseCart.appendChild(exerciseEntry);
 
-    // Append button only if user is logged in
-    if (isLoggedIn) {
+    if (isUserLoggedIn) {
         let addExerciseToCartButton = document.getElementById("addExerciseToCartButton");
         if (!addExerciseToCartButton) {
             addExerciseToCartButton = document.createElement("button");
@@ -150,10 +160,8 @@ function addExerciseToCart(exercise) {
             addExerciseToCartButton.textContent = "Add Exercises to Workout";
             addExerciseToCartButton.className = "btn btn-success";
             addExerciseToCartButton.style.marginTop = "12px";
-            addExerciseToCartButton.addEventListener("click", function() {
-                window.location.href = "/Workouts";
-            });
-        }
-        exerciseCart.appendChild(addExerciseToCartButton);
-    }
-}
+addExerciseToCartButton.addEventListener("click", async function() {
+    window.location.href = "/index";
+});
+exerciseCart.appendChild(addExerciseToCartButton);
+}}}

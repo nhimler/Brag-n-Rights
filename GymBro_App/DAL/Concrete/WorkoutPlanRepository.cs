@@ -20,6 +20,11 @@ namespace GymBro_App.DAL.Concrete
         {
             return _workoutplans.FirstOrDefault(predicate);
         }
+        
+        public WorkoutPlan FindById(int id)
+        {
+            return _workoutplans.FirstOrDefault(wp => wp.WorkoutPlanId == id);
+        }
 
         public void Add(WorkoutPlan workoutPlan)
         {
