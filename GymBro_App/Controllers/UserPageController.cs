@@ -53,7 +53,7 @@ public class UserPageController : Controller
 
         _userRepository.AddOrUpdate(gymBroUser);
 
-        return RedirectToAction("Index", "UserPage");
+        return RedirectToAction("Index", userInfoModel);
     }
     
     [Authorize]
