@@ -59,7 +59,6 @@ namespace GymBro_App.DAL.Concrete
             User? user = _user.FirstOrDefault(u => u.IdentityUserId == identityId);
             if (user == null)
             {
-                Console.WriteLine("User not found.");
                 return;
             }
             else
@@ -75,8 +74,6 @@ namespace GymBro_App.DAL.Concrete
                 user.PreferredWorkoutTime = userInfo.PreferredWorkoutTime;
                 _context.Users.Update(user);
                 _context.SaveChanges();
-                Console.WriteLine("User updated successfully.");
-                Console.WriteLine(user.FirstName);
             }
         }
     }
