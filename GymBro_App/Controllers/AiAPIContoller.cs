@@ -19,10 +19,23 @@ public class AiAPIController : ControllerBase
 
     [HttpGet("suggest")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
-    public async Task<IActionResult> Search([FromQuery(Name = "q")] string query)
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+    public async Task<IActionResult> Suggest([FromQuery(Name = "q")] string query)
     {
-        var res = await _aiService.GetResponse(query);
-        return Ok(res);
+        if (string.IsNullOrEmpty(query))
+        {
+            return BadRequest("Query cannot be null or empty.");
+        }
+        try{
+            var res = await _aiService.GetResponse(query);
+            return Ok(res);
+        }
+        catch
+        {
+            _logger.LogError("Error occurred while getting AI response.");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+        }
     }
 }
 
