@@ -20,23 +20,55 @@ namespace GymBro_App.DAL.Concrete
         {
             return _workoutplans.FirstOrDefault(predicate);
         }
+        
+        public WorkoutPlan FindById(int id)
+        {
+            return _workoutplans
+                    .Include(wp => wp.WorkoutPlanExercises)
+                    .FirstOrDefault(wp => wp.WorkoutPlanId == id);
+        }
 
         public void Add(WorkoutPlan workoutPlan)
         {
-            _context.WorkoutPlans.Add(workoutPlan);
-            _context.SaveChanges();
+            try {
+                if (workoutPlan == null)
+                {
+                    throw new ArgumentNullException(nameof(workoutPlan), "WorkoutPlan cannot be null");
+                }
+                
+                if (workoutPlan.UserId == null || workoutPlan.UserId <= 0)
+                {
+                    throw new InvalidOperationException($"Invalid UserId: {workoutPlan.UserId}. User ID must be a positive number.");
+                }
+                
+                var userExists = _context.Users.Any(u => u.UserId == workoutPlan.UserId);
+                if (!userExists)
+                {
+                    throw new InvalidOperationException($"No user found with ID: {workoutPlan.UserId}");
+                }
+                
+                _context.WorkoutPlans.Add(workoutPlan);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                var innerEx = ex.InnerException;
+                throw new Exception($"Failed to save workout plan. UserId: {workoutPlan.UserId}, Error: {innerEx?.Message}", ex);
+            }
         }
 
         public void Update(WorkoutPlan workoutPlan)
         {
-            var existingWorkoutPlan = _context.WorkoutPlans.FirstOrDefault(x => x.WorkoutPlanId == workoutPlan.WorkoutPlanId);
-            if (existingWorkoutPlan != null)
+            foreach (var exercise in workoutPlan.WorkoutPlanExercises)
             {
-                existingWorkoutPlan.PlanName = workoutPlan.PlanName;
-                _context.WorkoutPlans.Update(existingWorkoutPlan);
-                _context.SaveChanges();
-                return;
+                if (exercise.WorkoutPlanExerciseId == 0)
+                {
+                    _context.Entry(exercise).State = EntityState.Added;
+                }
             }
+
+            _context.WorkoutPlans.Update(workoutPlan);
+            _context.SaveChanges();
+        }
     }
-}
 }
