@@ -90,9 +90,13 @@ public class AiService : IAiService
         {
             PropertyNameCaseInsensitive = true
         };
-        var result = await JsonSerializer.DeserializeAsync<AiResponse>(await response.Content.ReadAsStreamAsync(), options);
-        result = result ?? new AiResponse();
-        return result.choices.FirstOrDefault()?.message?.content ?? "No response from AI";
+        try{
+            var result = await JsonSerializer.DeserializeAsync<AiResponse>(await response.Content.ReadAsStreamAsync(), options);
+            result = result ?? new AiResponse();
+            return result.choices.FirstOrDefault()?.message?.content ?? "No response from AI";
+        } catch {
+            return "No response from AI";
+        }
     }
 
 }
