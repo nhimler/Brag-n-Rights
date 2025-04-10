@@ -17,8 +17,6 @@ public partial class GymBroDbContext : DbContext
 
     public virtual DbSet<BiometricDatum> BiometricData { get; set; }
 
-    public virtual DbSet<Exercise> Exercises { get; set; }
-
     public virtual DbSet<FitnessChallenge> FitnessChallenges { get; set; }
 
     public virtual DbSet<Food> Foods { get; set; }
@@ -33,14 +31,17 @@ public partial class GymBroDbContext : DbContext
 
     public virtual DbSet<Medal> Medals { get; set; }
 
+    public virtual DbSet<TokenEntity> Tokens { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserMedal> UserMedals { get; set; }
 
+    public virtual DbSet<WorkoutExercise> WorkoutExercises { get; set; }
+
     public virtual DbSet<WorkoutPlan> WorkoutPlans { get; set; }
 
-    public DbSet<TokenEntity> Tokens { get; set; }
-
+    public virtual DbSet<WorkoutPlanExercise> WorkoutPlanExercises { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=GymBroAzureConnection");
@@ -49,32 +50,27 @@ public partial class GymBroDbContext : DbContext
     {
         modelBuilder.Entity<BiometricDatum>(entity =>
         {
-            entity.HasKey(e => e.BiometricId).HasName("PK__Biometri__9CF3DB06F77DC49C");
+            entity.HasKey(e => e.BiometricId).HasName("PK__Biometri__9CF3DB06B4B7D2A9");
 
-            entity.HasOne(d => d.User).WithMany(p => p.BiometricData).HasConstraintName("FK__Biometric__UserI__6319B466");
-        });
-
-        modelBuilder.Entity<Exercise>(entity =>
-        {
-            entity.HasKey(e => e.ExerciseId).HasName("PK__Exercise__A074AD0F94A5BE33");
+            entity.HasOne(d => d.User).WithMany(p => p.BiometricData).HasConstraintName("FK__Biometric__UserI__3A179ED3");
         });
 
         modelBuilder.Entity<FitnessChallenge>(entity =>
         {
-            entity.HasKey(e => e.ChallengeId).HasName("PK__FitnessC__C7AC81287FCB9A1E");
+            entity.HasKey(e => e.ChallengeId).HasName("PK__FitnessC__C7AC8128C57F8E1E");
 
             entity.HasMany(d => d.Users).WithMany(p => p.Challenges)
                 .UsingEntity<Dictionary<string, object>>(
                     "ChallengeUser",
                     r => r.HasOne<User>().WithMany()
                         .HasForeignKey("UserId")
-                        .HasConstraintName("FK__Challenge__UserI__725BF7F6"),
+                        .HasConstraintName("FK__Challenge__UserI__4959E263"),
                     l => l.HasOne<FitnessChallenge>().WithMany()
                         .HasForeignKey("ChallengeId")
-                        .HasConstraintName("FK__Challenge__Chall__7167D3BD"),
+                        .HasConstraintName("FK__Challenge__Chall__4865BE2A"),
                     j =>
                     {
-                        j.HasKey("ChallengeId", "UserId").HasName("PK__Challeng__16D40DE2D144FF56");
+                        j.HasKey("ChallengeId", "UserId").HasName("PK__Challeng__16D40DE2B0E6C01A");
                         j.ToTable("ChallengeUser");
                         j.IndexerProperty<int>("ChallengeId").HasColumnName("ChallengeID");
                         j.IndexerProperty<int>("UserId").HasColumnName("UserID");
@@ -83,29 +79,29 @@ public partial class GymBroDbContext : DbContext
 
         modelBuilder.Entity<Food>(entity =>
         {
-            entity.HasKey(e => e.FoodId).HasName("PK__Food__856DB3CB93DC706A");
+            entity.HasKey(e => e.FoodId).HasName("PK__Food__856DB3CB9C45FC45");
 
             entity.HasOne(d => d.Meal).WithMany(p => p.Foods)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Food__MealID__7AF13DF7");
+                .HasConstraintName("FK__Food__MealID__54CB950F");
         });
 
         modelBuilder.Entity<Gym>(entity =>
         {
-            entity.HasKey(e => e.GymId).HasName("PK__Gym__1A3A7CB6E4A2A7E3");
+            entity.HasKey(e => e.GymId).HasName("PK__Gym__1A3A7CB6B1D159AB");
 
             entity.HasMany(d => d.Users).WithMany(p => p.Gyms)
                 .UsingEntity<Dictionary<string, object>>(
                     "GymUser",
                     r => r.HasOne<User>().WithMany()
                         .HasForeignKey("UserId")
-                        .HasConstraintName("FK__GymUser__UserID__68D28DBC"),
+                        .HasConstraintName("FK__GymUser__UserID__3FD07829"),
                     l => l.HasOne<Gym>().WithMany()
                         .HasForeignKey("GymId")
-                        .HasConstraintName("FK__GymUser__GymID__67DE6983"),
+                        .HasConstraintName("FK__GymUser__GymID__3EDC53F0"),
                     j =>
                     {
-                        j.HasKey("GymId", "UserId").HasName("PK__GymUser__CB42F07C7D83C246");
+                        j.HasKey("GymId", "UserId").HasName("PK__GymUser__CB42F07C103F76D0");
                         j.ToTable("GymUser");
                         j.IndexerProperty<int>("GymId").HasColumnName("GymID");
                         j.IndexerProperty<int>("UserId").HasColumnName("UserID");
@@ -114,87 +110,94 @@ public partial class GymBroDbContext : DbContext
 
         modelBuilder.Entity<Leaderboard>(entity =>
         {
-            entity.HasKey(e => e.LeaderboardId).HasName("PK__Leaderbo__B358A1E6E019A687");
+            entity.HasKey(e => e.LeaderboardId).HasName("PK__Leaderbo__B358A1E6E07DC5EC");
 
             entity.HasOne(d => d.Challenge).WithMany(p => p.Leaderboards)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Leaderboa__Chall__6D9742D9");
+                .HasConstraintName("FK__Leaderboa__Chall__44952D46");
 
             entity.HasOne(d => d.User).WithMany(p => p.Leaderboards)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Leaderboa__UserI__6E8B6712");
+                .HasConstraintName("FK__Leaderboa__UserI__4589517F");
         });
 
         modelBuilder.Entity<Meal>(entity =>
         {
-            entity.HasKey(e => e.MealId).HasName("PK__Meal__ACF6A65D50DCEE7D");
+            entity.HasKey(e => e.MealId).HasName("PK__Meal__ACF6A65DED0713C7");
 
             entity.HasOne(d => d.MealPlan).WithMany(p => p.Meals)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Meal__MealPlanID__5A846E65");
+                .HasConstraintName("FK__Meal__MealPlanID__318258D2");
         });
 
         modelBuilder.Entity<MealPlan>(entity =>
         {
-            entity.HasKey(e => e.MealPlanId).HasName("PK__MealPlan__0620DB5612915A52");
+            entity.HasKey(e => e.MealPlanId).HasName("PK__MealPlan__0620DB56BBCE7C0C");
 
             entity.HasOne(d => d.User).WithMany(p => p.MealPlans)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__MealPlan__UserID__56B3DD81");
+                .HasConstraintName("FK__MealPlan__UserID__2DB1C7EE");
         });
 
         modelBuilder.Entity<Medal>(entity =>
         {
-            entity.HasKey(e => e.MedalId).HasName("PK__Medal__30F05186C2B3C2BC");
+            entity.HasKey(e => e.MedalId).HasName("PK__Medal__30F05186EFBE82FF");
+        });
+
+        modelBuilder.Entity<TokenEntity>(entity =>
+        {
+            entity.HasKey(e => e.UserId).HasName("PK__Token__1788CC4C526EEF32");
+
+            entity.Property(e => e.UserId).ValueGeneratedNever();
+
+            entity.HasOne(d => d.User).WithOne(p => p.Token).HasConstraintName("FK_Token_User");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__User__1788CCAC324F3449");
+            entity.HasKey(e => e.UserId).HasName("PK__User__1788CCAC718E8A76");
 
             entity.Property(e => e.AccountCreationDate).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<UserMedal>(entity =>
         {
-            entity.HasKey(e => e.UserMedalId).HasName("PK__UserMeda__EA2DA1A6AA39744F");
+            entity.HasKey(e => e.UserMedalId).HasName("PK__UserMeda__EA2DA1A666D27E82");
 
             entity.HasOne(d => d.Medal).WithMany(p => p.UserMedals).HasConstraintName("FK_UserMedal_Medal");
 
             entity.HasOne(d => d.User).WithMany(p => p.UserMedals).HasConstraintName("FK_UserMedal_User");
         });
 
+        modelBuilder.Entity<WorkoutExercise>(entity =>
+        {
+            entity.HasKey(e => e.WorkoutExercisesId).HasName("PK__WorkoutE__B81DE8C4DF9C2426");
+
+            entity.Property(e => e.WorkoutExercisesId).ValueGeneratedNever();
+
+            entity.HasOne(d => d.WorkoutPlanExercise).WithMany(p => p.WorkoutExercises).HasConstraintName("FK__WorkoutEx__Worko__2116E6DF");
+
+            entity.HasOne(d => d.WorkoutPlan).WithMany(p => p.WorkoutExercises)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__WorkoutEx__Worko__2022C2A6");
+        });
+
         modelBuilder.Entity<WorkoutPlan>(entity =>
         {
-            entity.HasKey(e => e.WorkoutPlanId).HasName("PK__WorkoutP__8C51605BDFE45092");
+            entity.HasKey(e => e.WorkoutPlanId).HasName("PK__WorkoutP__8C51605B9B7D06CA");
 
             entity.HasOne(d => d.User).WithMany(p => p.WorkoutPlans)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__WorkoutPl__UserI__4D2A7347");
-
-            entity.HasMany(d => d.Exercises).WithMany(p => p.WorkoutPlans)
-                .UsingEntity<Dictionary<string, object>>(
-                    "WorkoutPlanExercise",
-                    r => r.HasOne<Exercise>().WithMany()
-                        .HasForeignKey("ExerciseId")
-                        .HasConstraintName("FK__WorkoutPl__Exerc__53D770D6"),
-                    l => l.HasOne<WorkoutPlan>().WithMany()
-                        .HasForeignKey("WorkoutPlanId")
-                        .HasConstraintName("FK__WorkoutPl__Worko__52E34C9D"),
-                    j =>
-                    {
-                        j.HasKey("WorkoutPlanId", "ExerciseId").HasName("PK__WorkoutP__66562A8B13864FC1");
-                        j.ToTable("WorkoutPlanExercise");
-                        j.IndexerProperty<int>("WorkoutPlanId").HasColumnName("WorkoutPlanID");
-                        j.IndexerProperty<int>("ExerciseId").HasColumnName("ExerciseID");
-                    });
+                .HasConstraintName("FK__WorkoutPl__UserI__1975C517");
         });
 
-        modelBuilder.Entity<TokenEntity>(entity =>
+        modelBuilder.Entity<WorkoutPlanExercise>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Token__1788CCAC2EC5A686");
+            entity.HasKey(e => e.WorkoutPlanExerciseId).HasName("PK__WorkoutP__8D1477A67A1078DF");
 
-            entity.HasOne(d => d.User).WithOne(p => p.Token).HasForeignKey<TokenEntity>(d => d.UserId);
+            entity.HasOne(d => d.WorkoutPlan).WithMany(p => p.WorkoutPlanExercises)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__WorkoutPl__Worko__1C5231C2");
         });
 
         OnModelCreatingPartial(modelBuilder);
