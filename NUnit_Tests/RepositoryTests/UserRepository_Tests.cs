@@ -133,7 +133,6 @@ public class UserRepository_Tests
         {
             FirstName = "Jane",
             LastName = "Smith",
-            Username = "janesmith",
             Age = 28,
             Gender = "Female",
             Weight = 65.0m,
@@ -150,7 +149,6 @@ public class UserRepository_Tests
         var updatedUser = _users.FirstOrDefault(u => u.IdentityUserId == "ValidIdentityId");
         Assert.That(updatedUser?.FirstName, Is.EqualTo("Jane"));
         Assert.That(updatedUser?.LastName, Is.EqualTo("Smith"));
-        Assert.That(updatedUser?.Username, Is.EqualTo("janesmith"));
         Assert.That(updatedUser?.Age, Is.EqualTo(28));
         Assert.That(updatedUser?.Gender, Is.EqualTo("Female"));
         Assert.That(updatedUser?.Weight, Is.EqualTo(65.0m));
@@ -169,7 +167,6 @@ public class UserRepository_Tests
         {
             FirstName = "Jane",
             LastName = "Smith",
-            Username = "janesmith",
             Age = 28,
             Gender = "Female",
             Weight = 65.0m,
@@ -185,7 +182,6 @@ public class UserRepository_Tests
         // Assert
         Assert.That(_users[1].FirstName, Is.Not.EqualTo(userInfo.FirstName));
         Assert.That(_users[1].LastName, Is.Not.EqualTo(userInfo.LastName));
-        Assert.That(_users[1].Username, Is.Not.EqualTo(userInfo.Username));
         Assert.That(_users[1].Age, Is.Not.EqualTo(userInfo.Age));
         Assert.That(_users[1].Gender, Is.Not.EqualTo(userInfo.Gender));
         Assert.That(_users[1].Weight, Is.Not.EqualTo(userInfo.Weight));
@@ -193,22 +189,5 @@ public class UserRepository_Tests
         Assert.That(_users[1].FitnessLevel, Is.Not.EqualTo(userInfo.FitnessLevel));
         Assert.That(_users[1].Fitnessgoals, Is.Not.EqualTo(userInfo.Fitnessgoals));
         Assert.That(_users[1].PreferredWorkoutTime, Is.Not.EqualTo(userInfo.PreferredWorkoutTime));
-    }
-
-    [Test]
-    public void UpdateUser_ShouldNotBeUpdatedWhenUsernameIsAlreadyInTheDatabase()
-    {
-        // Arrange
-        var repository = new UserRepository(_mockContext.Object);
-        var userInfo = new UserInfoModel
-        {
-            Username = "janesmith"
-        };
-
-        // Act
-        repository.UpdateUser("ValidIdentityId", userInfo);
-
-        // Assert
-        Assert.That(_users[0].Username, Is.Not.EqualTo(userInfo.Username));
     }
 }

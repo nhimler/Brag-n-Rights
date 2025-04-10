@@ -62,21 +62,10 @@ namespace GymBro_App.DAL.Concrete
                 Console.WriteLine("User not found.");
                 return;
             }
-            else if (userInfo.Username != user.Username && _user.Any(u => u.Username == userInfo.Username))
-            {
-                Console.WriteLine("Username already taken.");
-                return;
-            }
-            else if (userInfo.Email != user.Email && _user.Any(u => u.Email == userInfo.Email))
-            {
-                Console.WriteLine("Email already taken.");
-                return;
-            }
             else
             {
                 user.FirstName = userInfo.FirstName;
                 user.LastName = userInfo.LastName;
-                user.Username = userInfo.Username;
                 user.Age = userInfo.Age;
                 user.Gender = userInfo.Gender;
                 user.Weight = userInfo.Weight;
@@ -84,7 +73,6 @@ namespace GymBro_App.DAL.Concrete
                 user.FitnessLevel = userInfo.FitnessLevel;
                 user.Fitnessgoals = userInfo.Fitnessgoals;
                 user.PreferredWorkoutTime = userInfo.PreferredWorkoutTime;
-                user.Email = userInfo.Email;
                 _context.Users.Update(user);
                 _context.SaveChanges();
                 Console.WriteLine("User updated successfully.");

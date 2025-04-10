@@ -42,7 +42,6 @@ public class UserPageController : Controller
         }
 
         string identityId = _userManager.GetUserId(User) ?? "";
-        Models.User gymBroUser = _userRepository.GetUserByIdentityUserId(identityId);
         _userRepository.UpdateUser(identityId, userInfoModel);
 
         return RedirectToAction("Index", userInfoModel);
