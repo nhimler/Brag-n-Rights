@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using GymBro_App.ViewModels;
 
 namespace Controller_Tests;
 
@@ -122,6 +123,99 @@ public class MealPlanController_Tests
         Assert.That(viewResult.ViewName, Is.EqualTo("CreateMeal"));
     }
 
+    [Test]
+    public void Test_CannotDeleteMealWhenNotAuthenticated()
+    {
+        bool hasDeleted = false;
+        var context = new DefaultHttpContext();
+        _controller.ControllerContext = new ControllerContext { HttpContext = context };
+        _mealRepositoryMock.Setup(mp => mp.Delete(It.IsAny<Meal>())).Callback(() => hasDeleted = true);
+        var result = _controller.DeleteMeal(new MealView(){MealId = 1});
+
+        Assert.That(hasDeleted, Is.False);
+    }
+
+    [Test]
+    public void Test_UsersCanOnlyDeleteOwnedMeals()
+    {
+        var user = new IdentityUser { UserName = "testuser", Email = "testuser@example.com" };
+        _userManagerMock.Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
+        _userRepositoryMock.Setup(ur => ur.GetIdFromIdentityId(It.IsAny<string>())).Returns(1);
+        
+        bool hasDeleted = false;
+        _mealRepositoryMock.Setup(mp => mp.Delete(It.IsAny<Meal>())).Callback(() => hasDeleted = true);
+        _mealRepositoryMock.Setup(mp => mp.FindById(3)).Returns(new Meal { MealId = 3, MealPlan = new MealPlan(){ UserId = 2 }});
+        _mealRepositoryMock.Setup(mp => mp.FindById(5)).Returns(new Meal { MealId = 5, MealPlan = new MealPlan(){ UserId = 1 } });
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Name, user.UserName)
+        };
+
+        var identity = new ClaimsIdentity(claims, "Test");
+        var principal = new ClaimsPrincipal(identity);
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = principal }
+        };
+
+        var result = _controller.DeleteMeal(new MealView(){MealId = 3});
+
+        Assert.That(hasDeleted, Is.False);
+
+        result = _controller.DeleteMeal(new MealView(){MealId = 5});
+
+        Assert.That(hasDeleted, Is.True);
+    }
+
+    [Test]
+    public void Test_CannotDeleteMealPlanWhenNotAuthenticated()
+    {
+        bool hasDeleted = false;
+        var context = new DefaultHttpContext();
+        _controller.ControllerContext = new ControllerContext { HttpContext = context };
+        _mealPlanRepositoryMock.Setup(mp => mp.Delete(It.IsAny<MealPlan>())).Callback(() => hasDeleted = true);
+        var result = _controller.DeleteMealPlan(new MealPlanDetailsView(){id = 1});
+
+        Assert.That(hasDeleted, Is.False);
+    }
+
+    [Test]
+    public void Test_UsersCanOnlyDeleteOwnedMealPlans()
+    {
+        var user = new IdentityUser { UserName = "testuser", Email = "testuser@example.com" };
+        _userManagerMock.Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
+        _userRepositoryMock.Setup(ur => ur.GetIdFromIdentityId(It.IsAny<string>())).Returns(1);
+        
+        bool hasDeleted = false;
+        _mealPlanRepositoryMock.Setup(mp => mp.Delete(It.IsAny<MealPlan>())).Callback(() => hasDeleted = true);
+        _mealPlanRepositoryMock.Setup(mp => mp.FindById(3)).Returns(new MealPlan { MealPlanId = 3, UserId = 2 });
+        _mealPlanRepositoryMock.Setup(mp => mp.FindById(5)).Returns(new MealPlan { MealPlanId = 5, UserId = 1 });
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Name, user.UserName)
+        };
+
+        var identity = new ClaimsIdentity(claims, "Test");
+        var principal = new ClaimsPrincipal(identity);
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = principal }
+        };
+
+        var result = _controller.DeleteMealPlan(new MealPlanDetailsView(){id = 3});
+
+        Assert.That(hasDeleted, Is.False);
+
+        result = _controller.DeleteMealPlan(new MealPlanDetailsView(){id = 5});
+
+        Assert.That(hasDeleted, Is.True);
+    }
 
     [TearDown]
     public void TearDown()

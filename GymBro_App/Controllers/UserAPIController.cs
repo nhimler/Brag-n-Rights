@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using GymBro_App.Models.DTOs;
 using GymBro_App.Services;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using GymBro_App.DAL.Abstract;
 using GymBro_App.Models;
@@ -21,6 +20,34 @@ namespace GymBro_App.Controllers
             _logger = logger;
             _userRepository = userRepository;
             _userManager = userManager;
+        }
+
+        [HttpPost]
+        [Route("updateProfilePicture")]
+        public async Task<IActionResult> UpdateProfilePicture(IFormFile profilePicture)
+        {
+            if (profilePicture == null || profilePicture.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            string identityId = _userManager.GetUserId(User) ?? "";
+            var user = _userRepository.GetUserByIdentityUserId(identityId);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await profilePicture.CopyToAsync(memoryStream);
+                user.ProfilePicture = memoryStream.ToArray();
+            }
+
+            _userRepository.AddOrUpdate(user);
+
+            return Ok("Profile picture updated successfully.");
         }
 
         // Removed the UserLocation method because it was determined to be too invasive.

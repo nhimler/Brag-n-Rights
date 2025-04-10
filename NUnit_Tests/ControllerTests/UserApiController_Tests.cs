@@ -52,6 +52,83 @@ namespace Controller_Tests
             };
         }
 
+        [Test]
+        public async Task UpdateProfilePicture_ShouldReturnNotFoundWhenUserNotFound()
+        {
+            // Arrange
+            var mockFile = new Mock<IFormFile>();
+            var content = "fake image content";
+            var fileName = "profile.jpg";
+            var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
+
+            mockFile.Setup(f => f.OpenReadStream()).Returns(stream);
+            mockFile.Setup(f => f.FileName).Returns(fileName);
+            mockFile.Setup(f => f.Length).Returns(stream.Length);
+
+            // Mocking a user that does not exist
+            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("123");
+            _mockUserRepository.Setup(repo => repo.GetUserByIdentityUserId("123")).Returns((GymBro_App.Models.User)null);
+
+            // Act
+            var result = await _userAPIController.UpdateProfilePicture(mockFile.Object);
+
+            // Assert
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+        }
+
+        [Test]
+        public async Task UpdateProfilePicture_ShouldReturnBadRequestWhenProfilePictureNullOrEmpty()
+        {
+            // Arrange
+            IFormFile? mockFile = null; // Simulating a null file
+
+            // Act
+            var result = await _userAPIController.UpdateProfilePicture(mockFile);
+
+            // Assert
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
+
+        [Test]
+        public async Task UpdateProfilePicture_ShouldUpdateUserProfilePictureWhenPictureIsValid()
+        {
+            // Arrange
+            var mockFile = new Mock<IFormFile>();
+            var content = "fake image content";
+            var fileName = "profile.jpg";
+            var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
+
+            mockFile.Setup(f => f.OpenReadStream()).Returns(stream);
+            mockFile.Setup(f => f.FileName).Returns(fileName);
+            mockFile.Setup(f => f.Length).Returns(stream.Length);
+
+            // Needed to mock CopyToAsync used in the controller
+            mockFile.Setup(f => f.CopyToAsync(It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
+                .Returns<Stream, CancellationToken>((targetStream, cancellationToken) =>
+                {
+                    return stream.CopyToAsync(targetStream, cancellationToken);
+                });
+
+            // Mocking a user with a null profile picture
+            var user = new GymBro_App.Models.User
+            {
+                IdentityUserId = "123",
+                ProfilePicture = null
+            };
+
+            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("123");
+            _mockUserRepository.Setup(repo => repo.GetUserByIdentityUserId("123")).Returns(user);
+
+            // Act
+            var result = await _userAPIController.UpdateProfilePicture(mockFile.Object);
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(user.ProfilePicture, Is.Not.Null);
+            Assert.That(user.ProfilePicture.Length, Is.EqualTo(content.Length));
+        }
+
+
         // Removed test because method has been removed from UserAPIController
         // [Test]
         // public void UserLocationPut_ShouldUpdateUsersLatitudeAndLongitude()
