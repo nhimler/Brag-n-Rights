@@ -3,7 +3,13 @@ let aiResponseArea = document.getElementById("aiResponseArea");
 let suggestBtn = document.getElementById("suggestBtn");
 
 suggestBtn.addEventListener("click", async function() {
-    // let selectedFoods = document.querySelectorAll("#selectedFood input[type='hidden']");
+    let query = "";
+    let selectedFoods = document.getElementById("selectedFood");
+    // Search children
+    selectedFoods.querySelectorAll("button").forEach(function(button) {
+        query += button.textContent + ", \n";
+    });
+
     // let foodList = Array.from(selectedFoods).map(input => input.value).join(",");
     
     // if (foodList.length === 0) {
@@ -12,7 +18,7 @@ suggestBtn.addEventListener("click", async function() {
     // }
 
     try{
-    let response = await fetch("/api/ai/suggest?q=" + "chicken", {
+    let response = await fetch("/api/ai/suggest?q=" + query, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
