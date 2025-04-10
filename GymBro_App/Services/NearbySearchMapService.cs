@@ -38,7 +38,7 @@ namespace GymBro_App.Services
 
         public async Task<List<PlaceDTO>> FindNearbyGyms(double latitude, double longitude)
         {
-            Console.WriteLine("Got to GetNearbyPlaces");
+            // Console.WriteLine("Got to GetNearbyPlaces");
             string url = "https://places.googleapis.com/v1/places:searchNearby";
 
             var requestBody = new
