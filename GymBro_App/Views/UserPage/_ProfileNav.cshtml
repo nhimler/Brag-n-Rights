@@ -4,4 +4,10 @@
     <li class="nav-item">
         <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="UserPage" asp-action="Index">Dashboard</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "FindNearbyGyms" ? "active" : "")" asp-controller="Gym" asp-action="FindNearbyGyms">Gyms</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "ChangeInfo" ? "active" : "")" asp-controller="UserPage" asp-action="ChangeInfo">Change Info</a>
+    </li>
 </ul>
