@@ -43,10 +43,10 @@ public sealed class SCRUM10StepDefinitions : IDisposable
         _driver.Navigate().GoToUrl("http://localhost:5075");
     }
 
-    [When(@"I click on the register link")]
-    public void WhenIClickOnTheRegisterLink()
+    [When(@"I click on the {string} link")]
+    public void WhenIClickOnTheLink(string link)
     {
-        var registerLink = _driver.FindElement(By.Id("register"));
+        var registerLink = _driver.FindElement(By.Id(link));
         registerLink.Click();
     }
 
@@ -89,5 +89,32 @@ public sealed class SCRUM10StepDefinitions : IDisposable
     {
         var confirmationMessage = _driver.FindElement(By.ClassName("alert-success"));
         Assert.That(confirmationMessage.Displayed, Is.True);
+    }
+
+    [When(@"I login with {string} and {string}")]
+    public void AndILoginWithUsernameAndPassword(string username, string password)
+    {
+        var usernameField = _driver.FindElement(By.Id("login-username"));
+        var passwordField = _driver.FindElement(By.Id("login-password"));
+
+        usernameField.SendKeys(username);
+        passwordField.SendKeys(password);
+
+        _driver.FindElement(By.Id("login-submit")).Click();
+    }
+
+    [Then(@"I should be redirected back to the home page")]
+    public void ThenIShouldBeRedirectedBackToTheHomePage()
+    {
+        var homePageTitle = _driver.Title;
+        Assert.That(homePageTitle, Is.EqualTo("Home Page - GymBro_App"));
+    }
+
+    [Then("I should see {string} displayed on the page")]
+    public void ThenIShouldSeeUsernameDisplayedOnThePage(string username)
+    {
+        var displayedText = _driver.FindElement(By.Id("manage")).Text;
+        string expectedText = $"Hello {username}!";
+        Assert.That(expectedText, Is.EqualTo(displayedText));
     }
 }
