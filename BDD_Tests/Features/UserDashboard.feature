@@ -1,6 +1,6 @@
 Feature: User Dashboard
 
-The user dashboard should display the user's information, such as their full name, email, profile picture, etc.
+This is an example of a test for the group. It is not meant to be taken as a real test for Sprint 4.
 
 @mytag
 Scenario: User dashboard shows profile picture
