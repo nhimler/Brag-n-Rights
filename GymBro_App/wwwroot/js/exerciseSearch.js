@@ -1,4 +1,17 @@
 let exerciseSearchButton = document.getElementById("exerciseSearchButtonAddon");
+let exerciseIdList = [];
+
+let isUserLoggedIn = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof isLoggedIn !== 'undefined') {
+        isUserLoggedIn = isLoggedIn;
+        console.log("Login status detected:", isUserLoggedIn);
+    } else {
+        console.log("No login status detected, assuming not logged in");
+    }
+});
+
 
 exerciseSearchButton.addEventListener("click", async function(){
     let name = document.getElementById("exerciseInput").value;
@@ -85,7 +98,7 @@ async function displayExerciseSearchResults(result) {
         addButton.textContent = "Add";
         addButton.type = "button";
         addButton.addEventListener("click", function(e){
-            console.log("🆕 Add button clicked for:", exercise.name);
+            console.log("🆕 Add button clicked for:", exercise.name, "ID:", exercise.id);
             let row = e.target.closest("tr");
             if(row) row.remove();
             addExerciseToCart(exercise);
@@ -107,11 +120,17 @@ function addExerciseToCart(exercise) {
         return;
     }
     
+    exerciseIdList.push(exercise.id);
+    console.log("Exercise ID added to list:", exercise.id);
+    console.log("Current exercise ID list:", exerciseIdList);
+    
     let exerciseEntry = document.createElement("div");
     exerciseEntry.className = "selected-exercise entry";
     exerciseEntry.style.border = "1px solid #ccc";
     exerciseEntry.style.padding = "8px";
     exerciseEntry.style.marginBottom = "4px";
+
+    exerciseEntry.dataset.exerciseId = exercise.id;
 
     exerciseEntry.innerHTML = `<strong>${exercise.name}</strong>`;
     
@@ -120,14 +139,20 @@ function addExerciseToCart(exercise) {
     removeButton.className = "btn btn-danger btn-sm";
     removeButton.style.marginLeft = "8px";
     removeButton.addEventListener("click", function() {
+        let exerciseId = exerciseEntry.dataset.exerciseId;
+        let idIndex = exerciseIdList.indexOf(exerciseId);
+        if (idIndex > -1) {
+            exerciseIdList.splice(idIndex, 1);
+            console.log("Exercise ID removed from list:", exerciseId);
+            console.log("Updated exercise ID list:", exerciseIdList);
+        }
          exerciseEntry.remove();
     });
 
     exerciseEntry.appendChild(removeButton);
     exerciseCart.appendChild(exerciseEntry);
 
-    // Append button only if user is logged in
-    if (isLoggedIn) {
+    if (isUserLoggedIn) {
         let addExerciseToCartButton = document.getElementById("addExerciseToCartButton");
         if (!addExerciseToCartButton) {
             addExerciseToCartButton = document.createElement("button");
@@ -135,10 +160,39 @@ function addExerciseToCart(exercise) {
             addExerciseToCartButton.textContent = "Add Exercises to Workout";
             addExerciseToCartButton.className = "btn btn-success";
             addExerciseToCartButton.style.marginTop = "12px";
-            addExerciseToCartButton.addEventListener("click", function() {
-                window.location.href = "/Workouts";
+            addExerciseToCartButton.addEventListener("click", async function() {
+                let workoutPlanSelect = document.getElementById("workoutPlanSelectorList");
+                if (!workoutPlanSelect) {
+                    console.error("Workout plan selector not found.");
+                    return;
+                }
+                let selectedWorkoutPlanId = workoutPlanSelect.value;
+                if (!selectedWorkoutPlanId) {
+                    console.error("No workout plan selected.");
+                    return;
+                }
+                console.log("Adding exercises to workout plan ID:", selectedWorkoutPlanId);
+                
+                let payload = {
+                    workoutPlanId: parseInt(selectedWorkoutPlanId),
+                    exerciseApiIds: exerciseIdList
+                };
+                let response = await fetch('/api/Workouts/AddExercises', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if(response.ok){
+                    let updatedWorkout = await response.json();
+                    console.log("Exercises added successfully:", updatedWorkout);
+                    window.location.href = "/Workouts/Index";
+                } else {
+                    console.error("Error adding exercises to workout:", response.status);
+                }
             });
+            exerciseCart.appendChild(addExerciseToCartButton);
         }
-        exerciseCart.appendChild(addExerciseToCartButton);
     }
 }

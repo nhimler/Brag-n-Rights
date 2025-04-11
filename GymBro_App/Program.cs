@@ -109,6 +109,17 @@ public class Program
             return new NearbySearchMapService(client, services.GetRequiredService<ILogger<NearbySearchMapService>>());
         });
 
+        // Deepseek API Config via openrouter
+        string AiApiUrl = "https://openrouter.ai/api/v1/chat/completions";
+        string AiApiKey = builder.Configuration["AiApiKey"] ?? "";
+        builder.Services.AddHttpClient<IAiService, AiService>((client, services) =>
+        {
+            client.BaseAddress = new Uri(AiApiUrl);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {AiApiKey}");
+            return new AiService(client, services.GetRequiredService<ILogger<AiService>>());
+        });
+
 
         // Configure the Identity registration requirements
         builder.Services.Configure<IdentityOptions>(options =>

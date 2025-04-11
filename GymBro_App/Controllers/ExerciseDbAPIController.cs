@@ -16,7 +16,7 @@ public class ExerciseDbAPIController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet]
+    /*[HttpGet]
     public async Task<IActionResult> GetExercises()
     {
         var exercises = await _exerciseService.GetExercisesAsync();
@@ -27,7 +27,7 @@ public class ExerciseDbAPIController : ControllerBase
         }
 
         return Ok(exercises);
-}
+} */
 
     [HttpGet("{name}")]
     public async Task<IActionResult> GetExercise(string name)
@@ -40,5 +40,18 @@ public class ExerciseDbAPIController : ControllerBase
         }
 
         return Ok(exercises);
-}
+    }
+
+    [HttpGet("id/{id}")]
+    public async Task<IActionResult> GetExerciseById(string id)
+    {
+        var exercises = await _exerciseService.GetExerciseByIdAsync(id);
+    
+        if (exercises == null || exercises.Count == 0)
+        {
+            return NotFound($"No exercise found with ID '{id}'.");
+        }
+
+        return Ok(exercises);
+    }
 }
