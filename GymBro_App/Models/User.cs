@@ -94,4 +94,11 @@ public partial class User
     [ForeignKey("UserId")]
     [InverseProperty("Users")]
     public virtual ICollection<Gym> Gyms { get; set; } = new List<Gym>();
+
+    public virtual ICollection<StepCompetition> CreatedCompetitions { get; set; } = new List<StepCompetition>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<StepCompetitionParticipant> StepCompetitions { get; set; } = new List<StepCompetitionParticipant>();
 }
+
+

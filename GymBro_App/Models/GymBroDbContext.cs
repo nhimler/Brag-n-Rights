@@ -41,7 +41,16 @@ public partial class GymBroDbContext : DbContext
 
     public virtual DbSet<WorkoutPlan> WorkoutPlans { get; set; }
 
+
+    
+    
+    public virtual DbSet<StepCompetition> StepCompetitions { get; set; }  
+    public virtual DbSet<StepCompetitionParticipant> StepCompetitionParticipants { get; set; }
+    public virtual DbSet<StepCompetition> StepCompetition { get; set; }
+
+
     public virtual DbSet<WorkoutPlanExercise> WorkoutPlanExercises { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=GymBroAzureConnection");
@@ -158,6 +167,7 @@ public partial class GymBroDbContext : DbContext
             entity.HasKey(e => e.UserId).HasName("PK__User__1788CCAC718E8A76");
 
             entity.Property(e => e.AccountCreationDate).HasDefaultValueSql("(getdate())");
+            entity.HasAlternateKey(u => u.IdentityUserId);
         });
 
         modelBuilder.Entity<UserMedal>(entity =>
@@ -168,6 +178,20 @@ public partial class GymBroDbContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.UserMedals).HasConstraintName("FK_UserMedal_User");
         });
+
+
+        modelBuilder.Entity<StepCompetition>(entity =>
+        {
+            entity.HasKey(e => e.CompetitionID);
+
+            entity.HasOne(e => e.Creator)
+                .WithMany(u => u.CreatedCompetitions)
+                .HasPrincipalKey(u => u.IdentityUserId)
+                .HasForeignKey(e => e.CreatorIdentityId)
+                .OnDelete(DeleteBehavior.Cascade); // Optional: adjust based on your needs
+        });
+
+
 
         modelBuilder.Entity<WorkoutExercise>(entity =>
         {
@@ -182,6 +206,7 @@ public partial class GymBroDbContext : DbContext
                 .HasConstraintName("FK__WorkoutEx__Worko__2022C2A6");
         });
 
+
         modelBuilder.Entity<WorkoutPlan>(entity =>
         {
             entity.HasKey(e => e.WorkoutPlanId).HasName("PK__WorkoutP__8C51605B9B7D06CA");
@@ -191,14 +216,32 @@ public partial class GymBroDbContext : DbContext
                 .HasConstraintName("FK__WorkoutPl__UserI__1975C517");
         });
 
+
+        modelBuilder.Entity<StepCompetitionParticipant>()
+            .HasOne(p => p.StepCompetition)
+            .WithMany(c => c.Participants)
+            .HasForeignKey(p => p.StepCompetitionId)
+            .OnDelete(DeleteBehavior.Cascade);  // Cascade only here
+
+        // Participant → User
+        modelBuilder.Entity<StepCompetitionParticipant>()
+            .HasOne(p => p.User)
+            .WithMany(u => u.StepCompetitions)
+            .HasForeignKey(p => p.IdentityId)
+            .HasPrincipalKey(u => u.IdentityUserId)
+            .OnDelete(DeleteBehavior.Restrict);  // Prevent multiple cascade paths
+
+        modelBuilder.Entity<TokenEntity>(entity =>
+
         modelBuilder.Entity<WorkoutPlanExercise>(entity =>
+
         {
             entity.HasKey(e => e.WorkoutPlanExerciseId).HasName("PK__WorkoutP__8D1477A67A1078DF");
 
             entity.HasOne(d => d.WorkoutPlan).WithMany(p => p.WorkoutPlanExercises)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__WorkoutPl__Worko__1C5231C2");
-        });
+        }));
 
         OnModelCreatingPartial(modelBuilder);
     }
