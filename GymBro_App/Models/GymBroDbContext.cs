@@ -41,7 +41,10 @@ public partial class GymBroDbContext : DbContext
 
     public DbSet<TokenEntity> Tokens { get; set; }
     
-    public DbSet<StepCompetitionEntity> StepCompetitions { get; set; }  // Add this line to include the StepCompetitionEntity
+    public DbSet<StepCompetition> StepCompetitions { get; set; }  
+    public DbSet<StepCompetitionParticipant> StepCompetitionParticipants { get; set; }
+    public DbSet<StepCompetition> StepCompetition { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=GymBroAzureConnection");
@@ -154,6 +157,7 @@ public partial class GymBroDbContext : DbContext
             entity.HasKey(e => e.UserId).HasName("PK__User__1788CCAC324F3449");
 
             entity.Property(e => e.AccountCreationDate).HasDefaultValueSql("(getdate())");
+            entity.HasAlternateKey(u => u.IdentityUserId);
         });
 
         modelBuilder.Entity<UserMedal>(entity =>
@@ -165,7 +169,7 @@ public partial class GymBroDbContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.UserMedals).HasConstraintName("FK_UserMedal_User");
         });
 
-        modelBuilder.Entity<StepCompetitionEntity>(entity =>
+        modelBuilder.Entity<StepCompetition>(entity =>
         {
             entity.HasKey(e => e.CompetitionID);
 
@@ -202,6 +206,20 @@ public partial class GymBroDbContext : DbContext
                         j.IndexerProperty<int>("ExerciseId").HasColumnName("ExerciseID");
                     });
         });
+
+        modelBuilder.Entity<StepCompetitionParticipant>()
+            .HasOne(p => p.StepCompetition)
+            .WithMany(c => c.Participants)
+            .HasForeignKey(p => p.StepCompetitionId)
+            .OnDelete(DeleteBehavior.Cascade);  // Cascade only here
+
+        // Participant → User
+        modelBuilder.Entity<StepCompetitionParticipant>()
+            .HasOne(p => p.User)
+            .WithMany(u => u.StepCompetitions)
+            .HasForeignKey(p => p.IdentityId)
+            .HasPrincipalKey(u => u.IdentityUserId)
+            .OnDelete(DeleteBehavior.Restrict);  // Prevent multiple cascade paths
 
         modelBuilder.Entity<TokenEntity>(entity =>
         {

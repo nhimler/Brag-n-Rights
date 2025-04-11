@@ -12,12 +12,12 @@ public class StepCompetitionController : Controller
 {
 
         private readonly IOAuthService _oauthService;
-        private readonly ICompetitionService _competitionService;
+       
 
-        public StepCompetitionController(IOAuthService oauthService, ICompetitionService competitionService)
+        public StepCompetitionController(IOAuthService oauthService )
         {
             _oauthService = oauthService;
-            _competitionService = competitionService;  // Initialize the repository
+            
         }
         [Authorize]
         public async Task<IActionResult> Index()
@@ -35,24 +35,5 @@ public class StepCompetitionController : Controller
                     return View("ConnectFitbit");
                 }
             return View();
-        }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> StartCompetition()
-        {
-            // Get the identityId of the current user
-            var identityId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrEmpty(identityId))
-            {
-                return Unauthorized(); 
-            }
-
-            // Create the competition
-             await _competitionService.CreateCompetitionAsync(identityId);
-
-            // Redirect to a view that shows the created competition details
-            return RedirectToAction("Index");  // You can redirect to a competition details page if you have one
         }
 }
