@@ -51,9 +51,6 @@ namespace GymBro_App.Controllers
             {
                 return BadRequest("Failed to create competition.");
             }
-            // Here you can add logic to invite users to the competition
-            await _stepCompetitionRepository.InviteUsersToCompetitionAsync(identityId, competition, InvitedUsernames);
-            
             var competitions = await _stepCompetitionRepository.GetCompetitionsForUserAsync(identityId);
 
             return Ok(competitions); // send back all competitions so the UI can update
@@ -70,7 +67,5 @@ namespace GymBro_App.Controllers
             var competitions = await _stepCompetitionRepository.GetCompetitionsForUserAsync(identityId);
             return Ok(competitions);
         }
-
-
     }
 }
