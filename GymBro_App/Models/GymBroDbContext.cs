@@ -39,11 +39,11 @@ public partial class GymBroDbContext : DbContext
 
     public virtual DbSet<WorkoutPlan> WorkoutPlans { get; set; }
 
-    public DbSet<TokenEntity> Tokens { get; set; }
+    public virtual DbSet<TokenEntity> Tokens { get; set; }
     
-    public DbSet<StepCompetition> StepCompetitions { get; set; }  
-    public DbSet<StepCompetitionParticipant> StepCompetitionParticipants { get; set; }
-    public DbSet<StepCompetition> StepCompetition { get; set; }
+    public virtual DbSet<StepCompetition> StepCompetitions { get; set; }  
+    public virtual DbSet<StepCompetitionParticipant> StepCompetitionParticipants { get; set; }
+    public virtual DbSet<StepCompetition> StepCompetition { get; set; }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
