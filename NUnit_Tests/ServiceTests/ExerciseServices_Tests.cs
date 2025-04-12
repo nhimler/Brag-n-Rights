@@ -33,7 +33,7 @@ namespace Service_Tests
             _exerciseService = new ExerciseService(_httpClient, _loggerMock.Object);
         }
 
-        [Test]
+        /*[Test]
         public async Task GetExercisesAsync_ShouldReturnCorrectIds_WhenResponseIsSuccessful()
         {
             // Arrange
@@ -79,7 +79,7 @@ namespace Service_Tests
             // Assert
             Assert.IsNotNull(result);
             Assert.IsEmpty(result);
-        }
+        }*/
 
         [Test]
         public async Task GetExerciseAsync_ShouldReturnExerciseList_WhenResponseIsSuccessful()

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace Controller_Tests;
 
@@ -64,14 +65,14 @@ public class WorkoutsController_Tests
     } */
 
     [Test]
-    public void Create_ValidModel_RedirectsToIndex()
+    public async Task Create_ValidModel_RedirectsToIndex()
     {
         // Arrange
         var workoutPlan = new WorkoutPlan();
         _mockRepo.Setup(repo => repo.Add(It.IsAny<WorkoutPlan>()));
 
         // Act
-        var result = _controller.Create(workoutPlan);
+        var result = await _controller.Create(workoutPlan);
 
         // Assert
         var redirectToActionResult = result as RedirectToActionResult;
@@ -80,14 +81,14 @@ public class WorkoutsController_Tests
     }
 
     [Test]
-    public void Create_InvalidModel_ReturnsViewResult()
+    public async Task Create_InvalidModel_ReturnsViewResult()
     {
         // Arrange
         var workoutPlan = new WorkoutPlan();
         _controller.ModelState.AddModelError("Name", "Required");
 
         // Act
-        var result = _controller.Create(workoutPlan);
+        var result = await _controller.Create(workoutPlan);
 
         // Assert
         var viewResult = result as ViewResult;

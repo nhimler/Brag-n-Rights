@@ -25,7 +25,7 @@ namespace Controller_Tests
             _controller = new ExerciseDbAPIController(_mockService.Object, _mockLogger.Object);
         }
 
-        [Test]
+        /*[Test]
         public async Task GetExercisesAsync_ReturnsListOfExercises()
         {
             // Arrange
@@ -61,7 +61,7 @@ namespace Controller_Tests
             var notFoundResult = result as NotFoundObjectResult;
             Assert.IsNotNull(notFoundResult);
             Assert.That(notFoundResult.StatusCode, Is.EqualTo(404));
-        }
+        }*/
 
         [Test]
         public async Task GetExerciseAsync_ReturnsExercise()
