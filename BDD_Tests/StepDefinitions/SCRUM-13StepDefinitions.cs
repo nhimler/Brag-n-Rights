@@ -1,0 +1,61 @@
+using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
+using Reqnroll;
+
+namespace BDD_Tests.StepDefinitions;
+
+[Binding]
+public sealed class SCRUM13StepDefinitions : IDisposable
+{
+    private IWebDriver _driver;
+
+    [BeforeScenario]
+    public void Setup()
+    {
+        var options = new FirefoxOptions();
+        options.AddArgument("--headless");
+        options.AddArgument("--no-sandbox");
+        options.AddArgument("--disable-dev-shm-usage");
+
+        _driver = new FirefoxDriver(options);
+        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+    }
+
+    public void Dispose()
+    {
+        if (_driver != null)
+        {
+            _driver.Quit();
+            _driver.Dispose();
+        }
+    }
+
+    [AfterScenario]
+    public void Teardown()
+    {
+        _driver.Quit();
+    }
+
+    [Given("I open the index page")]
+    public void GivenIOpenTheIndexPage()
+    {
+        _driver.Navigate().GoToUrl("http://localhost:5075/Workouts/Index");
+    }
+
+    [When("I click on the {string} button")]
+    public void WhenIClickOnTheButton(string buttonText)
+    {
+        var button = _driver.FindElement(By.Id("search-exercise-button"));
+        button.Click();
+    }
+
+    [Then(@"I should see the exercise search bar")]
+    public void ThenIShouldSeeTheExerciseSearchBar()
+    {
+        var searchBar = _driver.FindElement(By.Id("exerciseInput"));
+        Assert.IsTrue(searchBar.Displayed);
+    }
+
+}
