@@ -2,7 +2,7 @@ Feature: SCRUM25
 
 This will cover the gym search functionality
 
-@mytag
+@SCRUM25
 Scenario: User searches for nearby gyms with their location
 	Given I am logged in
     When I navigate to the gym search page

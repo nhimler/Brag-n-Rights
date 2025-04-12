@@ -2,7 +2,7 @@ Feature: User Dashboard
 
 This is an example of a test for the group. It is not meant to be taken as a real test for Sprint 4.
 
-@mytag
+@example
 Scenario: User dashboard shows profile picture
 	Given I open the user page
 	When I log in with "profileinfo" and "Password!1"

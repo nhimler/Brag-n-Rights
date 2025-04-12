@@ -2,7 +2,7 @@ Feature: SCRUM10
 
 This will cover the user's ability to create and login to an account
 
-@mytag
+@SCRUM10
 Scenario: User registers an account with valid data
 	Given I open the application
     When I click on the "register" link
