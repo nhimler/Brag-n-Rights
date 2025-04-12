@@ -71,7 +71,6 @@ public sealed class SCRUM25StepDefinitions : IDisposable
     public void WhenINavigateToTheGymSearchPage()
     {
         _driver.Navigate().GoToUrl("http://localhost:5075/Gym/FindNearbyGyms");
-        Console.WriteLine(_driver.Title);
     }
 
     [When("I click on the search button")]
