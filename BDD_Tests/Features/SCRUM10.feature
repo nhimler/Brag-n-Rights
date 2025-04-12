@@ -11,7 +11,7 @@ Scenario: User registers an account with valid data
     Then I should see a confirmation message
 
 
-
+@SCRUM10
 Scenario: User logs in with valid credentials
     Given I open the application
     When I click on the "login" link
