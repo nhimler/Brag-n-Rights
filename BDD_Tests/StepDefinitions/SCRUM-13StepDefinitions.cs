@@ -7,6 +7,7 @@ using Reqnroll;
 namespace BDD_Tests.StepDefinitions;
 
 [Binding]
+[Scope(Tag = "SCRUM13")]
 public sealed class SCRUM13StepDefinitions : IDisposable
 {
     private IWebDriver _driver;
