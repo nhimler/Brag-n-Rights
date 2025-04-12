@@ -68,7 +68,7 @@ public class WorkoutsAPIController_Tests
         }
 
         [Test]
-        public void AddExercisesToWorkout_Success_ReturnsOkWithAddedCount()
+        public void AddExercisesToWorkout_Success_ReturnsOkWithExerciseIDs()
         {
             // Arrange
             var dto = new AddExercisesToWorkoutDto
