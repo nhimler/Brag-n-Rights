@@ -1,7 +1,7 @@
 
 Feature: Award Medals with No Fitbit Token
 
-  @NoToken
+  @SCRUM19
   Scenario: Redirect User to Connect Fitbit Page If No Fitbit Token
     Given I go to the AwardMedals page
     When I login with "notokenuser" and "Password!1"
