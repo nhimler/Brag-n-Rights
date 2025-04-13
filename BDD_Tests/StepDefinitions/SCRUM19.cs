@@ -1,19 +1,19 @@
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
 using Reqnroll;
-using SeleniumExtras.WaitHelpers;
+using OpenQA.Selenium.Support.UI;
 
-namespace BDD_Tests.StepDefinitions
+
+namespace BDD_Tests.StepDefinitions;
+
+[Binding]
+[Scope(Tag = "SCRUM19")]
+public sealed class SCRUM19StepDefinitions : IDisposable
 {
-    [Binding]
-    public sealed class AwardMedals_NoTokenSteps : IDisposable
-    {
-        private IWebDriver _driver;
-
-        [BeforeScenario]
-        public void Setup()
+    private IWebDriver _driver;
+    
+        [BeforeScenario]    public void Setup()
         {
             var options = new ChromeOptions();
             options.AddArgument("--headless");
@@ -26,7 +26,7 @@ namespace BDD_Tests.StepDefinitions
 
         public void Dispose()
         {
-            if (_driver != null)
+            if(_driver != null)
             {
                 _driver.Quit();
                 _driver.Dispose();
@@ -36,7 +36,7 @@ namespace BDD_Tests.StepDefinitions
         [AfterScenario]
         public void Teardown()
         {
-            // Cleanup handled in Dispose
+            _driver.Quit();
         }
 
         [Given("I go to the AwardMedals page")]
@@ -59,11 +59,28 @@ namespace BDD_Tests.StepDefinitions
            
         }
 
-        [Then(@"I should see the ""Connect Your Fitbit"" page")]
-        public void ThenIShouldSeeConnectYourFitbitPage()
+        [Then(@"I should see the ""(.*)"" page")]
+        public void ThenIShouldSeePageWithHeader(string expectedHeader)
         {
-            var header = _driver.FindElement(By.TagName("h2")).Text;
-            Assert.That(header, Is.EqualTo("Connect Your Fitbit"));
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+
+            wait.Until(driver =>
+            {
+                try
+                {
+                    var h1OrH2 = driver.FindElements(By.TagName("h1")).Concat(_driver.FindElements(By.TagName("h2")));
+                    return h1OrH2.Any(e => e.Text.Contains(expectedHeader));
+                }
+                catch (NoSuchElementException)
+                {
+                    return false;
+                }
+            });
+
+            var headers = _driver.FindElements(By.TagName("h1")).Concat(_driver.FindElements(By.TagName("h2")));
+            var actualHeader = headers.FirstOrDefault(e => e.Text.Contains(expectedHeader))?.Text;
+
+            Assert.That(actualHeader, Is.EqualTo(expectedHeader));
         }
+
     }
-}
