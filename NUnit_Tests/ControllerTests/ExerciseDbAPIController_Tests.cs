@@ -25,7 +25,7 @@ namespace Controller_Tests
             _controller = new ExerciseDbAPIController(_mockService.Object, _mockLogger.Object);
         }
 
-        [Test]
+        /*[Test]
         public async Task GetExercisesAsync_ReturnsListOfExercises()
         {
             // Arrange
@@ -61,7 +61,7 @@ namespace Controller_Tests
             var notFoundResult = result as NotFoundObjectResult;
             Assert.IsNotNull(notFoundResult);
             Assert.That(notFoundResult.StatusCode, Is.EqualTo(404));
-        }
+        }*/
 
         [Test]
         public async Task GetExerciseAsync_ReturnsExercise()
@@ -98,6 +98,43 @@ namespace Controller_Tests
             var notFoundResult = result as NotFoundObjectResult;
             Assert.IsNotNull(notFoundResult);
             Assert.That(notFoundResult.Value, Is.EqualTo("No exercises found for 'NonExistentExercise'."));
+        }
+
+        [Test]
+        public async Task GetExerciseById_ReturnsExercise()
+        {
+            // Arrange
+            var exercises = new List<ExerciseDTO>
+            {
+                new ExerciseDTO { Id = "0001", Name = "sit-up" }
+            };
+            _mockService.Setup(service => service.GetExerciseByIdAsync("0001")).ReturnsAsync(exercises);
+
+            // Act
+            var result = await _controller.GetExerciseById("0001");
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            var okResult = result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
+            Assert.That(okResult.Value, Is.EqualTo(exercises));
+        }
+
+        [Test]
+        public async Task GetExerciseById_ReturnsNotFound_WhenNoExercise()
+        {
+            // Arrange
+            _mockService.Setup(service => service.GetExerciseByIdAsync("NonExistentId")).ReturnsAsync(new List<ExerciseDTO>());
+
+            // Act
+            var result = await _controller.GetExerciseById("NonExistentId");
+
+            // Assert
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+            var notFoundResult = result as NotFoundObjectResult;
+            Assert.IsNotNull(notFoundResult);
+            Assert.That(notFoundResult.Value, Is.EqualTo("No exercise found with ID 'NonExistentId'."));
         }
 
         [TearDown]

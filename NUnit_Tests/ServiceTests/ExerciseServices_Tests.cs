@@ -33,7 +33,7 @@ namespace Service_Tests
             _exerciseService = new ExerciseService(_httpClient, _loggerMock.Object);
         }
 
-        [Test]
+        /*[Test]
         public async Task GetExercisesAsync_ShouldReturnCorrectIds_WhenResponseIsSuccessful()
         {
             // Arrange
@@ -79,7 +79,7 @@ namespace Service_Tests
             // Assert
             Assert.IsNotNull(result);
             Assert.IsEmpty(result);
-        }
+        }*/
 
         [Test]
         public async Task GetExerciseAsync_ShouldReturnExerciseList_WhenResponseIsSuccessful()
@@ -123,6 +123,60 @@ namespace Service_Tests
 
             // Act
             var result = await _exerciseService.GetExerciseAsync("sit-up");
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsEmpty(result);
+        }
+
+        [Test]
+        public async Task GetExerciseByIdAsync_ReturnsExerciseList_WhenResponseIsSuccessful()
+        {
+            // Arrange
+            var jsonResponse = "[ { \"id\": \"0001\", \"name\": \"sit-up\" } ]";
+            var responseMessage = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(jsonResponse)
+            };
+            
+            _httpMessageHandlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(), 
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(responseMessage);
+            
+            // Act
+            var result = await _exerciseService.GetExerciseByIdAsync("0001");
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result[0].Id, Is.EqualTo("0001"));
+            Assert.That(result[0].Name, Is.EqualTo("sit-up"));
+        }
+
+        [Test]
+        public async Task GetExerciseByIdAsync_ReturnsEmptyList_WhenResponseIsUnsuccessful()
+        {
+            // Arrange
+            var responseMessage = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.BadRequest
+            };
+            
+            _httpMessageHandlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(), 
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(responseMessage);
+            
+            // Act
+            var result = await _exerciseService.GetExerciseByIdAsync("0001");
 
             // Assert
             Assert.IsNotNull(result);
