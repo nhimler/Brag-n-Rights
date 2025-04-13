@@ -52,7 +52,7 @@ function renderCompetitions(competitions) {
         cardBody.className = 'card-body';
 
         const title = document.createElement('h5');
-        title.textContent = `Competition #${comp.competitionID}`;
+        title.textContent = `7 Day Step Competition🔥`;
 
         const dates = document.createElement('p');
         dates.textContent = `From ${new Date(comp.startDate).toLocaleDateString()} to ${new Date(comp.endDate).toLocaleDateString()}`;
