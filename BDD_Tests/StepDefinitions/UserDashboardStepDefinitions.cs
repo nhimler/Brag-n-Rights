@@ -6,7 +6,7 @@ using Reqnroll;
 namespace BDD_Tests.StepDefinitions;
 
 [Binding]
-public sealed class SCRUM58StepDefinitions : IDisposable
+public sealed class UserDashboardStepDefinitions : IDisposable
 {
     private IWebDriver _driver;
     
