@@ -11,12 +11,15 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="NUnit.Analyzers" Version="3.9.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
     <PackageReference Include="Reqnroll" Version="2.4.0" />
     <PackageReference Include="Reqnroll.NUnit" Version="2.4.0" />
+    <PackageReference Include="Selenium.Firefox.WebDriver" Version="0.27.0" />
+    <PackageReference Include="Selenium.Support" Version="4.31.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.31.0" />
     <PackageReference Include="Selenium.Support" Version="4.31.0" />
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="135.0.7049.8400" />
