@@ -1,5 +1,8 @@
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Support;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using Reqnroll;
@@ -7,7 +10,7 @@ using Reqnroll;
 namespace BDD_Tests.StepDefinitions;
 
 [Binding]
-[Scope(Tag = "SCRUM13")]
+[Scope(Tag = "SCRUM38")]
 public sealed class SCRUM13StepDefinitions : IDisposable
 {
     private IWebDriver _driver;
