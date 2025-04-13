@@ -23,11 +23,10 @@ namespace GymBro_App.Controllers
         public async Task<IActionResult> SearchUser(string username)
         {
 
-            var identityId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var identityId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(identityId))
-            {
-                return Unauthorized();  // Return 401 if the user is not logged in or has no identity
-            }
+                return Unauthorized();
+
 
             // Call the repository method to search for users with the given username
             var users = await _stepCompetitionRepository.SearchUsersWithTokenAsync(username,identityId);
@@ -40,11 +39,10 @@ namespace GymBro_App.Controllers
         [HttpPost("StartCompetition")]
         public async Task<IActionResult> StartCompetition([FromForm] List<string> InvitedUsernames)
         {
-            var identityId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var identityId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(identityId))
-            {
-                return Unauthorized();  
-            }
+                return Unauthorized();
+
 
             var competition = await _stepCompetitionRepository.CreateCompetitionAsync(identityId);
             if (competition == null)
@@ -63,7 +61,7 @@ namespace GymBro_App.Controllers
         [HttpGet("UserCompetitions")]
         public async Task<IActionResult> GetUserCompetitions()
         {
-            var identityId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var identityId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(identityId))
                 return Unauthorized();
 
