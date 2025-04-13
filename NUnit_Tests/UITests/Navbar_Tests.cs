@@ -43,6 +43,6 @@ public class NavbarTests
         Assert.IsTrue(links.Any(l => l.InnerText.Contains("User Page")));
         Assert.IsTrue(links.Any(l => l.InnerText.Contains("Meal Plan")));
         Assert.IsTrue(links.Any(l => l.InnerText.Contains("Workout Plan")));
-        Assert.IsTrue(links.Any(l => l.InnerText.Contains("Check Medals")));
+        Assert.IsTrue(links.Any(l => l.InnerText.Contains("Step Medals")));
     }
 }

@@ -218,8 +218,22 @@ public class OAuthService : IOAuthService
 
                 if (token.ExpirationTime < currentPacificTime)
                 {
-                    // Token is expired, refresh it
-                    return await RefreshAccessToken(token.RefreshToken);
+                    try
+                    {
+                        return await RefreshAccessToken(token.RefreshToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Failed to refresh — assume refresh token is also bad or expired
+                        Console.WriteLine($"Refresh failed: {ex.Message}");
+
+                        // Delete the expired token to prevent further failures
+                        _context.Tokens.Remove(token);
+                        await _context.SaveChangesAsync();
+
+                        // Optional: create a custom exception for easier handling
+                        throw new TokenExpiredException("Both access and refresh tokens expired.");
+                    }
                 }
 
                 var decryptedAccessToken = _encryptionHelper.DecryptToken(token.AccessToken);
