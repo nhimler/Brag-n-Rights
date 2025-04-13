@@ -11,7 +11,7 @@ namespace BDD_Tests.StepDefinitions;
 
 [Binding]
 [Scope(Tag = "SCRUM38")]
-public sealed class SCRUM13StepDefinitions : IDisposable
+public sealed class SCRUM38StepDefinitions : IDisposable
 {
     private IWebDriver _driver;
 
