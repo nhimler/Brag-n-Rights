@@ -6,7 +6,7 @@
 
 <a asp-action="Index"><button class="btn btn-primary">Back to Meal Plans</button></a>
 <hr>
-<a asp-action="CreateMealPlan" asp-route-id="@Model.MealPlan.MealPlanId"><button class="btn btn-primary">Edit Meal Plan</button></a>
+<a asp-action="CreateMealPlan" asp-route-id="@Model.MealPlan.MealPlanId"><button class="btn btn-primary" id="edit-mealplan-btn">Edit Meal Plan</button></a>
 
 <div class="pt-2">
     <form method="post" asp-action="DeleteMealPlan" asp-route-id="" onsubmit="return confirm('Are you sure you want to delete this meal plan?');">
