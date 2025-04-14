@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;  // For [Authorize]
-using System.Security.Claims;  // Add this namespace for ClaimsPrincipal and ClaimTypes
+using Microsoft.AspNetCore.Authorization;  
+using System.Security.Claims;  
 using GymBro_App.Services;
+using GymBro_App.Models;  
 
 namespace GymBro_App.Controllers
 {
@@ -21,18 +22,13 @@ namespace GymBro_App.Controllers
         [Authorize]
         public async Task<IActionResult> AwardMedals()
         {
-            // Get the identityId from the logged-in user's claims
             var identityId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (string.IsNullOrEmpty(identityId))
-            {
-                return Unauthorized();  // Return 401 if the user is not logged in or has no identity
-            }
+                return Unauthorized();
 
             if (!await _oauthService.UserHasFitbitToken(identityId))
-            {
-                return View("ConnectFitbit");
-            }
+                return View("ConnectFitbit");  
 
 
             try
@@ -40,11 +36,14 @@ namespace GymBro_App.Controllers
                 var awardMedalsResult = await _awardMedalService.AwardUserdMedalsAsync(identityId);
 
                 if (awardMedalsResult.AwardedMedals.Count == 0)
-                {
-                    return View("NoMedals");  // View for when no medals were awarded today
-                }
+                    return View("NoMedals");
 
                 return View("AwardedMedals", awardMedalsResult);
+            }
+            catch (TokenExpiredException)
+            {
+                // Tokens are bad – send them to reconnect Fitbit
+                return View("ConnectFitbit");
             }
             catch (Exception ex)
             {
