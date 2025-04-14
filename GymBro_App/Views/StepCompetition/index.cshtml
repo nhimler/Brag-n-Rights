@@ -1,0 +1,43 @@
+@{
+    ViewData["Title"] = "Step Competition";
+}
+
+<link rel="stylesheet" href="~/css/StempCompetition.css" />
+
+
+    <h1>Step Competition</h1>
+    <p>Welcome to the Step Competition page! Here you can create and manage your step competitions.</p>
+    <p>To get started, click the button below to create a new competition.</p>
+
+<button id="openCompetitionFormBtn" class="btn btn-success">Create New Competition</button>
+
+<!-- Modal -->
+<div id="competitionPopup" class="modal-container">
+    <div class="modal-content">
+        <span id="closePopupBtn" class="close-btn">&times;</span>
+
+        <form asp-action="StartCompetition" asp-controller="StepCompetitionAPI" method="post" id="competitionForm">
+            <div class="form-group">
+                <label for="userSearch">Invite Users</label>
+                <input type="text" id="userSearch" class="form-control" placeholder="Start typing a username..." autocomplete="off" />
+                <div id="suggestions" class="list-group"></div>
+            </div>
+
+            <div class="form-group mt-2">
+                <label>Invited Users:</label>
+                <ul id="invitedUserList" class="list-group mb-2"></ul>
+            </div>
+
+            <div id="invitedUserInputs"></div>
+
+            <div class="form-group mt-2">
+                <button type="submit" class="btn btn-primary">Start Competition</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="competitionListContainer" class="mt-4"></div>
+
+
+<script type="module" src="~/js/stepCompetition.js"></script>

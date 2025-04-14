@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GymBro_App.Models;
 
 [Table("User")]
-[Index("Email", Name = "UQ__User__A9D105341DD18EE9", IsUnique = true)]
+[Index("Email", Name = "UQ__User__A9D10534C8A0007A", IsUnique = true)]
 public partial class User
 {
     [Key]
@@ -69,9 +69,6 @@ public partial class User
     [Column(TypeName = "decimal(9, 6)")]
     public decimal? Longitude { get; set; }
 
-    public virtual TokenEntity? Token { get; set; }
-        
-
     [InverseProperty("User")]
     public virtual ICollection<BiometricDatum> BiometricData { get; set; } = new List<BiometricDatum>();
 
@@ -80,6 +77,9 @@ public partial class User
 
     [InverseProperty("User")]
     public virtual ICollection<MealPlan> MealPlans { get; set; } = new List<MealPlan>();
+
+    [InverseProperty("User")]
+    public virtual TokenEntity? Token { get; set; }
 
     [InverseProperty("User")]
     public virtual ICollection<UserMedal> UserMedals { get; set; } = new List<UserMedal>();
@@ -94,4 +94,11 @@ public partial class User
     [ForeignKey("UserId")]
     [InverseProperty("Users")]
     public virtual ICollection<Gym> Gyms { get; set; } = new List<Gym>();
+
+    public virtual ICollection<StepCompetition> CreatedCompetitions { get; set; } = new List<StepCompetition>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<StepCompetitionParticipant> StepCompetitions { get; set; } = new List<StepCompetitionParticipant>();
 }
+
+

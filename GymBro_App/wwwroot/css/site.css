@@ -93,6 +93,10 @@ left: 0;
 padding-top: 20px;
 }
 
+.navbar .nav-link {
+  font-size: 18px;
+}
+
 .nav-brand {
 margin-left: 20px;
 margin-bottom: 20px;
@@ -112,7 +116,7 @@ text-align: left;
 
 .nav-links a {
 display: block;
-padding: 15px 20px;
+padding: 15px 10px;
 width: 100%;
 }
 

@@ -5,55 +5,68 @@
 }
 
 <h2>Create Meal</h2>
-<form method="post" asp-action="CreateMeal" asp-route-id="">
-    <button class="btn btn-primary" type="submit">Create</button>
-    <div class="form-group">
-        <label asp-for="MealName">Meal Name</label>
-        @if(Model == null){
-            <input asp-for="MealName" class="form-control" value="New Meal"/>
-        } else {
-            <input asp-for="MealName" class="form-control" value="@Model.MealName"/>
-        }
-    </div>
-    <div class="form-group">
-        <label asp-for="Description">Description</label>
-            <input asp-for="Description" class="form-control" value="@Model.Description"/>
-    </div>
-    <input asp-for="MealId" hidden readonly/>
-    <div class="form-group">
-        <label asp-for="MealPlanId">Meal Plan</label>
-        <select asp-for="MealPlanId" class="form-control">
-            @for(int i = 0; i < Model.PlanNames.Count; i++){
-                <option value="@Model.PlanIds[i]">@Model.PlanNames[i]</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label asp-for="MealType">Meal Type</label>
-        <select asp-for="MealType" class="form-control">
-                <option value="Breakfast">Breakfast</option>
-                <option value="Lunch">Lunch</option>
-                <option value="Dinner">Dinner</option>
-                <option value="Snack">Snack</option>
-        </select>
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+        <form method="post" asp-action="CreateMeal" asp-route-id="">
+            <button class="btn btn-primary" type="submit" id="create-btn">Create</button>
+            <div class="form-group">
+                <label asp-for="MealName">Meal Name</label>
+                @if(Model == null){
+                    <input asp-for="MealName" class="form-control" value="New Meal"/>
+                } else {
+                    <input asp-for="MealName" class="form-control" value="@Model.MealName"/>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="Description">Description</label>
+                    <input asp-for="Description" class="form-control" value="@Model.Description"/>
+            </div>
+            <input asp-for="MealId" hidden readonly/>
+            <div class="form-group">
+                <label asp-for="MealPlanId">Meal Plan</label>
+                <select asp-for="MealPlanId" class="form-control">
+                    @for(int i = 0; i < Model.PlanNames.Count; i++){
+                        <option value="@Model.PlanIds[i]">@Model.PlanNames[i]</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="MealType">Meal Type</label>
+                <select asp-for="MealType" class="form-control">
+                        <option value="Breakfast">Breakfast</option>
+                        <option value="Lunch">Lunch</option>
+                        <option value="Dinner">Dinner</option>
+                        <option value="Snack">Snack</option>
+                </select>
 
-    </div>
-    <hr>
-    <h4>Selected Foods</h4>
-    <div class="accordion" id="selectedFood">
-        @foreach(long food in Model.Foods){
-            <div class="old-food" data-api-id="@food">-</div>
-        }
-    </div>
+            </div>
+            <hr>
+            
+            <h4>Selected Foods</h4>
+            <div class="accordion" id="selectedFood">
+                @foreach(long food in Model.Foods){
+                    <div class="old-food" data-api-id="@food">-</div>
+                }
+            </div>
 
-</form>
-<input type=text id="searchBar">
-<button class="btn btn-primary" type="button" id="searchButton">Search</button>
-<a href="https://www.fatsecret.com">
-    <img src="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret.png" srcset="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_2x.png 2x, https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_3x.png 3x" border="0"/>
-</a>
-<div id="searchResults">
+        </form>
+        <input type=text id="searchBar">
+        <button class="btn btn-primary" type="button" id="searchButton">Search</button>
+        <a href="https://www.fatsecret.com">
+            <img src="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret.png" srcset="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_2x.png 2x, https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_3x.png 3x" border="0"/>
+        </a>
+        <div id="searchResults">
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <h4>AI Suggestions</h4>
+        <button class="btn btn-primary" type="button" id="suggestBtn">Suggest</button>
+        <hr>
+        <p id="aiResponseArea"></p>
+    </div>
 </div>
 
 
 <script src="~/js/foodSearch.js" asp-append-version="true"></script>
+<script src="~/js/callAI.js" asp-append-version="true"></script>
+

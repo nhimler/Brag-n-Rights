@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using GymBro_App.DAL.Abstract;
 using GymBro_App.Models;
+using GymBro_App.ViewModels;
 
 namespace GymBro_App.DAL.Concrete
 {
@@ -51,6 +52,29 @@ namespace GymBro_App.DAL.Concrete
                 .Where(u => !string.IsNullOrEmpty(u.IdentityUserId)) // Ensure IdentityUserId is not null or empty
                 .Select(u => u.IdentityUserId!)
                 .ToListAsync();
+        }
+
+        public void UpdateUser(string identityId, UserInfoModel userInfo)
+        {
+            User? user = _user.FirstOrDefault(u => u.IdentityUserId == identityId);
+            if (user == null)
+            {
+                return;
+            }
+            else
+            {
+                user.FirstName = userInfo.FirstName;
+                user.LastName = userInfo.LastName;
+                user.Age = userInfo.Age;
+                user.Gender = userInfo.Gender;
+                user.Weight = userInfo.Weight;
+                user.Height = userInfo.Height;
+                user.FitnessLevel = userInfo.FitnessLevel;
+                user.Fitnessgoals = userInfo.Fitnessgoals;
+                user.PreferredWorkoutTime = userInfo.PreferredWorkoutTime;
+                _context.Users.Update(user);
+                _context.SaveChanges();
+            }
         }
     }
 }

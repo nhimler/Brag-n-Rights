@@ -6,7 +6,11 @@
 
 <h2>Create a Workout Plan</h2>
 
-<form asp-action="Create" method="post">
+<form asp-action="Create" method="post" id="Workout-Creation-Form">
+    @if (Model != null && Model.UserId.HasValue)
+    {
+        <input type="hidden" name="UserId" id="UserId" value="@Model.UserId"/>
+    }
     <div class="form-group">
         <label asp-for="PlanName" class="control-label"></label>
         <input asp-for="PlanName" class="form-control" />

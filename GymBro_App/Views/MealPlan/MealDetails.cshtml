@@ -4,9 +4,15 @@
     ViewData["Title"] = "Meal Details";
 }
 
-<a asp-action="Index"><button class="btn btn-primary">Back to Meal Plans</button></a>
+<a asp-action="Index"><button class="btn btn-primary" id="home-btn">Back to Meal Plans</button></a>
 <hr>
 <a asp-action="CreateMeal" asp-route-id="@Model.MealId"><button class="btn btn-primary">Edit Meal</button></a>
+<div class="pt-2">
+    <form method="post" asp-action="DeleteMeal" asp-route-id="" onsubmit="return confirm('Are you sure you want to delete this meal?');">
+        <button class="btn btn-danger" type="submit">Delete</button>
+        <input asp-for="MealId" hidden readonly/>
+    </form>
+</div>
 
 <h2>Meal Details</h2>
 <h3>@Model.MealName </h3>

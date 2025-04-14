@@ -8,5 +8,6 @@ namespace GymBro_App.DAL.Abstract
         WorkoutPlan Find(Expression<Func<WorkoutPlan, bool>> predicate);
         void Add(WorkoutPlan workoutPlan);
         void Update(WorkoutPlan workoutPlan);
+        WorkoutPlan FindById(int id);
     }
 }

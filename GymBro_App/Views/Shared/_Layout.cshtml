@@ -12,18 +12,18 @@
 <body>
     <!-- Sidebar / Navbar -->
     <nav class="navbar">
-        <div class="nav-brand">GymBro</div>
         <button class="nav-toggle">&#9776;</button>
         <ul class="nav-links">
+            <li class="nav-brand">GymBro</li>
             <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-           <li><a asp-controller="UserPage" asp-action="Index">User Page</a></li>
+            <li><a asp-controller="UserPage" asp-action="Index">User Page</a></li>
             <li><a asp-controller="MealPlan" asp-action="Index">Meal Plan</a></li>
             <li><a asp-controller="Workouts" asp-action="Index">Workout Plan</a></li>
-            <li><a asp-controller="AwardMedal" asp-action="AwardMedals">Check Medals</a></li>
-        </ul>
-        <div class="login-partial">
+            <li><a asp-controller="AwardMedal" asp-action="AwardMedals">Step Medals</a></li>
+            <li><a asp-controller="StepCompetition" asp-action="Index">Step Competition</a></li>
+            <li class="nav-separator"></li>
             <partial name="_LoginPartial" />
-        </div>
+        </ul>
     </nav>
 
     <!-- Page Content -->
