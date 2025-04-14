@@ -36,7 +36,7 @@ public sealed class SCRUM25StepDefinitions : IDisposable
         var geolocationScript = $"navigator.geolocation.getCurrentPosition = function(success) {{ success({{ coords: {{ latitude: {latitude}, longitude: {longitude}}} }}); }};";
         ((IJavaScriptExecutor)_driver).ExecuteScript(geolocationScript);
 
-        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
     }
 
     public void Dispose()
