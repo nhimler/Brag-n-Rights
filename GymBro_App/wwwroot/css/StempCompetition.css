@@ -56,3 +56,17 @@
         transform: scale(1) translateY(0);
     }
 }
+
+.mb-3 {
+    margin: 1rem !important;
+    width: fit-content !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+
+
+.mt-4 {
+    margin-top: 1.5rem !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
