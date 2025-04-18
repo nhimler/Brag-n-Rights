@@ -2,6 +2,10 @@
     ViewData["Title"] = "Exercise Search";
 }
 
+<head>
+    <link rel="stylesheet" href="~/css/exerciseSearch.css" asp-append-version="true" />
+</head>
+
 <h1>Let's search our API for a workout</h1>
 <div class="input-group mb-3" id="exerciseSearchBar">
     <input type="text" class="form-control" id="exerciseInput" placeholder="Search by an exercise name ex) bench press" aria-label="Search by an exercise name" aria-describedby="exerciseSearchButtonAddon">
@@ -21,7 +25,33 @@
     </select>
 </div>
 
-<div id="exerciseSearchResults"></div>
+<div id="exerciseSearchResults">
+</div>
+
+<div class="modal fade" id="exerciseModal" tabindex="-1" aria-labelledby="modalExerciseName" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="modalExerciseName"><!-- Exercise Name --></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6 justify-content-center align-items-center d-flex">
+                        <div id="modalExerciseBackdrop">
+                            <img src="" alt="Exercise Gif" id="exerciseGif">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div id="modalExerciseContent">
+                            <!-- Content will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="exerciseCart" class="mt-4 p-3 border rounded"></div>
 

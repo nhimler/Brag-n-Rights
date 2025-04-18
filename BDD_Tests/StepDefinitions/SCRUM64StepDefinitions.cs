@@ -89,4 +89,29 @@ public sealed class SCRUM64StepDefinitions : IDisposable
             Assert.That(title.Text.Contains("Bench Press"), Is.EqualTo(true), "Exercise title is empty.");
         }
     }
+
+    [When("I view the exercise details")]
+    public void WhenIViewTheExerciseDetails()
+    {
+        var exerciseCards = _driver.FindElements(By.ClassName("exercise-card"));
+        var exerciseDetailsButton = exerciseCards[0].FindElement(By.ClassName("exercise-details-btn"));
+        exerciseDetailsButton.Click();
+    }
+
+    [Then("I should be able to see a window with additional information about the exercise")]
+    public void ThenIShouldBeAbleToSeeAWindowWithAdditionalInformationAboutTheExercise()
+    {
+        var exerciseDetailsModal = _driver.FindElement(By.Id("exerciseModal"));
+        Console.WriteLine("Exercise Details Modal: " + exerciseDetailsModal.GetAttribute("outerHTML"));
+        var exerciseTitle = _driver.FindElement(By.Id("modalExerciseName"));
+        var exerciseContent = _driver.FindElement(By.Id("modalExerciseContent"));
+        var exerciseImage = _driver.FindElement(By.Id("exerciseGif"));
+        Console.WriteLine("Exercise Image: " + exerciseImage.GetAttribute("src") + ".jpg");
+        Console.WriteLine("Exercise Title: " + exerciseTitle.GetAttribute("innerHTML"));
+
+        Assert.That(exerciseTitle.GetAttribute("innerHTML"), Is.Not.Empty, "Exercise title is empty.");
+        Assert.That(exerciseContent.GetAttribute("outerHTML"), Is.Not.Empty, "Exercise content is empty.");
+        Assert.That(exerciseImage.GetAttribute("src"), Is.Not.Empty, "Exercise image is empty.");
+    }
+        
 }

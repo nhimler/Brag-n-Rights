@@ -118,34 +118,42 @@ async function displayExerciseSearchResults(result) {
 
         // Add badges for exercise details
         let badgeContainer = document.createElement("div")
-        badgeContainer.className = "mb-3"
+        badgeContainer.className = "d-flex justify-content-evenly align-items-center mb-3"
+        let badgeClass = "badge rounded-pill bg-info mb-1"
         badgeContainer.innerHTML = `
-            <span class="badge rounded-pill bg-info mb-1">${exercise.equipment}</span>
-            <span class="badge rounded-pill bg-primary mb-1">${exercise.bodyPart}</span>
-            <span class="badge rounded-pill bg-success mb-1">${exercise.target}</span>
+            <span class="${badgeClass}">${capitalizeFirstLetterWord(exercise.equipment)}</span>
+            <span class="${badgeClass}">${capitalizeFirstLetterWord(exercise.bodyPart)}</span>
+            <span class="${badgeClass}">${capitalizeFirstLetterWord(exercise.target)}</span>
         `
         cardBody.appendChild(badgeContainer)
 
+
+        let buttonContainer = document.createElement("div")
+        buttonContainer.className = "d-flex justify-content-center align-items-center"
         // Add the "view details" button to open the modal
         let modalButton = document.createElement("button")
-        modalButton.className = "btn btn-primary rounded-pill"
+        modalButton.className = "btn btn-primary exercise-details-btn btn-sm rounded-pill"
         modalButton.textContent = "View Details"
         modalButton.type = "button"
         modalButton.setAttribute("data-bs-toggle", "modal")
         modalButton.setAttribute("data-bs-target", "#exerciseModal")
-        cardBody.appendChild(modalButton)
+        modalButton.addEventListener("click", function () {
+            populateExerciseModal(exercise)
+        })
+        buttonContainer.appendChild(modalButton)
 
         // Add the "Add to Cart" button if user is logged in
         if (isUserLoggedIn) {
             let addToCartButton = document.createElement("button")
-            addToCartButton.className = "btn btn-success rounded-pill ms-2"
+            addToCartButton.className = "btn btn-success btn-sm rounded-pill ms-2"
             addToCartButton.textContent = "Add to Cart"
             addToCartButton.type = "button"
             addToCartButton.addEventListener("click", function () {
                 addExerciseToCart(exercise)
             })
-            cardBody.appendChild(addToCartButton)
+            buttonContainer.appendChild(addToCartButton)
         }
+        cardBody.appendChild(buttonContainer)
 
         // Append the card body to the card
         cardElement.appendChild(cardBody)
@@ -159,6 +167,69 @@ async function displayExerciseSearchResults(result) {
 
     // Append the row to the results list
     resultList.appendChild(row)
+}
+
+function populateExerciseModal(exercise) {
+    console.log("Populating modal with exercise:", exercise)
+
+    // Set the modal title
+    let splitExerciseName = exercise.name.split(" ")
+    let exerciseName = capitalizeFirstLetterList(splitExerciseName).join(" ")
+
+    let modalTitle = document.getElementById("modalExerciseName")
+    if (modalTitle) {
+        modalTitle.textContent = exerciseName
+    }
+
+    // Set the modal image
+    let modalImage = document.querySelector("#modalExerciseBackdrop img")
+    if (modalImage) {
+        modalImage.src = exercise.gifUrl
+        modalImage.alt = `${exercise.name} Gif`
+    }
+    else {
+        modalImage.src = "https://placehold.co/360x360?text=No+Image+Found"
+    }
+    
+    // Set the modal Secondary Target Muscle(s)
+    let secondaryMusclesList = exercise.secondaryMuscles
+    let secondaryMuscles = "None"
+    if (exercise.secondaryMuscles.length > 0) {
+        secondaryMuscles = capitalizeFirstLetterList(secondaryMusclesList).join(", ")
+    }
+
+    // Set the modal content
+    let modalContent = document.getElementById("modalExerciseContent")
+    if (modalContent) {
+        modalContent.innerHTML = `
+            <div class="mb-3">
+                <p><b>Equipment: </b> ${capitalizeFirstLetterWord(exercise.equipment)}</p>
+                <p><b>Body Part: </b> ${capitalizeFirstLetterWord(exercise.bodyPart)}</p>
+                <p><b>Primary Target Muscle: </b> ${capitalizeFirstLetterWord(exercise.target)}</p>
+                <p><b>Secondary Target Muscle(s): </b> ${secondaryMuscles}</p>
+            </div>
+            <h5>Instructions</h5>
+            <ol class="list-group list-group-numbered mb-3">
+                ${exercise.instructions
+                    .map(
+                        (instruction, index) =>
+                            `<li class="mb-1">${instruction}</li>`
+                    )
+                    .join("")}
+            </ol>
+        `
+    }
+}
+
+function capitalizeFirstLetterList(splitList) {
+    splitList.forEach((word, index) => {
+        splitList[index] = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    })
+    return splitList
+}
+
+function capitalizeFirstLetterWord(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
 }
 
 function addExerciseToCart(exercise) {
