@@ -146,10 +146,12 @@ async function displayExerciseSearchResults(result) {
         if (isUserLoggedIn) {
             let addToCartButton = document.createElement("button")
             addToCartButton.className = "btn btn-success btn-sm rounded-pill ms-2"
+            addToCartButton.id = `addToCartButton-${exercise.id}`
             addToCartButton.textContent = "Add to Cart"
             addToCartButton.type = "button"
             addToCartButton.addEventListener("click", function () {
                 addExerciseToCart(exercise)
+                addToCartButton.disabled = true
             })
             buttonContainer.appendChild(addToCartButton)
         }
@@ -265,7 +267,13 @@ function addExerciseToCart(exercise) {
             console.log("Exercise ID removed from list:", exerciseId);
             console.log("Updated exercise ID list:", exerciseIdList);
         }
-         exerciseEntry.remove();
+        exerciseEntry.remove();
+
+        let exerciseAddToCartButton = document.getElementById(`addToCartButton-${exercise.id}`);
+        if (exerciseAddToCartButton) {
+            exerciseAddToCartButton.disabled = false;
+        }
+        
     });
 
     exerciseEntry.appendChild(removeButton);
