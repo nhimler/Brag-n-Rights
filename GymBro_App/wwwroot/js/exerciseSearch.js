@@ -10,30 +10,40 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.log("No login status detected, assuming not logged in");
     }
-});
 
+    let exerciseSearchButton = document.getElementById("exerciseSearchButtonAddon");
+    exerciseSearchButton.addEventListener("click", async function(){
+        let query = document.getElementById("exerciseInput").value;
+        let searchType = document.getElementById("exerciseSearchType").value;
+        console.log("Search type selected:", searchType);
+        console.log("We are looking for: " + query);
 
-exerciseSearchButton.addEventListener("click", async function(){
-    let name = document.getElementById("exerciseInput").value;
-    console.log("We are looking for: " + name);
+        let endpoint = '';
+        if (searchType === "name") {
+            endpoint = `/api/exercises/${query}`;
+        } else if (searchType === "bodyPart") {
+            endpoint = `/api/exercises/bodyPart/${query.toLowerCase()}`;
+        }
 
-    let response = await fetch(`/api/exercises/${name}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
+        let response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        let result;
+        if(response.ok){
+            result = await response.json();
+            console.log(result);
+            await displayExerciseSearchResults(result);
+        } else {
+            console.log("Error: " + response.status);
+            displayExerciseSearchFailure();
         }
     });
-
-    let result;
-    if(response.ok){
-        result = await response.json();
-        console.log(result);
-        await displayExerciseSearchResults(result);
-    } else {
-        console.log("Error: " + response.status);
-        displayExerciseSearchFailure()
-    }
 });
+
 
 function clearExerciseSearchResults() {
     let resultList = document.getElementById("exerciseSearchResults")
