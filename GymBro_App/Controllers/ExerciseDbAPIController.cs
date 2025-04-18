@@ -42,6 +42,7 @@ public class ExerciseDbAPIController : ControllerBase
         return Ok(exercises);
     }
 
+    //Id parameter is in the format of a string starting with "0001" and incrementing ex : "0002", "0003", etc.
     [HttpGet("id/{id}")]
     public async Task<IActionResult> GetExerciseById(string id)
     {
@@ -49,12 +50,13 @@ public class ExerciseDbAPIController : ControllerBase
     
         if (exercises == null || exercises.Count == 0)
         {
-            return NotFound($"No exercise found with ID '{id}'.");
+            return NotFound($"No exercise found with ID '{id}'. Valid IDs are in the format 0001.");
         }
 
         return Ok(exercises);
     }
 
+    //Bodypart parameter must be one of the following: back, cardio, chest, lower arms, lower legs, neck, shoulders, upper arms, upper legs, waist
     [HttpGet("bodyPart/{bodyPart}")]
     public async Task<IActionResult> GetExerciseByBodyPart(string bodyPart)
     {
@@ -62,7 +64,7 @@ public class ExerciseDbAPIController : ControllerBase
     
         if (exercises == null || exercises.Count == 0)
         {
-            return NotFound($"No exercises found for body part '{bodyPart}'.");
+            return NotFound($"No exercises found for body part '{bodyPart}'. Valid body parts are: back, cardio, chest, lower arms, lower legs, neck, shoulders, upper arms, upper legs, waist.");
         }
 
         return Ok(exercises);
