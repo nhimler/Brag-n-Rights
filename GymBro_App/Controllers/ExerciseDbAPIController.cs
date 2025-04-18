@@ -54,4 +54,17 @@ public class ExerciseDbAPIController : ControllerBase
 
         return Ok(exercises);
     }
+
+    [HttpGet("bodyPart/{bodyPart}")]
+    public async Task<IActionResult> GetExerciseByBodyPart(string bodyPart)
+    {
+        var exercises = await _exerciseService.GetExerciseByBodyPartAsync(bodyPart);
+    
+        if (exercises == null || exercises.Count == 0)
+        {
+            return NotFound($"No exercises found for body part '{bodyPart}'.");
+        }
+
+        return Ok(exercises);
+    }
 }
