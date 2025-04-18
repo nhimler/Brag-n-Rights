@@ -1,0 +1,32 @@
+
+.exercise-link {
+all: unset;
+}
+
+.exercise-card {
+height: 100%; /* Ensure the card takes up the full height of its container */
+display: flex;
+flex-direction: column;
+justify-content: space-between; /* Distribute content evenly */
+}
+
+.exercise-card img {
+height: 300px; /* Set a fixed height for the image */
+object-fit: cover; /* Ensure the image scales properly */
+}
+
+.exercise-card .card-body {
+flex-grow: 1; /* Allow the body to grow and fill available space */
+display: flex;
+flex-direction: column;
+justify-content: space-between; /* Space out the content */
+}
+
+.exercise-card .card-title {
+font-size: 1rem; /* Ensure consistent font size */
+text-align: center; /* Center the title */
+}
+
+.exercise-card .btn {
+align-self: center; /* Center the button horizontally */
+}
