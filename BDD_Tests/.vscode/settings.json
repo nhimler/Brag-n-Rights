@@ -1,16 +1,16 @@
 {
     "explorer.fileNesting.enabled": true,
-    "explorer.fileNesting.patterns": {  // shows *.feature.cs files as nested items
-      "*.feature": "${capture}.feature.cs"
+    "explorer.fileNesting.patterns": {  // shows .feature.cs files as nested items
+      ".feature": "${capture}.feature.cs"
     },
     "files.exclude": { // excludes compilation result
-      "**/obj/": true,
-      "**/bin/": true,
+      "/obj/": true,
+      "/bin/": true,
     },
-    "cucumber.glue": [ // sets the location of the step definition classes
-      "StepDefinitions/**/*.cs",
+    "cucumber.glue": [
+      "BDD_Tests/StepDefinitions"
     ],
-    "cucumber.features": [ // sets the location of the feature files
-      "Features/**/*.feature",
-    ]
+    "cucumber.features": [
+      "BDD_Tests/Features"
+    ],
   }

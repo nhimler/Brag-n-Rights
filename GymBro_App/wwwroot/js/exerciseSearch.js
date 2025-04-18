@@ -31,8 +31,34 @@ exerciseSearchButton.addEventListener("click", async function(){
         await displayExerciseSearchResults(result);
     } else {
         console.log("Error: " + response.status);
+        displayExerciseSearchFailure()
     }
 });
+
+function clearExerciseSearchResults() {
+    let resultList = document.getElementById("exerciseSearchResults")
+    if (!resultList) {
+        console.error("Elements not found")
+        return
+    }
+
+    console.log("Found #exerciseSearchResults in the DOM.")
+
+    // Clear previous results
+    resultList.innerHTML = ""
+}
+
+function displayExerciseSearchFailure() {
+    clearExerciseSearchResults()
+    let resultList = document.getElementById("exerciseSearchResults")
+    let noResultsMessage = document.createElement("h4")
+    noResultsMessage.className = "text-center mt-3 mb-3"
+    noResultsMessage.id = "noResultsMessage"
+    noResultsMessage.textContent = `No results found for "${document.getElementById("exerciseInput").value}"`
+    resultList.appendChild(noResultsMessage)
+    return
+}
+
 
 async function displayExerciseSearchResults(result) {
     console.log("displaySearchResults called with:", result);
@@ -42,16 +68,14 @@ async function displayExerciseSearchResults(result) {
         console.error("Elements not found");
         return;
     }
-    console.log("✅ Found #exerciseSearchResults in the DOM.");
+    console.log("Found #exerciseSearchResults in the DOM.");
 
-        let selectedWorkouts = document.getElementById("selectedWorkouts");
+    let selectedWorkouts = document.getElementById("selectedWorkouts");
     if (!selectedWorkouts) {
         selectedWorkouts = document.createElement("div");
         selectedWorkouts.id = "selectedWorkouts";
         document.body.appendChild(selectedWorkouts);
     }
-    
-    resultList.innerHTML = "";
 
     let heading = document.createElement("h2");
     if (exerciseInput.value === "") {
