@@ -134,7 +134,44 @@ namespace Controller_Tests
             Assert.IsInstanceOf<NotFoundObjectResult>(result);
             var notFoundResult = result as NotFoundObjectResult;
             Assert.IsNotNull(notFoundResult);
-            Assert.That(notFoundResult.Value, Is.EqualTo("No exercise found with ID 'NonExistentId'."));
+            Assert.That(notFoundResult.Value, Is.EqualTo("No exercise found with ID 'NonExistentId'. Valid IDs are in the format 0001."));
+        }
+
+        [Test]
+        public async Task GetExerciseByBodyPart_ReturnsExercise()
+        {
+            // Arrange
+            var exercises = new List<ExerciseDTO>
+            {
+                new ExerciseDTO { Id = "0001", Name = "sit-up", BodyPart = "waist" }
+            };
+            _mockService.Setup(service => service.GetExerciseByBodyPartAsync("waist")).ReturnsAsync(exercises);
+
+            // Act
+            var result = await _controller.GetExerciseByBodyPart("waist");
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            var okResult = result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
+            Assert.That(okResult.Value, Is.EqualTo(exercises));
+        }
+
+        [Test]
+        public async Task GetExerciseByBodyPart_ReturnsNotFound_WhenBodyPartDoesNotExist()
+        {
+            // Arrange
+            _mockService.Setup(service => service.GetExerciseByBodyPartAsync("NonExistentBodyPart")).ReturnsAsync(new List<ExerciseDTO>());
+
+            // Act
+            var result = await _controller.GetExerciseByBodyPart("NonExistentBodyPart");
+
+            // Assert
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+            var notFoundResult = result as NotFoundObjectResult;
+            Assert.IsNotNull(notFoundResult);
+            Assert.That(notFoundResult.Value, Is.EqualTo("No exercises found for body part 'NonExistentBodyPart'. Valid body parts are: back, cardio, chest, lower arms, lower legs, neck, shoulders, upper arms, upper legs, waist."));
         }
 
         [TearDown]
