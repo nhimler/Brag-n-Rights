@@ -61,80 +61,104 @@ function displayExerciseSearchFailure() {
 
 
 async function displayExerciseSearchResults(result) {
-    console.log("displaySearchResults called with:", result);
-
-    let resultList = document.getElementById("exerciseSearchResults");
+    let resultList = document.getElementById("exerciseSearchResults")
     if (!resultList) {
-        console.error("Elements not found");
-        return;
-    }
-    console.log("Found #exerciseSearchResults in the DOM.");
-
-    let selectedWorkouts = document.getElementById("selectedWorkouts");
-    if (!selectedWorkouts) {
-        selectedWorkouts = document.createElement("div");
-        selectedWorkouts.id = "selectedWorkouts";
-        document.body.appendChild(selectedWorkouts);
+        console.error("Elements not found")
+        return
     }
 
-    let heading = document.createElement("h2");
-    if (exerciseInput.value === "") {
-        heading.textContent = "Here are our first 10 exercises:";
-    } else {
-        heading.textContent = "Here are our top 10 results for " + exerciseInput.value + ":";
-    }
-    resultList.appendChild(heading);
+    console.log("Found #exerciseSearchResults in the DOM.")
 
-    let table = document.createElement("table");
-    table.className = "table table-bordered";
-    let tbody = document.createElement("tbody");
+    // Clear previous results
+    resultList.innerHTML = ""
+
+    // Display heading
+    let heading = document.createElement("h4")
+    heading.className = "text-center mt-3 mb-3"
+    heading.textContent = `Results for "${document.getElementById("exerciseInput").value}" (${result.length})`
+    resultList.appendChild(heading)
+
+    // Create a row container for the cards
+    let row = document.createElement("div")
+    row.className = "row mt-3 d-flex align-items-start"
 
     result.forEach(exercise => {
-        let row = document.createElement("tr");
+        splitExerciseName = exercise.name.split(" ")
+        splitExerciseName.forEach((word, index) => {
+            splitExerciseName[index] = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        })
+        exerciseName = splitExerciseName.join(" ")
+        console.log("Exercise name split:", exerciseName)
 
-        let nameCell = document.createElement("td");
-        nameCell.textContent = exercise.name;
-        row.appendChild(nameCell);
+        // Create the card container
+        let card = document.createElement("div")
+        card.className = "col-lg-3 col-md-4 col-sm-6 mb-3" // Responsive column sizes
 
-        let bodyPartCell = document.createElement("td");
-        bodyPartCell.textContent = exercise.bodyPart;
-        row.appendChild(bodyPartCell);
+        // Create the card element
+        let cardElement = document.createElement("div")
+        cardElement.className = "card exercise-card"
+        cardElement.style.width = "100%"
 
-        let equipmentCell = document.createElement("td");
-        equipmentCell.textContent = exercise.equipment;
-        row.appendChild(equipmentCell);
+        // Add the exercise image
+        let img = document.createElement("img")
+        img.src = exercise.gifUrl
+        img.className = "card-img-top"
+        img.alt = `${exerciseName} Gif`
+        cardElement.appendChild(img)
 
-        let targetCell = document.createElement("td");
-        targetCell.textContent = exercise.target;
-        row.appendChild(targetCell);
+        // Add the card body
+        let cardBody = document.createElement("div")
+        cardBody.className = "card-body"
 
-        let gifCell = document.createElement("td");
-        let gifLink = document.createElement("a");
-        gifLink.href = exercise.gifUrl;
-        gifLink.textContent = "View GIF";
-        gifLink.target = "_blank";
-        gifCell.appendChild(gifLink);
-        row.appendChild(gifCell);
+        // Add the exercise name
+        let cardTitle = document.createElement("h5")
+        cardTitle.className = "card-title"
+        cardTitle.innerHTML = `<b>${exerciseName}</b>`
+        cardBody.appendChild(cardTitle)
 
-        let addCell = document.createElement("td");
-        let addButton = document.createElement("button");
-        addButton.className = "btn btn-primary";
-        addButton.textContent = "Add";
-        addButton.type = "button";
-        addButton.addEventListener("click", function(e){
-            console.log("🆕 Add button clicked for:", exercise.name, "ID:", exercise.id);
-            let row = e.target.closest("tr");
-            if(row) row.remove();
-            addExerciseToCart(exercise);
-        });
-        addCell.appendChild(addButton);
-        row.appendChild(addCell);
+        // Add badges for exercise details
+        let badgeContainer = document.createElement("div")
+        badgeContainer.className = "mb-3"
+        badgeContainer.innerHTML = `
+            <span class="badge rounded-pill bg-info mb-1">${exercise.equipment}</span>
+            <span class="badge rounded-pill bg-primary mb-1">${exercise.bodyPart}</span>
+            <span class="badge rounded-pill bg-success mb-1">${exercise.target}</span>
+        `
+        cardBody.appendChild(badgeContainer)
 
-        tbody.appendChild(row);
-    });
+        // Add the "view details" button to open the modal
+        let modalButton = document.createElement("button")
+        modalButton.className = "btn btn-primary rounded-pill"
+        modalButton.textContent = "View Details"
+        modalButton.type = "button"
+        modalButton.setAttribute("data-bs-toggle", "modal")
+        modalButton.setAttribute("data-bs-target", "#exerciseModal")
+        cardBody.appendChild(modalButton)
 
-    table.appendChild(tbody);
-    resultList.appendChild(table);
+        // Add the "Add to Cart" button if user is logged in
+        if (isUserLoggedIn) {
+            let addToCartButton = document.createElement("button")
+            addToCartButton.className = "btn btn-success rounded-pill ms-2"
+            addToCartButton.textContent = "Add to Cart"
+            addToCartButton.type = "button"
+            addToCartButton.addEventListener("click", function () {
+                addExerciseToCart(exercise)
+            })
+            cardBody.appendChild(addToCartButton)
+        }
+
+        // Append the card body to the card
+        cardElement.appendChild(cardBody)
+
+        // Append the card to the card container
+        card.appendChild(cardElement)
+
+        // Append the card container to the row
+        row.appendChild(card)
+    })
+
+    // Append the row to the results list
+    resultList.appendChild(row)
 }
 
 function addExerciseToCart(exercise) {
