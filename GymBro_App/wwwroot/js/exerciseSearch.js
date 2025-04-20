@@ -61,12 +61,14 @@ function clearExerciseSearchResults() {
 function displayExerciseSearchFailure() {
     clearExerciseSearchResults()
     let resultList = document.getElementById("exerciseSearchResults")
-    let noResultsMessage = document.createElement("h4")
-    noResultsMessage.className = "text-center mt-3 mb-3"
-    noResultsMessage.id = "noResultsMessage"
-    noResultsMessage.textContent = `No results found for "${document.getElementById("exerciseInput").value}"`
-    resultList.appendChild(noResultsMessage)
-    return
+    let alertDiv = document.createElement("div")
+    alertDiv.className = "alert alert-warning alert-dismissible fade show"
+    alertDiv.setAttribute("role", "alert")
+    alertDiv.innerHTML = `
+        <strong>No results found</strong> for "${document.getElementById("exerciseInput").value}".
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `
+    resultList.appendChild(alertDiv)
 }
 
 
