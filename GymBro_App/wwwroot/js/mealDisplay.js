@@ -9,3 +9,11 @@ document.querySelectorAll(".food-from-api").forEach(async function (p) {
         console.log("Error: " + response.status);
     }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth'
+    });
+    calendar.render();
+  });
