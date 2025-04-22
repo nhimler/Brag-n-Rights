@@ -44,7 +44,7 @@ public sealed class SCRUM10StepDefinitions : IDisposable
         _driver.Navigate().GoToUrl("http://localhost:5075");
     }
 
-    [When(@"I click on the {string} link")]
+    [When("I click on the {string} link")]
     public void WhenIClickOnTheLink(string link)
     {
         var registerLink = _driver.FindElement(By.Id(link));
