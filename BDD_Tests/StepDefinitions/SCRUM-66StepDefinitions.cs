@@ -10,8 +10,8 @@ using Reqnroll;
 namespace BDD_Tests.StepDefinitions;
 
 [Binding]
-[Scope(Tag = "SCRUM13")]
-public sealed class SCRUM13StepDefinitions : IDisposable
+[Scope(Tag = "SCRUM66")]
+public sealed class SCRUM66StepDefinitions : IDisposable
 {
     private IWebDriver _driver;
 
@@ -55,30 +55,19 @@ public sealed class SCRUM13StepDefinitions : IDisposable
         button.Click();
     }
 
-    [When("I enter {string} in the search bar")]
-    public void WhenIEnterInTheSearchBar(string searchText)
+    [When(@"I enter an invalid query in the search bar")]
+    public void WhenIEnterAnInvalidQueryInTheSearchBar()
     {
         var searchBar = _driver.FindElement(By.Id("exerciseInput"));
         searchBar.Clear();
-        searchBar.SendKeys(searchText);
+        searchBar.SendKeys("Gunga");
     }
 
-    [When("I click on the search button")]
-    public void WhenIClickSearchButton()
+    [Then("I should see a bootstrap alert")]
+    public void ThenIShouldSeeABootstrapAlert()
     {
-        var button = _driver.FindElement(By.Id("exerciseSearchButtonAddon"));
-        button.Click();
+        var alert = _driver.FindElement(By.ClassName("alert"));
+        Assert.IsTrue(alert.Displayed, "The alert is not displayed.");
     }
 
-    [Then("I should see a list of exercises")]
-    public void ThenIShouldSeeAListOfExercises()
-    {
-        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-        bool resultsLoaded = wait.Until(driver =>
-        {
-            var searchResultsDiv = driver.FindElement(By.Id("exerciseSearchResults"));
-            return searchResultsDiv.FindElements(By.XPath("./*")).Count > 0;
-        });
-        Assert.IsTrue(resultsLoaded, "Exercise search results did not load.");
-    }
 }
