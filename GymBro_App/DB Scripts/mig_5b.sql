@@ -46,7 +46,7 @@ CREATE TABLE StepCompetition (
     EndDate DATETIME NOT NULL,
     IsActive BIT NOT NULL,
     
-    FOREIGN KEY (CreatorIdentityId) REFERENCES User(IdentityUserId) ON DELETE CASCADE
+    FOREIGN KEY (CreatorIdentityId) REFERENCES [User](IdentityUserId) ON DELETE CASCADE
 );
 
 
