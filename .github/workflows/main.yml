@@ -23,13 +23,13 @@ jobs:
           dotnet-version: '8.0.x'
           
       - name: Restore
-        run: dotnet restore ./GymBro_App.sln
+        run: dotnet restore ./GymBro_App/GymBro_App.sln
         
       - name: Build
-        run: dotnet build ./GymBro_App.sln --configuration Release --no-restore
+        run: dotnet build ./GymBro_App/GymBro_App.sln --configuration Release --no-restore
         
       - name: Publish
-        run: dotnet publish ./GymBro_App.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+        run: dotnet publish ./GymBro_App/GymBro_App.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
         
       - name: Deployment
         uses: azure/webapps-deploy@v2
