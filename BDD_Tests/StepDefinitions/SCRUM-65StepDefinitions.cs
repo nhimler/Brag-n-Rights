@@ -10,8 +10,8 @@ using Reqnroll;
 namespace BDD_Tests.StepDefinitions;
 
 [Binding]
-[Scope(Tag = "SCRUM13")]
-public sealed class SCRUM13StepDefinitions : IDisposable
+[Scope(Tag = "SCRUM65")]
+public sealed class SCRUM65StepDefinitions : IDisposable
 {
     private IWebDriver _driver;
 
@@ -55,7 +55,15 @@ public sealed class SCRUM13StepDefinitions : IDisposable
         button.Click();
     }
 
-    [When("I enter {string} in the search bar")]
+    [When(@"I select Body Part from the exercise search type dropdown")]
+    public void WhenISelectBodyPartFromTheExerciseSearchTypeDropdown()
+    {
+        var dropdown = _driver.FindElement(By.Id("exerciseSearchType"));
+        var selectElement = new SelectElement(dropdown);
+        selectElement.SelectByText("Body Part");
+    }
+
+    [When(@"I enter {string} in the search bar")]
     public void WhenIEnterInTheSearchBar(string searchText)
     {
         var searchBar = _driver.FindElement(By.Id("exerciseInput"));
@@ -63,7 +71,7 @@ public sealed class SCRUM13StepDefinitions : IDisposable
         searchBar.SendKeys(searchText);
     }
 
-    [When("I click on the search button")]
+    [When("@I click on the search button")]
     public void WhenIClickSearchButton()
     {
         var button = _driver.FindElement(By.Id("exerciseSearchButtonAddon"));

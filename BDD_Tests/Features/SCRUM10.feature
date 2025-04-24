@@ -7,9 +7,7 @@ Scenario: User registers an account with valid data
 	Given I open the application
     When I click on the "register" link
     And I submit a registration form with valid data
-    And I click on the message to confirm my email address
-    Then I should see a confirmation message
-
+    Then I should see an email verification message
 
 @SCRUM10
 Scenario: User logs in with valid credentials

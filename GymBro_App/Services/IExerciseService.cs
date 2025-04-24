@@ -7,5 +7,6 @@ namespace GymBro_App.Services
         Task<List<ExerciseDTO>> GetExerciseAsync(string name);
         //Task<List<ExerciseDTO>> GetExercisesAsync();
         Task<List<ExerciseDTO>> GetExerciseByIdAsync(string id);
+        Task<List<ExerciseDTO>> GetExerciseByBodyPartAsync(string bodyPart);
     }
 }

@@ -10,30 +10,40 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.log("No login status detected, assuming not logged in");
     }
-});
 
+    let exerciseSearchButton = document.getElementById("exerciseSearchButtonAddon");
+    exerciseSearchButton.addEventListener("click", async function(){
+        let query = document.getElementById("exerciseInput").value;
+        let searchType = document.getElementById("exerciseSearchType").value;
+        console.log("Search type selected:", searchType);
+        console.log("We are looking for: " + query);
 
-exerciseSearchButton.addEventListener("click", async function(){
-    let name = document.getElementById("exerciseInput").value;
-    console.log("We are looking for: " + name);
+        let endpoint = '';
+        if (searchType === "name") {
+            endpoint = `/api/exercises/${query}`;
+        } else if (searchType === "bodyPart") {
+            endpoint = `/api/exercises/bodyPart/${query.toLowerCase()}`;
+        }
 
-    let response = await fetch(`/api/exercises/${name}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
+        let response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        let result;
+        if(response.ok){
+            result = await response.json();
+            console.log(result);
+            await displayExerciseSearchResults(result);
+        } else {
+            console.log("Error: " + response.status);
+            displayExerciseSearchFailure();
         }
     });
-
-    let result;
-    if(response.ok){
-        result = await response.json();
-        console.log(result);
-        await displayExerciseSearchResults(result);
-    } else {
-        console.log("Error: " + response.status);
-        displayExerciseSearchFailure()
-    }
 });
+
 
 function clearExerciseSearchResults() {
     let resultList = document.getElementById("exerciseSearchResults")
@@ -51,12 +61,14 @@ function clearExerciseSearchResults() {
 function displayExerciseSearchFailure() {
     clearExerciseSearchResults()
     let resultList = document.getElementById("exerciseSearchResults")
-    let noResultsMessage = document.createElement("h4")
-    noResultsMessage.className = "text-center mt-3 mb-3"
-    noResultsMessage.id = "noResultsMessage"
-    noResultsMessage.textContent = `No results found for "${document.getElementById("exerciseInput").value}"`
-    resultList.appendChild(noResultsMessage)
-    return
+    let alertDiv = document.createElement("div")
+    alertDiv.className = "alert alert-warning alert-dismissible fade show"
+    alertDiv.setAttribute("role", "alert")
+    alertDiv.innerHTML = `
+        <strong>No results found</strong> for "${document.getElementById("exerciseInput").value}".
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `
+    resultList.appendChild(alertDiv)
 }
 
 
