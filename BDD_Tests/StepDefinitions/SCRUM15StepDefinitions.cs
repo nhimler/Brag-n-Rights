@@ -75,7 +75,7 @@ public sealed class SCRUM15StepDefinitions : IDisposable
         _driver.Navigate().GoToUrl("http://localhost:5075/CreateMeal/new");
     }
 
-    [When(@"I type {string} in the search bar")]
+    [When("I type {string} in the search bar")]
     public void WhenITypeATermInTheSearchBar(string term)
     {
         Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/CreateMeal/new"));
@@ -94,7 +94,7 @@ public sealed class SCRUM15StepDefinitions : IDisposable
         Assert.That(_driver.FindElement(By.ClassName("accordion-item")).Displayed, Is.True);
     }
 
-    [When(@"I search for {string}")]
+    [When("I search for {string}")]
     public void WhenISearchFor(string term)
     {
         // REUSE: Search logic

@@ -64,12 +64,15 @@ public sealed class SCRUM19StepDefinitions : IDisposable
         {
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
+            // Wait until the header is present and contains the expected text
             wait.Until(driver =>
             {
                 try
                 {
-                    var h1OrH2 = driver.FindElements(By.TagName("h1")).Concat(_driver.FindElements(By.TagName("h2")));
-                    return h1OrH2.Any(e => e.Text.Contains(expectedHeader));
+                    // Dynamically locate the headers to avoid stale references
+                    var headers = driver.FindElements(By.TagName("h1"))
+                        .Concat(driver.FindElements(By.TagName("h2")));
+                    return headers.Any(e => e.Text.Contains(expectedHeader));
                 }
                 catch (NoSuchElementException)
                 {
@@ -77,10 +80,12 @@ public sealed class SCRUM19StepDefinitions : IDisposable
                 }
             });
 
-            var headers = _driver.FindElements(By.TagName("h1")).Concat(_driver.FindElements(By.TagName("h2")));
+            // Dynamically locate the headers again to assert the actual text
+            var headers = _driver.FindElements(By.TagName("h1"))
+                .Concat(_driver.FindElements(By.TagName("h2")));
             var actualHeader = headers.FirstOrDefault(e => e.Text.Contains(expectedHeader))?.Text;
 
-            Assert.That(actualHeader, Is.EqualTo(expectedHeader));
+            Assert.That(actualHeader, Is.EqualTo(expectedHeader), $"Expected header '{expectedHeader}' was not found.");
         }
 
-    }
+}

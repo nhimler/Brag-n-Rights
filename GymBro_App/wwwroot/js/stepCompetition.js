@@ -42,11 +42,12 @@ function resetCompetitionForm() {
 
 function renderCompetitions(competitions) {
     const container = document.getElementById('competitionListContainer');
-    container.innerHTML = '';
+    container.innerHTML = '';  // Clear any existing content in the container
 
     competitions.forEach(comp => {
         const card = document.createElement('div');
         card.className = 'card mb-3';
+        card.id = `competition-${comp.competitionID}`;  // Correctly use `competitionID` from the response
 
         const cardBody = document.createElement('div');
         cardBody.className = 'card-body';
@@ -64,12 +65,43 @@ function renderCompetitions(competitions) {
             participantList.appendChild(li);
         });
 
+
+       
+     const leaveBtn = createLeaveButton(comp.competitionID);
+
+
+        // Append the elements to the card body and card
         cardBody.appendChild(title);
         cardBody.appendChild(dates);
         cardBody.appendChild(participantList);
+        cardBody.appendChild(leaveBtn);
         card.appendChild(cardBody);
-        container.appendChild(card);
+        container.appendChild(card);  
     });
+}
+
+function createLeaveButton(competitionID) {
+    const LeaveBtn = document.createElement('button');
+    LeaveBtn.className = 'btn btn-danger';
+    LeaveBtn.textContent = 'Leave Competition';
+    LeaveBtn.setAttribute('competition-id', competitionID);
+
+    LeaveBtn.addEventListener('click', async () => {
+        // Use template literals to insert the competitionID into the URL
+        const response = await fetch(`/api/StepCompetitionAPI/LeaveCompetition/${competitionID}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            alert('Failed to leave competition.');
+            return;
+        } else {
+            // If successful, remove the competition card from the DOM
+            document.getElementById(`competition-${competitionID}`).remove();
+        }
+    });
+
+    return LeaveBtn;
 }
 
 // DOM interaction only runs after DOM is ready

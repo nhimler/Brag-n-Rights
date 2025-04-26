@@ -44,7 +44,7 @@ public sealed class SCRUM10StepDefinitions : IDisposable
         _driver.Navigate().GoToUrl("http://localhost:5075");
     }
 
-    [When(@"I click on the {string} link")]
+    [When("I click on the {string} link")]
     public void WhenIClickOnTheLink(string link)
     {
         var registerLink = _driver.FindElement(By.Id(link));
@@ -85,11 +85,11 @@ public sealed class SCRUM10StepDefinitions : IDisposable
         confirmationLink.Click();
     }
 
-    [Then(@"I should see a confirmation message")]
-    public void ThenIShouldSeeAConfirmationMessage()
+    [Then(@"I should see an email verification message")]
+    public void ThenIShouldSeeAnEmailVerificationMessage()
     {
-        var confirmationMessage = _driver.FindElement(By.ClassName("alert-success"));
-        Assert.That(confirmationMessage.Displayed, Is.True);
+        var verificationMessage = _driver.FindElement(By.Id("verification-message"));
+        Assert.That(verificationMessage.Displayed, Is.True);
     }
 
     [When(@"I login with {string} and {string}")]

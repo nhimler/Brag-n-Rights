@@ -55,7 +55,7 @@ public sealed class SCRUM13StepDefinitions : IDisposable
         button.Click();
     }
 
-    [When(@"I enter {string} in the search bar")]
+    [When("I enter {string} in the search bar")]
     public void WhenIEnterInTheSearchBar(string searchText)
     {
         var searchBar = _driver.FindElement(By.Id("exerciseInput"));
