@@ -125,7 +125,7 @@ namespace GymBro_App.DAL.Concrete
         public async Task<List<UserCompetitionViewModel>> GetCompetitionsForUserAsync(string identityId)
         {
             return await _context.StepCompetitionParticipants
-                .Where(p => p.IdentityId == identityId)
+                .Where(p => p.IdentityId == identityId && p.IsActive)
                 .Include(p => p.StepCompetition)
                     .ThenInclude(sc => sc.Participants)
                         .ThenInclude(part => part.User)
@@ -144,6 +144,21 @@ namespace GymBro_App.DAL.Concrete
                         }).ToList()
                 })
                 .ToListAsync();
+        }
+
+        public async Task<bool> LeaveCompetitionAsync(string identityId,int competitionID)
+        {
+            var participant = await _context.StepCompetitionParticipants
+                .FirstOrDefaultAsync(p => p.IdentityId == identityId && p.StepCompetitionId == competitionID);
+
+            if (participant != null)
+            {
+                participant.IsActive = false; // Mark as inactive instead of deleting
+                await _context.SaveChangesAsync();
+
+                return true; // Successfully left the competition
+            }
+            return false; // Participant not found
         }
     }
 }
