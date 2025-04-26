@@ -117,6 +117,9 @@ namespace GymBro_App.Areas.Identity.Pages.Account
             [MinLength(1, ErrorMessage = "The {0} must be at least {1} character long.")]
             [Display(Name = "Username")]
             public string Username { get; set; }
+
+            [Display(Name = "Fill Additional Info")]
+            public bool FillAdditionalInfo { get; set; } = false;
         }
 
 
@@ -167,6 +170,12 @@ namespace GymBro_App.Areas.Identity.Pages.Account
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    // Redirect based on the checkbox value
+                    if (Input.FillAdditionalInfo)
+                    {
+                        return RedirectToAction("ChangeInfo", "UserPage", new { userId = userId });
+                    }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

@@ -4,12 +4,12 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
 
-<div class="row">
+
+<div class="row justify-content-center">
     <div class="col-md-4">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
+            <h2 class="mt-2">Create a new account.</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
@@ -42,10 +42,18 @@
                 <label asp-for="Input.ConfirmPassword">Confirm Password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
+            <div class="form-check mb-3">
+                <input asp-for="Input.FillAdditionalInfo" class="form-check-input" type="checkbox" id="fill-additional-info" />
+                <label asp-for="Input.FillAdditionalInfo" class="form-check-label">
+                    I want to provide additional information about myself.
+                </label>
+            </div>
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
     </div>
-    <div class="col-md-6 col-md-offset-2">
+    
+    <!-- We don't currently have plans for an external login service, so we'll leave this commented out -->
+    @* <div class="col-md-6 col-md-offset-2">
         <section>
             <h3>Use another service to register.</h3>
             <hr />
@@ -73,8 +81,8 @@
                     </form>
                 }
             }
-        </section>
-    </div>
+        </section> 
+    </div>*@
 </div>
 
 @section Scripts {
