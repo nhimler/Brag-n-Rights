@@ -7,6 +7,7 @@ using GymBro_App.Helper; // Assuming EncryptionHelper is in the Helpers namespac
 using GymBro_App.DAL.Abstract;
 using GymBro_App.DAL.Concrete;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace GymBro_App;
 
@@ -45,7 +46,9 @@ public class Program
         builder.Services.AddScoped<INearbySearchMapService, NearbySearchMapService>();
         builder.Services.AddScoped<IStepCompetitionRepository, StepCompetitionRepository>();
 
-        
+        // Configure the email sender service for SendGrid
+        builder.Services.AddTransient<IEmailSender, EmailSender>();
+        builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
         // Configure the authentication/Identity database connection
         var authDbConnectionString = builder.Configuration.GetConnectionString("AuthGymBroAzureConnection");

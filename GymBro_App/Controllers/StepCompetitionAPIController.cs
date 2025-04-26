@@ -68,5 +68,24 @@ namespace GymBro_App.Controllers
             var competitions = await _stepCompetitionRepository.GetCompetitionsForUserAsync(identityId);
             return Ok(competitions);
         }
+
+        [Authorize]
+        [HttpDelete("LeaveCompetition/{competitionID}")]
+        public async Task<IActionResult> LeaveCompetition(int competitionID)
+        {
+            var identityId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(identityId))
+                return Unauthorized();
+
+            var result = await _stepCompetitionRepository.LeaveCompetitionAsync(identityId, competitionID);
+            if (result)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("Failed to leave the competition.");
+            }
+        }
     }
 }
