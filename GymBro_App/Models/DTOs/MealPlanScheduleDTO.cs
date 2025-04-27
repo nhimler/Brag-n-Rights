@@ -1,5 +1,3 @@
-//Not in use yet
-
 namespace GymBro_App.DTO
 {
     public class MealPlanScheduleDTO

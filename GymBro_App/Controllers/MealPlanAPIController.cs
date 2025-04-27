@@ -6,8 +6,6 @@ using GymBro_App.DAL.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-//Not in use yet
-
 namespace GymBro_App.Controllers;
 
 [Route("api/mealplans")]
