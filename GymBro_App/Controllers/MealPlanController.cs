@@ -50,7 +50,7 @@ public class MealPlanController : Controller
         int userId = _userRepository.GetIdFromIdentityId(user.Id);
         var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
 
-        mealPlans = mealPlans.OrderBy(mp => mp.StartDate).ToList();
+        mealPlans = mealPlans?.OrderBy(mp => mp.StartDate).ToList();
         if (mealPlans == null)
         {
             return View(null);
@@ -58,6 +58,17 @@ public class MealPlanController : Controller
         MealPlanHomeView mealPlanView = new MealPlanHomeView();
         foreach (MealPlan mealPlan in mealPlans)
         {
+            if (mealPlan.Archived)
+            {
+                continue;
+            }
+            if (mealPlan.EndDate != null && mealPlan.EndDate < DateOnly.FromDateTime(DateTime.Now))
+            {
+                mealPlan.Archived = true;
+                _mealPlanRepository.AddOrUpdate(mealPlan);
+                mealPlanView.didArchive = true;
+                continue;
+            }
             HomeMealPlan homeMealPlan = new HomeMealPlan()
             {
                 PlanName = mealPlan.PlanName ?? "",
@@ -274,7 +285,7 @@ public class MealPlanController : Controller
         {
             return RedirectToAction("Index");
         }
-        foreach (MealPlan mp in mealPlans)
+        foreach (MealPlan mp in mealPlans ?? Enumerable.Empty<MealPlan>())
         {
             mv.PlanIds.Add(mp.MealPlanId);
             mv.PlanNames.Add(mp.PlanName ?? "");

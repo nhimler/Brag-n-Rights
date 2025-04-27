@@ -12,6 +12,12 @@
 <hr>
 <button class="btn btn-secondary mb-2" id="view-btn">Switch View</button>
 
+@if(Model != null && Model.didArchive){
+    <div class="alert alert-warning" role="alert">
+        Weve archived some old meal plans for you
+    </div>
+}
+
 <div id="list">
     @if(Model != null){
         <h2>Meal Plans</h2>
@@ -47,5 +53,5 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
 
 <script>
-    getSchedule(@Model.userId);
+    getSchedule(@Model?.userId);
 </script>

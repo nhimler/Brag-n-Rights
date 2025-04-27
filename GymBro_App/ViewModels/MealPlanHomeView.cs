@@ -3,6 +3,7 @@ namespace GymBro_App.ViewModels
     public class MealPlanHomeView
     {
         public int userId { get; set; }
+        public bool didArchive { get; set; } = false;
         public List<HomeMealPlan> MealPlans { get; set; } = new List<HomeMealPlan>();
     }
 
