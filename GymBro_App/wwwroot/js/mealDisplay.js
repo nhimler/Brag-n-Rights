@@ -10,21 +10,25 @@ document.querySelectorAll(".food-from-api").forEach(async function (p) {
     }
 });
 
-try{
-    document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth'
-        });
-        calendar.render();
+async function getSchedule(user) {
+    try{
+        document.addEventListener('DOMContentLoaded', async function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: '/api/mealplans/schedule/' + user
+            });
+            calendar.render();
 
-        var listEl = document.getElementById('list');
+            var listEl = document.getElementById('list');
 
-        document.getElementById('view-btn').addEventListener('click', function() {
-            listEl.toggleAttribute('hidden');
-            calendarEl.toggleAttribute('hidden');
+            document.getElementById('view-btn').addEventListener('click', function() {
+                listEl.toggleAttribute('hidden');
+                calendarEl.toggleAttribute('hidden');
+                calendar.render();
+            });
         });
-    });
-} catch (error) {
-    console.error("No calendar found: ", error);
+    } catch (error) {
+        console.error("No calendar found: ", error);
+    }
 }

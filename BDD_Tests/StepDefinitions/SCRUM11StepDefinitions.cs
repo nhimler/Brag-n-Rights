@@ -20,7 +20,7 @@ public sealed class SCRUM11StepDefinitions : IDisposable
         options.AddArgument("--disable-dev-shm-usage");
 
         _driver = new ChromeDriver(options);
-        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
     }
 
     public void Dispose()
