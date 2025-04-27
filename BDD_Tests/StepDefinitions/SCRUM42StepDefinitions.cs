@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll;
 
 namespace BDD_Tests.StepDefinitions;
@@ -10,6 +11,7 @@ namespace BDD_Tests.StepDefinitions;
 public sealed class SCRUM42StepDefinitions : IDisposable
 {
     private IWebDriver _driver;
+    private WebDriverWait _wait;
     
     [BeforeScenario]
     public void Setup()
@@ -21,6 +23,7 @@ public sealed class SCRUM42StepDefinitions : IDisposable
 
         _driver = new ChromeDriver(options);
         _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+        _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(8));
     }
 
     public void Dispose()
@@ -42,16 +45,23 @@ public sealed class SCRUM42StepDefinitions : IDisposable
     public void GivenIAmAUserWhoHasLoggedIn()
     {
         _driver.Navigate().GoToUrl("http://localhost:5075/Identity/Account/Login");
+        IWebElement usernameField = null;
+        IWebElement passwordField = null;
+        _wait.Until(driver => {
+            usernameField = _driver.FindElement(By.Id("login-username"));
+            passwordField = _driver.FindElement(By.Id("login-password"));
+            
+            return usernameField != null && passwordField != null;
+        });
         
-        Thread.Sleep(3000); // Wait for the page to load
-        var usernameField = _driver.FindElement(By.Id("login-username"));
-        var passwordField = _driver.FindElement(By.Id("login-password"));
+        //Thread.Sleep(3000); // Wait for the page to load
 
         usernameField.SendKeys("testingLogin");
         passwordField.SendKeys("Password!1");
 
         _driver.FindElement(By.Id("login-submit")).Click();
-        Thread.Sleep(1000); // Wait for the page to load
+        _wait.Until(driver => _driver.Url != "http://localhost:5075/Identity/Account/Login");
+        //Thread.Sleep(1000); // Wait for the page to load
         Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/"));
     }
 
@@ -59,28 +69,30 @@ public sealed class SCRUM42StepDefinitions : IDisposable
     public void GivenIHaveCreatedAMealPlan()
     {
         _driver.Navigate().GoToUrl("http://localhost:5075/CreateMealPlan/new");
-        Thread.Sleep(3000); // Wait for the page to load
-        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/CreateMealPlan/new"));
+        _wait.Until(driver => driver.Url == "http://localhost:5075/CreateMealPlan/new");
+        //Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/CreateMealPlan/new"));
         _driver.FindElement(By.Id("PlanName")).SendKeys("Test Meal Plan");
         _driver.FindElement(By.Id("create-btn")).Click();
 
-        Thread.Sleep(1000); // Wait for the page to load
-
-        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/MealPlan"));
+        _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan");
+        // Thread.Sleep(1000); // Wait for the page to load
+        // Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/MealPlan"));
     }
 
     [Given(@"I have created a meal")]
     public void GivenIHaveCreatedAMeal()
     {
         _driver.Navigate().GoToUrl("http://localhost:5075/CreateMeal/new");
-        Thread.Sleep(3000); // Wait for the page to load
+        // Thread.Sleep(3000); // Wait for the page to load
+        _wait.Until(driver => driver.Url == "http://localhost:5075/CreateMeal/new");
+
         _driver.FindElement(By.Id("MealName")).SendKeys("Test Meal");
         _driver.FindElement(By.Id("Description")).SendKeys("A meal for testing purposes");
         _driver.FindElement(By.Id("create-btn")).Click();
         
-        Thread.Sleep(1000); // Wait for the page to load
-
-        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/MealPlan"));
+        _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan");
+        // Thread.Sleep(1000); // Wait for the page to load
+        // Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/MealPlan"));
     }
 
     [Given(@"I visit the meal plan dashboard")]
