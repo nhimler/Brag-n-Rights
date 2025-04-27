@@ -52,7 +52,7 @@ public sealed class SCRUM38StepDefinitions : IDisposable
     public void WhenIClickOnTheButton(string buttonText)
     {
         var button = _driver.FindElement(By.Id("search-exercise-button"));
-        button.Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", button);
     }
 
     [Then(@"I should see the exercise search bar")]

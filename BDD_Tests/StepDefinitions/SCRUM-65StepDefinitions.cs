@@ -52,7 +52,7 @@ public sealed class SCRUM65StepDefinitions : IDisposable
     public void WhenIClickSearchForExerciseButton()
     {
         var button = _driver.FindElement(By.Id("search-exercise-button"));
-        button.Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", button);
     }
 
     [When(@"I select Body Part from the exercise search type dropdown")]
