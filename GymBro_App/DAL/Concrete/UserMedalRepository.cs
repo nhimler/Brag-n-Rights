@@ -2,6 +2,7 @@ using GymBro_App.Models;
 using GymBro_App.DAL.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using GymBro_App.Models.DTOs;
 
 
 namespace GymBro_App.DAL.Concrete
@@ -15,11 +16,32 @@ namespace GymBro_App.DAL.Concrete
             _context = context;
         }
 
-        public async Task<IEnumerable<UserMedal>> GetAllUserMedalsAsync(int userId)
+        public async Task<IEnumerable<UserMedalDto>> GetAllUserMedalsAsync(string identityId)
         {
+                var user = await _context.Users
+                             .FirstOrDefaultAsync(u => u.IdentityUserId == identityId);
+           if (user == null)
+           {
+               return Enumerable.Empty<UserMedalDto>();
+           }
+
+            // Convert to Pacific Time
+            var pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var todayPacific = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pacificZone).Date;
+
             return await _context.UserMedals
-                                .Where(um => um.UserId == userId)
-                                .ToListAsync();
+                .Where(um => um.UserId == user.UserId && um.EarnedDate < DateOnly.FromDateTime(todayPacific))
+                .Include(um => um.Medal) // Include the Medal navigation property
+                .OrderByDescending(um => um.EarnedDate)
+                .Select(um => new UserMedalDto
+                {
+                    UserMedalId = um.UserMedalId,
+                    EarnedDate = um.EarnedDate,
+                    MedalId = um.MedalId,
+                    MedalImage = um.Medal.Image, // Assuming ImageUrl is a property in Medal
+                    MedalName = um.Medal.Name // Assuming Name is a property in Medal
+                })
+                .ToListAsync();
         }
 
         public async Task AddBatchUserMedalsAsync(List<UserMedal> userMedals)

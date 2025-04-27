@@ -53,8 +53,13 @@ public partial class GymBroDbContext : DbContext
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=GymBroAzureConnection");
-
+    {
+        // Only configure SQL Server if nobody else (e.g. your tests) has already done so:
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer("Name=GymBroAzureConnection");
+        }
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<BiometricDatum>(entity =>

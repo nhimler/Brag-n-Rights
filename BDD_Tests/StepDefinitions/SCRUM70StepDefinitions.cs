@@ -7,8 +7,8 @@ using Reqnroll;
 namespace BDD_Tests.StepDefinitions;
 
 [Binding]
-[Scope(Tag = "SCRUM42")]
-public sealed class SCRUM42StepDefinitions : IDisposable
+[Scope(Tag = "SCRUM70")]
+public sealed class SCRUM70StepDefinitions : IDisposable
 {
     private IWebDriver _driver;
     private WebDriverWait _wait;
@@ -102,51 +102,39 @@ public sealed class SCRUM42StepDefinitions : IDisposable
         Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/MealPlan"));
     }
 
-    [Then(@"I should be able to click on a meal and be taken to a page where I can view its details- Title, Type, Description, Meal Plan")] // (Title, Type, Description, Meal Plan)
-    public void ThenIClickMealAndSeeDetails()
+    [Given(@"I click the calendar view button")]
+    public void GivenIClickTheCalendarViewButton()
     {
-        _driver.FindElement(By.CssSelector("ol .title-link h3")).Click();
-        
-        Assert.That(_driver.Url, Does.Match("http://localhost:5075/MealDetails/\\d+"));
+        var viewBtn = _driver.FindElement(By.Id("view-btn"));
+
+        Assert.That(viewBtn, Is.Not.Null, "View button not found");
+        viewBtn.Click();
     }
 
-    [Given(@"I visit the details page of a meal")]
-    public void GivenIVisitTheDetailsPageOfAMeal()
+    [Then(@"the meal plans should switch to a calendar display")]
+    public void ThenTheMealPlansShouldSwitchToACalendarDisplay()
     {
-        _driver.FindElement(By.CssSelector("ol .title-link h3")).Click();
-        
-        Assert.That(_driver.Url, Does.Match("http://localhost:5075/MealDetails/\\d+"));
+        var calendarView = _driver.FindElement(By.Id("calendar"));
+        Assert.That(calendarView.GetAttribute("hidden"), Is.Null, "Calendar view is not displayed");
+        var listView = _driver.FindElement(By.Id("list"));
+        Assert.That(listView.GetAttribute("hidden"), Is.EqualTo("true"), "List view is displayed when it should not be");
     }
 
-    [Then(@"I should be able to click a button to return to the meal plan home page")]
-    public void ThenIClickButtonToReturnHome()
+    [When(@"I click the list view button")]
+    public void WhenIClickTheListViewButton()
     {
-        _driver.FindElement(By.Id("home-btn")).Click();
-        
-        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/MealPlan"));
+        var viewBtn = _driver.FindElement(By.Id("view-btn"));
+
+        Assert.That(viewBtn, Is.Not.Null, "View button not found");
+        viewBtn.Click();
     }
 
-    [Given(@"I visit the details page of a meal plan")]
-    public void GivenIVisitTheDetailsPageOfAMealPlan()
+    [Then(@"the meal plans should switch to a list display")]
+    public void TheMealPlansShouldSwitchToAListDisplay()
     {
-        _driver.FindElement(By.CssSelector(".title-link h3")).Click();
-        
-        Assert.That(_driver.Url, Does.Match("http://localhost:5075/MealPlanDetails/\\d+"));
-    }
-
-    [Then(@"I should be able to click on a meal to go to its details page")]
-    public void ThenIClickMealToSeeItsDetails()
-    {
-        _driver.FindElement(By.CssSelector(".title-link")).Click();
-        
-        Assert.That(_driver.Url, Does.Match("http://localhost:5075/MealDetails/\\d+"));
-    }
-
-    [Then(@"I should be able to click the meals meal plan and go to its details page")]
-    public void ThenIClickMealPlanLinkToSeeDetails()
-    {
-        _driver.FindElement(By.CssSelector(".title-link")).Click();
-
-        Assert.That(_driver.Url, Does.Match("http://localhost:5075/MealPlanDetails/\\d+"));
+        var listView = _driver.FindElement(By.Id("list"));
+        Assert.That(listView.GetAttribute("hidden"), Is.Null, "List view is not displayed");
+        var calendarView = _driver.FindElement(By.Id("calendar"));
+        Assert.That(calendarView.GetAttribute("hidden"), Is.EqualTo("true"), "Calendar view is displayed when it should not be");
     }
 }

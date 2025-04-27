@@ -7,3 +7,8 @@
     color: grey;
     text-decoration: none;
 }
+
+
+#view-btn, #archive-btn {
+    display: inline-block;
+}
