@@ -118,8 +118,28 @@ namespace GymBro_App.Areas.Identity.Pages.Account
             [Display(Name = "Username")]
             public string Username { get; set; }
 
-            [Display(Name = "Fill Additional Info")]
-            public bool FillAdditionalInfo { get; set; } = false;
+            public int? Age { get; set; }
+
+            [RegularExpression("^(Male|Female|Other)$", ErrorMessage = "Gender must be 'Male', 'Female', or 'Other'.")]
+            public string? Gender { get; set; }
+
+            [Range(0.01, 999.99, ErrorMessage = "Weight must be between 0.01 and 999.99.")]
+            public decimal? Weight { get; set; }
+
+            [Range(0.01, 999.99, ErrorMessage = "Height must be between 0.01 and 999.99.")]
+            public decimal? Height { get; set; }
+
+            [StringLength(20)]
+            [RegularExpression("^(Beginner|Intermediate|Advanced)$", ErrorMessage = "Fitness level must be 'Beginner', 'Intermediate', or 'Advanced'.")]
+            public string? FitnessLevel { get; set; }
+
+            [StringLength(255)]
+            public string? Fitnessgoals { get; set; }
+
+            [StringLength(20)]
+            [RegularExpression("^(Morning|Afternoon|Evening)$", ErrorMessage = "Preferred workout time must be 'Morning', 'Afternoon', or 'Evening'.")]
+            public string? PreferredWorkoutTime { get; set; }
+            
         }
 
 
@@ -152,6 +172,15 @@ namespace GymBro_App.Areas.Identity.Pages.Account
                         Email = Input.Email,
                         Username = Input.Username,
                         IdentityUserId = user.Id,
+
+                        // These fields are optional, so they can be null.
+                        Age = Input.Age,
+                        Gender = Input.Gender,
+                        Weight = Input.Weight,
+                        Height = Input.Height,
+                        FitnessLevel = Input.FitnessLevel,
+                        Fitnessgoals = Input.Fitnessgoals,
+                        PreferredWorkoutTime = Input.PreferredWorkoutTime,
                         
                         // This is not secure, but passwords are currently required by the main app's schema. Change this later.
                         Password = "Don't store passwords here",
@@ -170,12 +199,6 @@ namespace GymBro_App.Areas.Identity.Pages.Account
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    // Redirect based on the checkbox value
-                    if (Input.FillAdditionalInfo)
-                    {
-                        return RedirectToAction("ChangeInfo", "UserPage", new { userId = userId });
-                    }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
