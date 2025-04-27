@@ -7,110 +7,117 @@
 
 
 <div class="row justify-content-center">
-    <div class="col-sm-3 mt-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2 class="text-center">Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" id="first-name-register" class="form-control" aria-required="true"
-                    placeholder="First Name" />
-                <label asp-for="Input.FirstName">First Name</label>
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.LastName" id="last-name-register" class="form-control" aria-required="true"
-                    placeholder="Last Name" />
-                <label asp-for="Input.LastName">Last Name</label>
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Username" id="username-register" class="form-control" autocomplete="username"
-                    aria-required="true" placeholder="Username" />
-                <label asp-for="Input.Username">Username</label>
-                <span asp-validation-for="Input.Username" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" id="email-register" class="form-control" aria-required="true"
-                    placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" id="password-register" class="form-control" autocomplete="new-password"
-                    aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" id="confirm-password-register" class="form-control"
-                    autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
+    <div class="col-sm-3 col-md-4 mt-4">
+        <div class="card">
+            <div class="card-body">
+                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <h2 class="text-center">Create a new account.</h2>
+                    <hr />
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.FirstName" id="first-name-register" class="form-control" aria-required="true"
+                            placeholder="First Name" />
+                        <label asp-for="Input.FirstName">First Name</label>
+                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.LastName" id="last-name-register" class="form-control" aria-required="true"
+                            placeholder="Last Name" />
+                        <label asp-for="Input.LastName">Last Name</label>
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Username" id="username-register" class="form-control" autocomplete="username"
+                            aria-required="true" placeholder="Username" />
+                        <label asp-for="Input.Username">Username</label>
+                        <span asp-validation-for="Input.Username" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email" id="email-register" class="form-control" aria-required="true"
+                            placeholder="name@example.com" />
+                        <label asp-for="Input.Email">Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password" id="password-register" class="form-control" autocomplete="new-password"
+                            aria-required="true" placeholder="password" />
+                        <label asp-for="Input.Password">Password</label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.ConfirmPassword" id="confirm-password-register" class="form-control"
+                            autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
 
-            <!-- Optional information part of the form -->
-            <div class="collapse" id="optionalInfoCollapse" aria-expanded="false" aria-controls="optionalInfoCollapse">
-                <hr />
-                <h3 class="text-center mb-3 text-muted">Personal Information (Optional)</h3>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Age" class="form-control" placeholder="Age" />
-                    <label asp-for="Input.Age">Age</label>
-                    <span asp-validation-for="Input.Age" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <select asp-for="Input.Gender" class="form-select">
-                        <option value="">Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
-                    <label asp-for="Input.Gender">Gender</label>
-                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Height" class="form-control" placeholder="Height" />
-                    <label asp-for="Input.Height">Height (in)</label>
-                    <span asp-validation-for="Input.Height" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Weight" class="form-control" placeholder="Weight" />
-                    <label asp-for="Input.Weight">Weight (lbs)</label>
-                    <span asp-validation-for="Input.Weight" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <select asp-for="Input.FitnessLevel" class="form-select">
-                        <option value="">Select Fitness Level</option>
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                    </select>
-                    <label asp-for="Input.FitnessLevel">Fitness Level</label>
-                    <span asp-validation-for="Input.FitnessLevel" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Fitnessgoals" class="form-control" placeholder="Fitness Goals" />
-                    <label asp-for="Input.Fitnessgoals">Fitness Goals</label>
-                    <span asp-validation-for="Input.Fitnessgoals" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <select asp-for="Input.PreferredWorkoutTime" class="form-select">
-                        <option value="">Select Preferred Workout Time</option>
-                        <option value="Morning">Morning</option>
-                        <option value="Afternoon">Afternoon</option>
-                        <option value="Evening">Evening</option>
-                    </select>
-                    <label asp-for="Input.PreferredWorkoutTime">Preferred Workout Time</label>
-                    <span asp-validation-for="Input.PreferredWorkoutTime" class="text-danger"></span>
-                </div>
-            </div>
+                    <!-- Optional information part of the form -->
+                    <div class="collapse" id="optionalInfoCollapse" aria-controls="optionalInfoCollapse">
+                        <hr />
+                        <h3 class="text-center mb-3 text-muted">Personal Information (Optional)</h3>
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Age" id="age-register" class="form-control" placeholder="Age" />
+                            <label asp-for="Input.Age">Age</label>
+                            <span asp-validation-for="Input.Age" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <select asp-for="Input.Gender" id="gender-register" class="form-select">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <label asp-for="Input.Gender">Gender</label>
+                            <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Height" id="height-register" class="form-control" placeholder="Height" />
+                            <label asp-for="Input.Height">Height (in)</label>
+                            <span asp-validation-for="Input.Height" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Weight" id="weight-register" class="form-control" placeholder="Weight" />
+                            <label asp-for="Input.Weight">Weight (lbs)</label>
+                            <span asp-validation-for="Input.Weight" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <select asp-for="Input.FitnessLevel" id="fitnessLevel-register" class="form-select">
+                                <option value="">Select Fitness Level</option>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                            <label asp-for="Input.FitnessLevel">Fitness Level</label>
+                            <span asp-validation-for="Input.FitnessLevel" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Fitnessgoals" id="fitnessGoals-register" class="form-control" placeholder="Fitness Goals" />
+                            <label asp-for="Input.Fitnessgoals">Fitness Goals</label>
+                            <span asp-validation-for="Input.Fitnessgoals" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <select asp-for="Input.PreferredWorkoutTime" id="preferredWorkoutTime-register" class="form-select">
+                                <option value="">Select Preferred Workout Time</option>
+                                <option value="Morning">Morning</option>
+                                <option value="Afternoon">Afternoon</option>
+                                <option value="Evening">Evening</option>
+                            </select>
+                            <label asp-for="Input.PreferredWorkoutTime">Preferred Workout Time</label>
+                            <span asp-validation-for="Input.PreferredWorkoutTime" class="text-danger"></span>
+                        </div>
+                    </div>
 
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mb-3">Register</button>
-            <!-- Optional Information Form -->
-            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#optionalInfoCollapse" aria-controls="optionalInfoCollapse">
-                Fill out personal information (optional)
-            </button>
-        </form>
+                    <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mb-3">Register</button>
+                    <!-- Optional Information Form -->
+                    <button class="btn btn-outline-secondary" id="optional-register-info-btn" type="button" data-bs-toggle="collapse" data-bs-target="#optionalInfoCollapse" aria-controls="optionalInfoCollapse">
+                        Fill out personal information (optional)
+                    </button>
+                    
+                    <a href="~/Identity/Account/Login" class="btn btn-link register-link">Already have an account? Log in</a>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-link register-link">Back to Home</a>
+                </form>
+            </div>
+        </div>
     </div>
 
 

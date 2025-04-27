@@ -102,12 +102,12 @@ public sealed class SCRUM64StepDefinitions : IDisposable
     public void ThenIShouldBeAbleToSeeAWindowWithAdditionalInformationAboutTheExercise()
     {
         var exerciseDetailsModal = _driver.FindElement(By.Id("exerciseModal"));
-        Console.WriteLine("Exercise Details Modal: " + exerciseDetailsModal.GetAttribute("outerHTML"));
+        // Console.WriteLine("Exercise Details Modal: " + exerciseDetailsModal.GetAttribute("outerHTML"));
         var exerciseTitle = _driver.FindElement(By.Id("modalExerciseName"));
         var exerciseContent = _driver.FindElement(By.Id("modalExerciseContent"));
         var exerciseImage = _driver.FindElement(By.Id("exerciseGif"));
-        Console.WriteLine("Exercise Image: " + exerciseImage.GetAttribute("src") + ".jpg");
-        Console.WriteLine("Exercise Title: " + exerciseTitle.GetAttribute("innerHTML"));
+        // Console.WriteLine("Exercise Image: " + exerciseImage.GetAttribute("src") + ".jpg");
+        // Console.WriteLine("Exercise Title: " + exerciseTitle.GetAttribute("innerHTML"));
 
         Assert.That(exerciseTitle.GetAttribute("innerHTML"), Is.Not.Empty, "Exercise title is empty.");
         Assert.That(exerciseContent.GetAttribute("outerHTML"), Is.Not.Empty, "Exercise content is empty.");

@@ -88,6 +88,10 @@ public sealed class SCRUM10StepDefinitions : IDisposable
     [Then(@"I should see an email verification message")]
     public void ThenIShouldSeeAnEmailVerificationMessage()
     {
+        // Write out the current outer html
+        Console.WriteLine(_driver.PageSource);
+
+        Assert.That(_driver.Title, Is.EqualTo("Register confirmation - GymBro_App"));
         var verificationMessage = _driver.FindElement(By.Id("verification-message"));
         Assert.That(verificationMessage.Displayed, Is.True);
     }
@@ -117,5 +121,55 @@ public sealed class SCRUM10StepDefinitions : IDisposable
         var displayedText = _driver.FindElement(By.Id("manage")).Text;
         string expectedText = $"Hello {username}!";
         Assert.That(expectedText, Is.EqualTo(displayedText));
+    }
+
+    [When("I submit a registration form with optional information")]
+    public void AndISubmitARegistrationFormWithOptionalInformation()
+    {
+        var firstNameField = _driver.FindElement(By.Id("first-name-register"));
+        var lastNameField = _driver.FindElement(By.Id("last-name-register"));
+        var usernameField = _driver.FindElement(By.Id("username-register"));
+        var emailField = _driver.FindElement(By.Id("email-register"));
+        var passwordField = _driver.FindElement(By.Id("password-register"));
+        var confirmPasswordField = _driver.FindElement(By.Id("confirm-password-register"));
+
+        var optionalInfoButton = _driver.FindElement(By.Id("optional-register-info-btn"));
+
+        // Click on the button with Javascript to show optional fields
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", optionalInfoButton);
+
+        // Optional information
+        var ageField = _driver.FindElement(By.Id("age-register"));
+        var genderField = _driver.FindElement(By.Id("gender-register"));
+        var heightField = _driver.FindElement(By.Id("height-register"));
+        var weightField = _driver.FindElement(By.Id("weight-register"));
+        var fitnessLevelField = _driver.FindElement(By.Id("fitnessLevel-register"));
+        var fitnessGoalsField = _driver.FindElement(By.Id("fitnessGoals-register"));
+        var preferredWorkoutTimeField = _driver.FindElement(By.Id("preferredWorkoutTime-register"));
+        
+        // Filling in required fields
+        string user = "scrum10user" + DateTime.Now.ToString("yyyyMMddHHmmss");
+        firstNameField.SendKeys("John");
+        lastNameField.SendKeys("Doe");
+        usernameField.SendKeys(user);
+        emailField.SendKeys($"{user}@test.com");
+        passwordField.SendKeys("Password1!");
+        confirmPasswordField.SendKeys("Password1!");
+
+        // Filling in optional fields
+        ageField.SendKeys("25");
+        genderField.SendKeys("Male");
+        heightField.SendKeys("180");
+        weightField.SendKeys("180");
+        fitnessLevelField.SendKeys("Intermediate");
+        fitnessGoalsField.SendKeys("Gain 20 pounds of muscle");
+        preferredWorkoutTimeField.SendKeys("Morning");
+
+        // Use JavaScript to click the submit button
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", optionalInfoButton);
+
+        var registerSubmitButton = _driver.FindElement(By.Id("registerSubmit"));
+        // Use JavaScript to click the submit button
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", registerSubmitButton);
     }
 }
