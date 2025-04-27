@@ -1,0 +1,3 @@
+
+ALTER TABLE MealPlan
+ADD Archived BIT NOT NULL DEFAULT 0;

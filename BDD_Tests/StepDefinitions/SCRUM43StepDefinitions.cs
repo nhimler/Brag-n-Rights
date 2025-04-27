@@ -1,7 +1,9 @@
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll;
+using System.Text.RegularExpressions;
 
 namespace BDD_Tests.StepDefinitions;
 
@@ -10,6 +12,7 @@ namespace BDD_Tests.StepDefinitions;
 public sealed class SCRUM43StepDefinitions : IDisposable
 {
     private IWebDriver _driver;
+    private WebDriverWait _wait;
     
     [BeforeScenario]
     public void Setup()
@@ -21,6 +24,7 @@ public sealed class SCRUM43StepDefinitions : IDisposable
 
         _driver = new ChromeDriver(options);
         _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+        _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(8));
     }
 
     public void Dispose()
@@ -41,17 +45,25 @@ public sealed class SCRUM43StepDefinitions : IDisposable
     [Given(@"I am a user who has logged in")]
     public void GivenIAmAUserWhoHasLoggedIn()
     {
-        _driver.Navigate().GoToUrl("http://localhost:5075/Identity/Account/Login");
         
-        Thread.Sleep(3000); // Wait for the page to load
-        var usernameField = _driver.FindElement(By.Id("login-username"));
-        var passwordField = _driver.FindElement(By.Id("login-password"));
+        _driver.Navigate().GoToUrl("http://localhost:5075/Identity/Account/Login");
+        IWebElement usernameField = null;
+        IWebElement passwordField = null;
+        _wait.Until(driver => {
+            usernameField = _driver.FindElement(By.Id("login-username"));
+            passwordField = _driver.FindElement(By.Id("login-password"));
+            
+            return usernameField != null && passwordField != null;
+        });
+        
+        //Thread.Sleep(3000); // Wait for the page to load
 
         usernameField.SendKeys("testingLogin");
         passwordField.SendKeys("Password!1");
 
         _driver.FindElement(By.Id("login-submit")).Click();
-        Thread.Sleep(1000); // Wait for the page to load
+        _wait.Until(driver => _driver.Url != "http://localhost:5075/Identity/Account/Login");
+        //Thread.Sleep(1000); // Wait for the page to load
         Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/"));
     }
 
@@ -59,14 +71,15 @@ public sealed class SCRUM43StepDefinitions : IDisposable
     public void GivenIHaveCreatedAMealPlan()
     {
         _driver.Navigate().GoToUrl("http://localhost:5075/CreateMealPlan/new");
-        Thread.Sleep(3000); // Wait for the page to load
-        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/CreateMealPlan/new"));
+        _wait.Until(driver => driver.Url == "http://localhost:5075/CreateMealPlan/new");
+        // Thread.Sleep(3000); // Wait for the page to load
+        // Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/CreateMealPlan/new"));
         _driver.FindElement(By.Id("PlanName")).SendKeys("Test Meal Plan");
         _driver.FindElement(By.Id("create-btn")).Click();
 
-        Thread.Sleep(1000); // Wait for the page to load
-
-        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/MealPlan"));
+        _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan");
+        // Thread.Sleep(1000); // Wait for the page to load]
+        // Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/MealPlan"));
     }
 
 
@@ -84,7 +97,8 @@ public sealed class SCRUM43StepDefinitions : IDisposable
         var editButton = _driver.FindElement(By.Id("edit-mealplan-btn"));
         Assert.That(editButton.Displayed, Is.True);
         editButton.Click();
-        Thread.Sleep(1000); // Wait for the page to load
+        _wait.Until(driver => Regex.Match(driver.Url, "http://localhost:5075/CreateMealPlan/\\d+").Success);
+        // Thread.Sleep(1000); // Wait for the page to load
         Assert.That(_driver.Url, Does.Match("http://localhost:5075/CreateMealPlan/\\d+"));
     }
 
@@ -92,9 +106,11 @@ public sealed class SCRUM43StepDefinitions : IDisposable
     public void GivenIVisitTheEditPageForAMeal()
     {
         _driver.Navigate().GoToUrl("http://localhost:5075/MealPlan");
-        Thread.Sleep(1000);
+        // Thread.Sleep(1000);
+        _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan");
         _driver.FindElement(By.CssSelector(".title-link h3")).Click();
-        Thread.Sleep(1000);
+        // Thread.Sleep(1000);
+        _wait.Until(driver => Regex.Match(driver.Url, "http://localhost:5075/MealPlanDetails/\\d+").Success);
         _driver.FindElement(By.Id("edit-mealplan-btn")).Click();
     }
 
@@ -104,9 +120,10 @@ public sealed class SCRUM43StepDefinitions : IDisposable
         string newName = "Meal Plan Name " + DateTime.Now.ToString("yyyyMMddHH");
         _driver.FindElement(By.Id("PlanName")).Clear();
         _driver.FindElement(By.Id("PlanName")).SendKeys(newName);
-        Thread.Sleep(1000); // Wait for the page to load
+        // Thread.Sleep(1000); // Wait for the page to load
         _driver.FindElement(By.Id("create-btn")).Click();
-        Thread.Sleep(1000); // Wait for the page to load
+        // Thread.Sleep(1000); // Wait for the page to load
+        _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan");
         Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/MealPlan"));
         Assert.That(_driver.FindElement(By.CssSelector(".title-link h3")).Text.Contains(newName));
     }
