@@ -32,11 +32,16 @@
                     @foreach (var plan in plans)
                     {
                         <div class="col-md-4 mb-4">
-                            <div class="card h-100">
+                            <div class="card h-100 d-flex flex-column">
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title">@plan.PlanName</h5>
                                     <div class="mt-auto d-flex justify-content-between">
-                                        <button type="button" class="btn btn-outline-secondary" id="view-exercises-modal-button">
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-secondary view-exercises-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#exercisesModal"
+                                            data-plan-id="@plan.WorkoutPlanId">
                                             View Exercises
                                         </button>
                                         <a asp-action="ExerciseSearch"
@@ -61,6 +66,21 @@
         }
     </div>
 
+    <!-- Exercises Modal -->
+    <div class="modal fade" id="exercisesModal" tabindex="-1" aria-labelledby="exercisesModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exercisesModalLabel">Exercises</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="exercisesModalBody">
+    
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container text-center">
         <div class="row">
             <div class="col-md-3" id="workoutCreationActions">
@@ -72,3 +92,7 @@
 </body>
 
 <script src="~/js/loadWorkoutCreationActions.js"></script>
+
+@section Scripts {
+    <script src="~/js/workoutPlans.js"></script>
+}
