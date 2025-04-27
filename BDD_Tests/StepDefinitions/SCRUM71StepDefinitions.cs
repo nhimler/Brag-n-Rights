@@ -61,22 +61,17 @@ public sealed class SCRUM71StepDefinitions : IDisposable
         Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/"));
     }
 
-    [Given(@"I have created an out of date meal plan")]
+    [Given(@"I create an out of date meal plan")]
     public void GivenIHaveCreatedAnOutOfDateMealPlan()
     {
         _driver.Navigate().GoToUrl("http://localhost:5075/CreateMealPlan/new");
         _wait.Until(driver => driver.Url == "http://localhost:5075/CreateMealPlan/new");
         _driver.FindElement(By.Id("PlanName")).SendKeys("Very Old Test Meal Plan");
+        _driver.FindElement(By.Id("StartDate")).SendKeys("01010001");
+        _driver.FindElement(By.Id("EndDate")).SendKeys("01010001");
         _driver.FindElement(By.Id("create-btn")).Click();
 
         _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan");
-    }
-
-    [Given(@"I visit the meal plan dashboard")]
-    public void GivenIVisitTheMealPlanDashboard()
-    {
-        _driver.Navigate().GoToUrl("http://localhost:5075/MealPlan");
-        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/MealPlan"));
     }
 
     [When("I click on the link to the meal plan archive")]
@@ -104,7 +99,7 @@ public sealed class SCRUM71StepDefinitions : IDisposable
        Assert.That(_driver.FindElement(By.Id("archive-btn")).Displayed, Is.True);
     }
 
-    [Then("That meal plan should not appear and I should see a message communicating that {string}")]
+    [Then("That meal plan should not appear on the dashboard and I should see a message communicating that {string}")]
     public void ThenThatMealPlanShouldNotAppearAndIShouldSeeAMessageCommunicatingThat(string s)
     {
         Assert.That(_driver.PageSource, Does.Not.Contain("Very Old Test Meal Plan"));

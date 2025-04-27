@@ -10,7 +10,8 @@
 <hr>
 <a asp-action="CreateMeal" asp-route-id="new"><button class="btn btn-primary" id="create-meal-btn">Create Meal</button></a>
 <hr>
-<button class="btn btn-secondary mb-2" id="view-btn">Switch View</button>
+<button class="btn btn-secondary mb-2 mr-2" id="view-btn">Switch View</button>
+<a asp-action="Archive"><button class="btn btn-secondary mb-2" id="archive-btn">Archived Meals</button></a>
 
 @if(Model != null && Model.didArchive){
     <div class="alert alert-warning" role="alert">

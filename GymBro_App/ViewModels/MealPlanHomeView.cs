@@ -11,6 +11,7 @@ namespace GymBro_App.ViewModels
     {
         public string PlanName { get; set; } = "";
         public DateOnly StartDate { get; set; }
+        public DateOnly EndDate { get; set; }
         public int Id { get; set; }
         public List<HomeMeal> Meals { get; set; } = new List<HomeMeal>();
     }

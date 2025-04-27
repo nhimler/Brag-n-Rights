@@ -73,6 +73,62 @@ public class MealPlanController : Controller
             {
                 PlanName = mealPlan.PlanName ?? "",
                 StartDate = mealPlan.StartDate ?? DateOnly.MaxValue,
+                EndDate = mealPlan.EndDate ?? DateOnly.MaxValue,
+                Id = mealPlan.MealPlanId
+            };
+            foreach (Meal meal in mealPlan.Meals)
+            {
+                List<long> foodIds = new List<long>();
+                foreach (Food food in meal.Foods)
+                {
+                    foodIds.Add(food.ApiFoodId ?? -1);
+                }
+                homeMealPlan.Meals.Add(new HomeMeal()
+                {
+                    MealName = meal.MealName ?? "",
+                    Foods = foodIds,
+                    Id = meal.MealId
+                });
+            }
+            mealPlanView.MealPlans.Add(homeMealPlan);
+        }
+        mealPlanView.userId = userId;
+        return View(mealPlanView);
+    }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult Archive()
+    {
+        if (!(User.Identity?.IsAuthenticated ?? false))
+        {
+            return View();
+        }
+        var user = _userManager.GetUserAsync(User).Result;
+        if (user == null)
+        {
+            return View();
+        }
+        int userId = _userRepository.GetIdFromIdentityId(user.Id);
+        var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
+
+        mealPlans = mealPlans?.OrderBy(mp => mp.StartDate).ToList();
+        if (mealPlans == null)
+        {
+            return View(null);
+        }
+        MealPlanHomeView mealPlanView = new MealPlanHomeView();
+        foreach (MealPlan mealPlan in mealPlans)
+        {
+            if (!mealPlan.Archived)
+            {
+                continue;
+            }
+            HomeMealPlan homeMealPlan = new HomeMealPlan()
+            {
+                PlanName = mealPlan.PlanName ?? "",
+                StartDate = mealPlan.StartDate ?? DateOnly.MaxValue,
+                EndDate = mealPlan.EndDate ?? DateOnly.MaxValue,
                 Id = mealPlan.MealPlanId
             };
             foreach (Meal meal in mealPlan.Meals)
