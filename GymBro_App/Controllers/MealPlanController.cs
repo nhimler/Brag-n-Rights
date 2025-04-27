@@ -80,6 +80,7 @@ public class MealPlanController : Controller
             }
             mealPlanView.MealPlans.Add(homeMealPlan);
         }
+        mealPlanView.userId = userId;
         return View(mealPlanView);
     }
 

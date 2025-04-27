@@ -10,3 +10,4 @@ Scenario: Search by body part
     And I enter "back" in the search bar
     And I click on the search button
     Then I should see a list of exercises
+    

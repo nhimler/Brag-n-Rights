@@ -18,13 +18,15 @@ namespace GymBro_App.Controllers
         private readonly ILogger<WorkoutsAPIController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserRepository _userRepository;
+        private readonly IExerciseService _exerciseService;
 
-        public WorkoutsAPIController(IWorkoutPlanRepository workoutPlanRepository, ILogger<WorkoutsAPIController> logger, UserManager<IdentityUser> userManager, IUserRepository userRepository)
+        public WorkoutsAPIController(IWorkoutPlanRepository workoutPlanRepository, ILogger<WorkoutsAPIController> logger, UserManager<IdentityUser> userManager, IUserRepository userRepository, IExerciseService exerciseService)
         {
             _workoutPlanRepository = workoutPlanRepository;
             _logger = logger;
             _userManager = userManager;
             _userRepository = userRepository;
+            _exerciseService = exerciseService;
         }
 
         [HttpPost("AddExercises")]
@@ -67,6 +69,22 @@ namespace GymBro_App.Controllers
                 addedExercisesCount = dto.ExerciseApiIds.Count
             });
 
+        }
+
+        [HttpGet("{planId}/Exercises")]
+        public async Task<IActionResult> GetExercisesForPlan(int planId)
+        {
+            var plan = _workoutPlanRepository.FindById(planId);
+            if (plan == null) return NotFound($"Plan {planId} not found.");
+
+            var list = new List<ExerciseDTO>();
+            foreach (var wpe in plan.WorkoutPlanExercises)
+            {
+                var exs = await _exerciseService.GetExerciseByIdAsync(wpe.ApiId);
+                if (exs?.Count > 0)
+                    list.Add(exs.First());
+            }
+            return Ok(list);
         }
     }
 }

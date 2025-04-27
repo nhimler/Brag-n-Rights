@@ -30,8 +30,19 @@ namespace GymBro_App.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var workoutPlans = _workoutPlanRepository.GetAll().ToList();
-            return View(workoutPlans);
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = _userRepository.GetIdFromIdentityId(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                
+                var userWorkoutPlans = _workoutPlanRepository.GetAll()
+                    .Where(wp => wp.UserId == userId)
+                    .Select(wp => new { wp.WorkoutPlanId, wp.PlanName })
+                    .ToList();
+                
+                ViewBag.WorkoutPlans = userWorkoutPlans;
+            }
+            
+            return View();
         }
 
         [HttpGet]

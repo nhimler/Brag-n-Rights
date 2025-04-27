@@ -10,30 +10,42 @@
 <hr>
 <a asp-action="CreateMeal" asp-route-id="new"><button class="btn btn-primary" id="create-meal-btn">Create Meal</button></a>
 <hr>
-@if(Model != null){
-    <h2>Meal Plans</h2>
-    <a href="https://www.fatsecret.com">
-        <img src="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret.png" srcset="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_2x.png 2x, https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_3x.png 3x" border="0"/>
-    </a>
+<button class="btn btn-secondary mb-2" id="view-btn">Switch View</button>
 
-    @foreach(var plan in Model.MealPlans){
-        <a class="title-link" asp-action="MealPlanDetails" asp-route-id="@plan.Id"><h3>@plan.PlanName - @plan.StartDate.Month/@plan.StartDate.Day/@plan.StartDate.Year</h3></a>
-        <h4>Meals</h4>
-        <ol>
-            @foreach(var meal in plan.Meals)
-            {
-                <li>
-                        <a class="title-link" asp-action="MealDetails" asp-route-id="@meal.Id"><h3>@meal.MealName:</h3></a>
-                        @foreach(long f in meal.Foods)
-                        {
-                            <p class="food-from-api" data-api-id="@f">-</p>
-                        }
-                </li>
-            }
-        </ol>
+<div id="list">
+    @if(Model != null){
+        <h2>Meal Plans</h2>
+        <a href="https://www.fatsecret.com">
+            <img src="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret.png" srcset="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_2x.png 2x, https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_3x.png 3x" border="0"/>
+        </a>
+
+        @foreach(var plan in Model.MealPlans){
+            <a class="title-link" asp-action="MealPlanDetails" asp-route-id="@plan.Id"><h3>@plan.PlanName - @plan.StartDate.Month/@plan.StartDate.Day/@plan.StartDate.Year</h3></a>
+            <h4>Meals</h4>
+            <ol>
+                @foreach(var meal in plan.Meals)
+                {
+                    <li>
+                            <a class="title-link" asp-action="MealDetails" asp-route-id="@meal.Id"><h3>@meal.MealName:</h3></a>
+                            @foreach(long f in meal.Foods)
+                            {
+                                <p class="food-from-api" data-api-id="@f">-</p>
+                            }
+                    </li>
+                }
+            </ol>
+        }
     }
-}
+</div>
 
+
+<div id="calendar" hidden></div>
 
 <script src="~/js/mealDisplay.js" asp-append-version="true"></script>
 <link rel="stylesheet" href="~/css/MealPlan.css" asp-append-version="true" />
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
+
+<script>
+    getSchedule(@Model.userId);
+</script>
