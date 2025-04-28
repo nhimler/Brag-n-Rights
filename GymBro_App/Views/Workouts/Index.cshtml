@@ -12,8 +12,6 @@
     <div class="container text-center">
         <div class="row">
             <div class="col-md-3">
-                <p>When logged in users will be able to see their created Workout plans</p>
-                <p>A non registered user may still browse through our selection of excercises</p>
             </div>
         <div class="row">
             <div class="col-md-3">
@@ -22,6 +20,67 @@
         </div>
         </div>
     </div>
+    
+    <!-- display workout plans when logged in-->
+    <div class="container text-center" id="workoutPlansContainer">
+        @if (User.Identity.IsAuthenticated)
+        {
+            var plans = ViewBag.WorkoutPlans as IEnumerable<dynamic>;
+            if (plans != null && plans.Any())
+            {
+                <div class="row">
+                    @foreach (var plan in plans)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 d-flex flex-column">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">@plan.PlanName</h5>
+                                    <div class="mt-auto d-flex justify-content-between">
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-secondary view-exercises-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#exercisesModal"
+                                            data-plan-id="@plan.WorkoutPlanId">
+                                            View Exercises
+                                        </button>
+                                        <a asp-action="ExerciseSearch"
+                                           asp-route-planId="@plan.WorkoutPlanId"
+                                           class="btn btn-primary">
+                                            Add Exercise
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">
+                    You have no workout plans yet. 
+                    <a asp-action="WorkoutCreationPage">Create one now</a>?
+                </p>
+            }
+        }
+    </div>
+
+    <!-- Exercises Modal -->
+    <div class="modal fade" id="exercisesModal" tabindex="-1" aria-labelledby="exercisesModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exercisesModalLabel">Exercises</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="exercisesModalBody">
+    
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container text-center">
         <div class="row">
             <div class="col-md-3" id="workoutCreationActions">
@@ -33,3 +92,7 @@
 </body>
 
 <script src="~/js/loadWorkoutCreationActions.js"></script>
+
+@section Scripts {
+    <script src="~/js/workoutPlans.js"></script>
+}

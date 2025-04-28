@@ -10,42 +10,53 @@ using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using GymBro_App.Models.DTOs;
-namespace Controller_Tests;
+using System;
+using System.Collections.Generic;
+using GymBro_App.Services;
 
-[TestFixture]
-public class WorkoutsAPIController_Tests
+namespace Controller_Tests
 {
-    private Mock<IWorkoutPlanRepository> _workoutPlanRepoMock;
-    private Mock<IUserRepository> _userRepositoryMock;
-    private Mock<ILogger<WorkoutsAPIController>> _loggerMock;
-    private UserManager<IdentityUser> _userManager;
-    private WorkoutsAPIController _controller;
-
-    [SetUp]
-    public void Setup()
+    [TestFixture]
+    public class WorkoutsAPIController_Tests
     {
-        _workoutPlanRepoMock = new Mock<IWorkoutPlanRepository>();
-        _userRepositoryMock = new Mock<IUserRepository>();
-        _loggerMock = new Mock<ILogger<WorkoutsAPIController>>();
-        var userStoreMock = new Mock<IUserStore<IdentityUser>>();
-        _userManager = new UserManager<IdentityUser>(
-            userStoreMock.Object, null, null, null, null, null, null, null, null);
+        private Mock<IWorkoutPlanRepository> _workoutPlanRepoMock;
+        private Mock<IUserRepository> _userRepositoryMock;
+        private Mock<ILogger<WorkoutsAPIController>> _loggerMock;
+        private Mock<IExerciseService> _exerciseServiceMock;
+        private UserManager<IdentityUser> _userManager;
+        private WorkoutsAPIController _controller;
 
-        _controller = new WorkoutsAPIController(_workoutPlanRepoMock.Object, _loggerMock.Object, _userManager, _userRepositoryMock.Object);
-
-        var claims = new List<Claim>
+        [SetUp]
+        public void Setup()
         {
-            new Claim(ClaimTypes.NameIdentifier, "identity_user_id")
-        };
-        var identity = new ClaimsIdentity(claims, "TestAuthType");
-        var principal = new ClaimsPrincipal(identity);
-        _controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext { User = principal }
-        };
-    }
+            _workoutPlanRepoMock = new Mock<IWorkoutPlanRepository>();
+            _userRepositoryMock = new Mock<IUserRepository>();
+            _loggerMock = new Mock<ILogger<WorkoutsAPIController>>();
+            _exerciseServiceMock = new Mock<IExerciseService>(); 
 
-    [Test]
+            var userStoreMock = new Mock<IUserStore<IdentityUser>>();
+            _userManager = new UserManager<IdentityUser>(
+                userStoreMock.Object, null, null, null, null, null, null, null, null);
+
+            _controller = new WorkoutsAPIController(
+                _workoutPlanRepoMock.Object,
+                _loggerMock.Object,
+                _userManager,
+                _userRepositoryMock.Object,
+                _exerciseServiceMock.Object 
+            );
+
+            // existing HttpContext setup
+            var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, "identity_user_id") };
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var principal = new ClaimsPrincipal(identity);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = principal }
+            };
+        }
+
+        [Test]
         public void AddExercisesToWorkout_WorkoutPlanNotFound_ReturnsNotFound()
         {
             // Arrange
@@ -55,8 +66,12 @@ public class WorkoutsAPIController_Tests
                 ExerciseApiIds = new List<string> { "0001", "0002" }
             };
 
-            _userRepositoryMock.Setup(x => x.GetIdFromIdentityId("identity_user_id")).Returns(0);
-            _workoutPlanRepoMock.Setup(x => x.FindById(dto.WorkoutPlanId)).Returns<WorkoutPlan>(null);
+            _userRepositoryMock
+                .Setup(x => x.GetIdFromIdentityId("identity_user_id"))
+                .Returns(0);
+            _workoutPlanRepoMock
+                .Setup(x => x.FindById(dto.WorkoutPlanId))
+                .Returns<WorkoutPlan>(null);
 
             // Act
             var result = _controller.AddExercisesToWorkout(dto);
@@ -84,8 +99,12 @@ public class WorkoutsAPIController_Tests
                 WorkoutPlanExercises = new List<WorkoutPlanExercise>()
             };
 
-            _userRepositoryMock.Setup(x => x.GetIdFromIdentityId("identity_user_id")).Returns(1);
-            _workoutPlanRepoMock.Setup(x => x.FindById(dto.WorkoutPlanId)).Returns(workoutPlan);
+            _userRepositoryMock
+                .Setup(x => x.GetIdFromIdentityId("identity_user_id"))
+                .Returns(1);
+            _workoutPlanRepoMock
+                .Setup(x => x.FindById(dto.WorkoutPlanId))
+                .Returns(workoutPlan);
 
             // Act
             var result = _controller.AddExercisesToWorkout(dto);
@@ -127,9 +146,15 @@ public class WorkoutsAPIController_Tests
                 WorkoutPlanExercises = new List<WorkoutPlanExercise>()
             };
 
-            _userRepositoryMock.Setup(x => x.GetIdFromIdentityId("identity_user_id")).Returns(1);
-            _workoutPlanRepoMock.Setup(x => x.FindById(dto.WorkoutPlanId)).Returns(workoutPlan);
-            _workoutPlanRepoMock.Setup(x => x.Update(workoutPlan)).Throws(new Exception("DB error"));
+            _userRepositoryMock
+                .Setup(x => x.GetIdFromIdentityId("identity_user_id"))
+                .Returns(1);
+            _workoutPlanRepoMock
+                .Setup(x => x.FindById(dto.WorkoutPlanId))
+                .Returns(workoutPlan);
+            _workoutPlanRepoMock
+                .Setup(x => x.Update(workoutPlan))
+                .Throws(new Exception("DB error"));
 
             // Act
             var result = _controller.AddExercisesToWorkout(dto);
@@ -138,7 +163,86 @@ public class WorkoutsAPIController_Tests
             var statusResult = result as ObjectResult;
             Assert.IsNotNull(statusResult);
             Assert.That(statusResult.StatusCode, Is.EqualTo(500));
-            StringAssert.Contains("Error updating workout plan: DB error", statusResult.Value.ToString());
+            StringAssert.Contains(
+                "Error updating workout plan: DB error",
+                statusResult.Value.ToString()
+            );
+        }
+
+        [Test]
+        public async Task GetExercisesForPlan_PlanNotFound_ReturnsNotFound()
+        {
+            // Arrange
+            _workoutPlanRepoMock.Setup(x => x.FindById(It.IsAny<int>())).Returns<WorkoutPlan>(null);
+
+            // Act
+            var result = await _controller.GetExercisesForPlan(5);
+
+            // Assert
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+            var notFound = result as NotFoundObjectResult;
+            Assert.That(notFound.Value, Is.EqualTo("Plan 5 not found."));
+        }
+
+        [Test]
+        public async Task GetExercisesForPlan_NoExercises_ReturnsEmptyList()
+        {
+            // Arrange
+            var plan = new WorkoutPlan
+            {
+                WorkoutPlanId = 1,
+                WorkoutPlanExercises = new List<WorkoutPlanExercise>()
+            };
+            _workoutPlanRepoMock.Setup(x => x.FindById(1)).Returns(plan);
+
+            // Act
+            var result = await _controller.GetExercisesForPlan(1) as OkObjectResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            var exercises = result.Value as List<ExerciseDTO>;
+            Assert.IsNotNull(exercises);
+            Assert.That(exercises.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public async Task GetExercisesForPlan_WithExercises_ReturnsExerciseList()
+        {
+            // Arrange
+            var wpeList = new List<WorkoutPlanExercise>
+            {
+                new WorkoutPlanExercise { ApiId = "id1" },
+                new WorkoutPlanExercise { ApiId = "id2" }
+            };
+            var plan = new WorkoutPlan
+            {
+                WorkoutPlanId = 2,
+                WorkoutPlanExercises = wpeList
+            };
+            _workoutPlanRepoMock.Setup(x => x.FindById(2)).Returns(plan);
+
+            var dto1 = new ExerciseDTO { Id = "id1", Name = "Ex1" };
+            var dto2 = new ExerciseDTO { Id = "id2", Name = "Ex2" };
+            _exerciseServiceMock
+                .Setup(s => s.GetExerciseByIdAsync("id1"))
+                .ReturnsAsync(new List<ExerciseDTO> { dto1 });
+            _exerciseServiceMock
+                .Setup(s => s.GetExerciseByIdAsync("id2"))
+                .ReturnsAsync(new List<ExerciseDTO> { dto2 });
+
+            // Act
+            var result = await _controller.GetExercisesForPlan(2) as OkObjectResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            var exercises = result.Value as List<ExerciseDTO>;
+            Assert.IsNotNull(exercises);
+            Assert.That(exercises.Count, Is.EqualTo(2));
+            Assert.That(exercises[0].Id, Is.EqualTo("id1"));
+            Assert.That(exercises[1].Id, Is.EqualTo("id2"));
+
+            _exerciseServiceMock.Verify(s => s.GetExerciseByIdAsync("id1"), Times.Once);
+            _exerciseServiceMock.Verify(s => s.GetExerciseByIdAsync("id2"), Times.Once);
         }
 
         [TearDown]
@@ -147,8 +251,10 @@ public class WorkoutsAPIController_Tests
             _workoutPlanRepoMock = null;
             _userRepositoryMock = null;
             _loggerMock = null;
+            _exerciseServiceMock = null;
             _userManager?.Dispose();
             _userManager = null;
             _controller = null;
         }
+    }
 }

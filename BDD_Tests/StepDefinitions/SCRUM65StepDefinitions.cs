@@ -2,8 +2,6 @@ using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
-using OpenQA.Selenium.Support;
-using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using Reqnroll;
 
@@ -51,19 +49,22 @@ public sealed class SCRUM65StepDefinitions : IDisposable
     [When("I click on the search for an exercise button")]
     public void WhenIClickSearchForExerciseButton()
     {
+        var dropdownText = _driver.FindElement(By.ClassName("dropdown-item-text"));
+        dropdownText.Click();
         var button = _driver.FindElement(By.Id("search-exercise-button"));
         button.Click();
+        // ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", button);
     }
 
-    [When(@"I select Body Part from the exercise search type dropdown")]
+    [When("I select Body Part from the exercise search type dropdown")]
     public void WhenISelectBodyPartFromTheExerciseSearchTypeDropdown()
     {
-        var dropdown = _driver.FindElement(By.Id("exerciseSearchType"));
+        var dropdown = _driver.FindElement(By.XPath("//*[@id='exerciseSearchType']"));
         var selectElement = new SelectElement(dropdown);
         selectElement.SelectByText("Body Part");
     }
 
-    [When(@"I enter {string} in the search bar")]
+    [When("I enter {string} in the search bar")]
     public void WhenIEnterInTheSearchBar(string searchText)
     {
         var searchBar = _driver.FindElement(By.Id("exerciseInput"));
@@ -71,8 +72,8 @@ public sealed class SCRUM65StepDefinitions : IDisposable
         searchBar.SendKeys(searchText);
     }
 
-    [When("@I click on the search button")]
-    public void WhenIClickSearchButton()
+    [When("I click on the search button")]
+    public void WhenIClickOnTheSearchButton()
     {
         var button = _driver.FindElement(By.Id("exerciseSearchButtonAddon"));
         button.Click();

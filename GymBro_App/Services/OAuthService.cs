@@ -227,10 +227,6 @@ public class OAuthService : IOAuthService
                         // Failed to refresh — assume refresh token is also bad or expired
                         Console.WriteLine($"Refresh failed: {ex.Message}");
 
-                        // Delete the expired token to prevent further failures
-                        _context.Tokens.Remove(token);
-                        await _context.SaveChangesAsync();
-
                         // Optional: create a custom exception for easier handling
                         throw new TokenExpiredException("Both access and refresh tokens expired.");
                     }

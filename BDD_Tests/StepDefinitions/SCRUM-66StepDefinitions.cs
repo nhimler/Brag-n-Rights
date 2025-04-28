@@ -52,7 +52,7 @@ public sealed class SCRUM66StepDefinitions : IDisposable
     public void WhenIClickSearchForExerciseButton()
     {
         var button = _driver.FindElement(By.Id("search-exercise-button"));
-        button.Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", button);
     }
 
     [When(@"I enter an invalid query in the search bar")]
@@ -61,6 +61,8 @@ public sealed class SCRUM66StepDefinitions : IDisposable
         var searchBar = _driver.FindElement(By.Id("exerciseInput"));
         searchBar.Clear();
         searchBar.SendKeys("Gunga");
+        var searchButton = _driver.FindElement(By.Id("exerciseSearchButtonAddon"));
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", searchButton);
     }
 
     [Then("I should see a bootstrap alert")]

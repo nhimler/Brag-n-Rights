@@ -94,3 +94,34 @@ body {
         align-items: center;
     }
 }
+
+#ViewPastMedals {
+    background-color: #1a73e8;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    float : right;
+}
+
+.medal-month-section {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.medal-month-header {
+    margin-left: 20px;
+    color: #000000;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.medal-earned-date {
+    text-align: left;
+    padding-left: 10px;
+}
