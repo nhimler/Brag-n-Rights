@@ -58,7 +58,7 @@ public sealed class SCRUM65StepDefinitions : IDisposable
     [When(@"I select Body Part from the exercise search type dropdown")]
     public void WhenISelectBodyPartFromTheExerciseSearchTypeDropdown()
     {
-        var dropdown = _driver.FindElement(By.Id("exerciseSearchType"));
+        var dropdown = _driver.FindElement(By.XPath("//*[@id='exerciseSearchType']"));
         var selectElement = new SelectElement(dropdown);
         selectElement.SelectByText("Body Part");
     }
@@ -72,7 +72,7 @@ public sealed class SCRUM65StepDefinitions : IDisposable
     }
 
     [When("@I click on the search button")]
-    public void WhenIClickSearchButton()
+    public void WhenIClickOnTheSearchButton()
     {
         var button = _driver.FindElement(By.Id("exerciseSearchButtonAddon"));
         button.Click();
