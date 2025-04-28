@@ -61,6 +61,8 @@ public sealed class SCRUM66StepDefinitions : IDisposable
         var searchBar = _driver.FindElement(By.Id("exerciseInput"));
         searchBar.Clear();
         searchBar.SendKeys("Gunga");
+        var searchButton = _driver.FindElement(By.Id("exerciseSearchButtonAddon"));
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", searchButton);
     }
 
     [Then("I should see a bootstrap alert")]
