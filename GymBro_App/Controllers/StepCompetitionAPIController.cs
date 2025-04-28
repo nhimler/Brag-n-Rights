@@ -70,6 +70,18 @@ namespace GymBro_App.Controllers
         }
 
         [Authorize]
+        [HttpGet("PastCompetitions")]
+        public async Task<IActionResult> GetPastCompetitions()
+        {
+            var identityId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(identityId))
+                return Unauthorized();
+
+            var competitions = await _stepCompetitionRepository.GetPastCompetitionsForUserAsync(identityId);
+            return Ok(competitions);
+        }
+
+        [Authorize]
         [HttpDelete("LeaveCompetition/{competitionID}")]
         public async Task<IActionResult> LeaveCompetition(int competitionID)
         {

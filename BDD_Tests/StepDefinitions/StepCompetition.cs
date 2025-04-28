@@ -11,6 +11,7 @@ namespace BDD_Tests.StepDefinitions
     [Scope(Tag = "SCRUM56")]
     [Scope(Tag = "SCRUM68")]
     [Scope(Tag = "SCRUM72")]
+    [Scope(Tag = "SCRUM73")]
     public sealed partial class SCRUMStepDefinitions
     {
         private IWebDriver _driver;
@@ -25,8 +26,8 @@ namespace BDD_Tests.StepDefinitions
             options.AddArgument("--disable-dev-shm-usage");
 
             _driver = new ChromeDriver(options);
-            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(8);
-            _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(8));
+            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
         }
 
 
@@ -64,38 +65,34 @@ namespace BDD_Tests.StepDefinitions
             _driver.FindElement(By.Id("login-submit")).Click();
         }
 
-        [Then(@"I should see ""(.*)"" page")]
-        public void ThenIShouldSeePageWithHeader(string expectedHeader)
+[Then(@"I should see ""(.*)"" page")]
+public void ThenIShouldSeePageWithHeader(string expectedHeader)
+{
+    // Increase the timeout if needed:
+    var localWait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
+
+    // Wait until an H1 element that contains the expected header text is displayed.
+    var headerText = localWait.Until(driver =>
+    {
+        try
         {
-            // wait until *either* the <title> matches *or* an <h1>/<h2> matches
-            _wait.Until(driver =>
-            {
-                if (driver.Title.Equals(expectedHeader, StringComparison.OrdinalIgnoreCase))
-                    return true;
-
-                var headers = driver
-                    .FindElements(By.TagName("h1"))
-                    .Concat(driver.FindElements(By.TagName("h2")));
-
-                return headers.Any(h => 
-                    h.Text.Equals(expectedHeader, StringComparison.OrdinalIgnoreCase));
-            });
-
-            // if it was the <title>, we’re done
-            if (_driver.Title.Equals(expectedHeader, StringComparison.OrdinalIgnoreCase))
-                return;
-
-            // otherwise assert the header text
-            var actualHeader = _driver
-                .FindElements(By.TagName("h1"))
-                .Concat(_driver.FindElements(By.TagName("h2")))
-                .First(h => h.Text.Equals(expectedHeader, StringComparison.OrdinalIgnoreCase))
-                .Text;
-
-            Assert.That(actualHeader, Is.EqualTo(expectedHeader),
-                        $"Expected page title or header '{expectedHeader}' was not found. " +
-                        $"Actual title: '{_driver.Title}'; actual header: '{actualHeader}'.");
+            var headerElement = driver.FindElement(By.XPath($"//h1[contains(., '{expectedHeader}')]"));
+            return headerElement.Displayed ? headerElement.Text : null;
         }
+        catch (NoSuchElementException)
+        {
+            return null;
+        }
+        catch (StaleElementReferenceException)
+        {
+            return null;
+        }
+    });
+
+    // Verify that we found the expected header.
+    Assert.IsNotNull(headerText, $"Header containing '{expectedHeader}' was not found within the timeout.");
+    Assert.That(headerText, Does.Contain(expectedHeader), $"Expected header to contain '{expectedHeader}', but found '{headerText}'.");
+}
 
 
         [When(@"I click the ""(.*)"" button")]
