@@ -1,0 +1,35 @@
+/* This  */
+html {
+    font-size: 14px;
+  }
+  
+  @media (min-width: 768px) {
+    html {
+      font-size: 16px;
+    }
+  }
+  
+  html {
+    position: relative;
+    min-height: 100%;
+  }
+  
+  body {
+    margin-bottom: 60px;
+  }
+
+  
+  .register-link {
+    text-decoration: none;
+    padding: 0px;
+    margin: 0px;
+    display: block;
+  }
+  
+  /* Reset default styles */
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  }  
