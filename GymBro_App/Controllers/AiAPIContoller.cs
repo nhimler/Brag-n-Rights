@@ -28,7 +28,7 @@ public class AiAPIController : ControllerBase
             return BadRequest("Query cannot be null or empty.");
         }
         try{
-            var res = await _aiService.GetResponse(query);
+            var res = await _aiService.GetResponse(query, IAiService.AiServiceType.Suggestion);
             return Ok(res);
         }
         catch

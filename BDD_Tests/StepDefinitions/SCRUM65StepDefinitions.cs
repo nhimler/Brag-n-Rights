@@ -16,13 +16,14 @@ public sealed class SCRUM65StepDefinitions : IDisposable
     [BeforeScenario]
     public void Setup()
     {
+        new WebDriverManager.DriverManager().SetUpDriver(new WebDriverManager.DriverConfigs.Impl.FirefoxConfig());
         var option = new FirefoxOptions();
         option.AddArgument("--headless");
         option.AddArgument("--no-sandbox");
         option.AddArgument("--disable-dev-shm-usage");
 
         _driver = new FirefoxDriver(option);
-        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
     }
 
     public void Dispose()

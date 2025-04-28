@@ -4,5 +4,11 @@ namespace GymBro_App.Services;
 
 public interface IAiService
 {
-    Task<string> GetResponse(string query);
+    public enum AiServiceType
+    {
+        Suggestion,
+        Fill
+    }
+
+    Task<string> GetResponse(string query, AiServiceType type);
 }

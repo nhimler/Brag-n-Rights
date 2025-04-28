@@ -49,7 +49,7 @@ public class AiService : IAiService
 
     private const string MODEL = "deepseek/deepseek-chat-v3-0324:free";
 
-    private async Task<string> BuildPrompt(string query)
+    private async Task<string> BuildSuggestionPrompt(string query)
     {
         var prompt = new StringBuilder();
         prompt.AppendLine("Give me 5 meal suggestions.");
@@ -60,13 +60,38 @@ public class AiService : IAiService
         return prompt.ToString();
     }
 
+    private async Task<string> BuildFillPrompt(string query)
+    {
+        var prompt = new StringBuilder();
+        prompt.AppendLine($"Write a breif description of {query} and classify it as either Breakfast, Lunch, Dinner, or a snack.");
+        prompt.AppendLine("Format your response like the following:");
+        prompt.AppendLine("Description: Here is the Description");
+        prompt.AppendLine("Type: Here is the type (1 word)");
+        prompt.AppendLine(query);
+        return prompt.ToString();
+    }
+
+    private async Task<string> BuildPrompt(string query, IAiService.AiServiceType type)
+    {
+        switch (type)
+        {
+            case IAiService.AiServiceType.Suggestion:
+                return await BuildSuggestionPrompt(query);
+            case IAiService.AiServiceType.Fill:
+                return await BuildFillPrompt(query);
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+
+    }
+
     public AiService(HttpClient httpClient, ILogger<AiService> logger)
     {
         _httpClient = httpClient;
         _logger = logger;
     }
 
-    public async Task<string> GetResponse(string query)
+    public async Task<string> GetResponse(string query, IAiService.AiServiceType type)
     {
         var payload = new
         {
@@ -76,7 +101,7 @@ public class AiService : IAiService
                 new
                 {
                     role = "user",
-                    content = BuildPrompt(query).Result
+                    content = BuildPrompt(query, type).Result
                 }
             }
         };

@@ -18,6 +18,7 @@ public sealed class SCRUM12StepDefinitions : IDisposable
     [BeforeScenario]
     public void Setup()
     {
+        new WebDriverManager.DriverManager().SetUpDriver(new WebDriverManager.DriverConfigs.Impl.FirefoxConfig());
         var options = new FirefoxOptions();
         options.AddArgument("--headless");
         options.AddArgument("--no-sandbox");
