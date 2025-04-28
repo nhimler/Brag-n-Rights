@@ -5,7 +5,7 @@ namespace Model_Tests;
 
 public class IdentityDatabase_Tests
 {
-
+    private RegisterModel.InputModel _defaultInputModel = new RegisterModel.InputModel();
     // ValidateModel method from Davide Bellone (https://www.code4it.dev/csharptips/unit-test-model-validation/)
     /// <summary>
     /// Validate a model
@@ -29,23 +29,24 @@ public class IdentityDatabase_Tests
     [SetUp]
     public void Setup()
     {
+        _defaultInputModel = new RegisterModel.InputModel
+        {
+            Email = "test@email.com",
+            Password = "Password!1",
+            ConfirmPassword = "Password!1",
+            FirstName = "Test",
+            LastName = "User",
+            Username = "Test_User1",
+        };
     }
 
     [Test]
     public void Email_ShouldPassValidationWhenAllEmailRequirementsAreMet()
     {
         string validEmail = "test@email.com";
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = validEmail,
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = "Test",
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.Email = validEmail;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Empty);
     }
 
@@ -53,17 +54,9 @@ public class IdentityDatabase_Tests
     public void Email_ShouldFailValidationWhenEmailLacksDomain()
     {
         string invalidEmail = "test.com";
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = invalidEmail,
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = "Test",
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.Email = invalidEmail;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Not.Empty);
     }
 
@@ -71,17 +64,9 @@ public class IdentityDatabase_Tests
     public void Email_ShouldFailValidationWhenEmailIsEmpty()
     {
         string invalidEmail = "";
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = invalidEmail,
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = "Test",
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.Email = invalidEmail;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Not.Empty);
     }
 
@@ -90,17 +75,10 @@ public class IdentityDatabase_Tests
     {
         string validPassword = "Password!1";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = validPassword,
-            ConfirmPassword = validPassword,
-            FirstName = "Test",
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.Password = validPassword;
+        _defaultInputModel.ConfirmPassword = validPassword;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Empty);
     }
 
@@ -108,17 +86,10 @@ public class IdentityDatabase_Tests
     public void PasswordInput_ShouldFailValidationWhenPasswordIsNotAtLeast10CharactersLong()
     {
         string invalidPassword = "Pass!1";
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = invalidPassword,
-            ConfirmPassword = invalidPassword,
-            FirstName = "Test",
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.Password = invalidPassword;
+        _defaultInputModel.ConfirmPassword = invalidPassword;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Not.Empty);
     }
 
@@ -126,17 +97,10 @@ public class IdentityDatabase_Tests
     public void PasswordInput_ShouldFailValidationWhenPasswordLacksAtLeastOneUppercase()
     {
         string invalidPassword = "password!1";
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = invalidPassword,
-            ConfirmPassword = invalidPassword,
-            FirstName = "Test",
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.Password = invalidPassword;
+        _defaultInputModel.ConfirmPassword = invalidPassword;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Not.Empty);
     }
 
@@ -144,17 +108,10 @@ public class IdentityDatabase_Tests
     public void PasswordInput_ShouldFailValidationWhenPasswordLacksAtLeastOneLowercase()
     {
         string invalidPassword = "PASSWORD!1";
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = invalidPassword,
-            ConfirmPassword = invalidPassword,
-            FirstName = "Test",
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.Password = invalidPassword;
+        _defaultInputModel.ConfirmPassword = invalidPassword;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Not.Empty);
     }
 
@@ -162,17 +119,10 @@ public class IdentityDatabase_Tests
     public void PasswordInput_ShouldFailValidationWhenPasswordIsEmpty()
     {
         string invalidPassword = "";
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = invalidPassword,
-            ConfirmPassword = invalidPassword,
-            FirstName = "Test",
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.Password = invalidPassword;
+        _defaultInputModel.ConfirmPassword = invalidPassword;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Not.Empty);
     }
 
@@ -180,17 +130,10 @@ public class IdentityDatabase_Tests
     public void PasswordInput_ShouldFailValidationWhenPasswordLacksAtLeastSpecialCharacter()
     {
         string invalidPassword = "PASSWORD1";
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = invalidPassword,
-            ConfirmPassword = invalidPassword,
-            FirstName = "Test",
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.Password = invalidPassword;
+        _defaultInputModel.ConfirmPassword = invalidPassword;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Not.Empty);
     }
 
@@ -199,17 +142,9 @@ public class IdentityDatabase_Tests
     {
         string validFirstName = "Test";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = validFirstName,
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.FirstName = validFirstName;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Empty);
     }
 
@@ -218,17 +153,9 @@ public class IdentityDatabase_Tests
     {
         string validFirstName = "Test-Test";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = validFirstName,
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.FirstName = validFirstName;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Empty);
     }
 
@@ -237,17 +164,9 @@ public class IdentityDatabase_Tests
     {
         string invalidFirstName = "Test-Test1";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = invalidFirstName,
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.FirstName = invalidFirstName;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Not.Empty);
     }
 
@@ -256,17 +175,9 @@ public class IdentityDatabase_Tests
     {
         string invalidFirstName = "";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = invalidFirstName,
-            LastName = "User",
-            Username = "Test_User1"
-        };
+        _defaultInputModel.FirstName = invalidFirstName;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Not.Empty);
     }
 
@@ -276,17 +187,9 @@ public class IdentityDatabase_Tests
     {
         string validLastName = "Test";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = "Test",
-            LastName = validLastName,
-            Username = "Test_User1"
-        };
+        _defaultInputModel.LastName = validLastName;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Empty);
     }
 
@@ -295,17 +198,9 @@ public class IdentityDatabase_Tests
     {
         string validLastName = "Test-Test";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = "Test",
-            LastName = validLastName,
-            Username = "Test_User1"
-        };
+        _defaultInputModel.LastName = validLastName;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Empty);
     }
 
@@ -314,17 +209,9 @@ public class IdentityDatabase_Tests
     {
         string validLastName = "Test-Test1";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = "Test",
-            LastName = validLastName,
-            Username = "Test_User1"
-        };
+        _defaultInputModel.LastName = validLastName;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Not.Empty);
     }
 
@@ -333,17 +220,9 @@ public class IdentityDatabase_Tests
     {
         string invalidLastName = "";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = "Test",
-            LastName = invalidLastName,
-            Username = "Test_User1"
-        };
+        _defaultInputModel.LastName = invalidLastName;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Not.Empty);
     }
 
@@ -352,17 +231,9 @@ public class IdentityDatabase_Tests
     {
         string validUsername = "TestUser";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = "Test",
-            LastName = "User",
-            Username = validUsername
-        };
+        _defaultInputModel.Username = validUsername;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Empty);
     }
 
@@ -371,17 +242,9 @@ public class IdentityDatabase_Tests
     {
         string validUsername = "TestUser1";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = "Test",
-            LastName = "User",
-            Username = validUsername
-        };
+        _defaultInputModel.Username = validUsername;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Empty);
     }
 
@@ -390,17 +253,9 @@ public class IdentityDatabase_Tests
     {
         string validUsername = "Test_User1";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = "Test",
-            LastName = "User",
-            Username = validUsername
-        };
+        _defaultInputModel.Username = validUsername;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Empty);
     }
 
@@ -409,17 +264,9 @@ public class IdentityDatabase_Tests
     {
         string validUsername = "@%^^$#$^*";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = "Test",
-            LastName = "User",
-            Username = validUsername
-        };
+        _defaultInputModel.Username = validUsername;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Empty);
     }
 
@@ -428,17 +275,89 @@ public class IdentityDatabase_Tests
     {
         string invalidUsername = "";
 
-        RegisterModel.InputModel input = new RegisterModel.InputModel
-        {
-            Email = "test@email.com",
-            Password = "Password!1",
-            ConfirmPassword = "Password!1",
-            FirstName = "Test",
-            LastName = "User",
-            Username = invalidUsername
-        };
+        _defaultInputModel.Username = invalidUsername;
 
-        var validationResult = ValidateModel(input);
+        var validationResult = ValidateModel(_defaultInputModel);
+        Assert.That(validationResult, Is.Not.Empty);
+    }
+
+    [Test]
+    public void Age_ShouldPassValidationWhenAgeIsWithinValidRange()
+    {
+        int validAge = 25;
+
+        _defaultInputModel.Age = validAge;
+
+        var validationResult = ValidateModel(_defaultInputModel);
+        Assert.That(validationResult, Is.Empty);
+    }
+
+    [Test]
+    public void Gender_ShouldFailValidationWhenGenderIsInvalid()
+    {
+        string invalidGender = "InvalidGender";
+
+        _defaultInputModel.Gender = invalidGender;
+
+
+        var validationResult = ValidateModel(_defaultInputModel);
+        Assert.That(validationResult, Is.Not.Empty);
+    }
+
+    [Test]
+    public void Weight_ShouldFailValidationWhenWeightIsOutOfRange()
+    {
+        decimal invalidWeight = 1000.0m;
+
+        _defaultInputModel.Weight = invalidWeight;
+
+
+        var validationResult = ValidateModel(_defaultInputModel);
+        Assert.That(validationResult, Is.Not.Empty);
+    }
+
+    [Test]
+    public void Height_ShouldFailValidationWhenHeightIsOutOfRange()
+    {
+        decimal invalidHeight = 1000.0m;
+
+        _defaultInputModel.Height = invalidHeight;
+
+        var validationResult = ValidateModel(_defaultInputModel);
+        Assert.That(validationResult, Is.Not.Empty);
+    }
+
+    [Test]
+    public void FitnessLevel_ShouldFailValidationWhenFitnessLevelIsInvalid()
+    {
+        string invalidFitnessLevel = "Expert";
+
+        _defaultInputModel.FitnessLevel = invalidFitnessLevel;
+
+        var validationResult = ValidateModel(_defaultInputModel);
+        Assert.That(validationResult, Is.Not.Empty);
+    }
+
+    [Test]
+    public void Fitnessgoals_ShouldFailValidationWhenFitnessGoalsExceedMaxLength()
+    {
+        // Fitness goals can only be 255 characters long
+        string invalidFitnessGoals = new string('a', 256);
+
+        _defaultInputModel.Fitnessgoals = invalidFitnessGoals;
+
+        var validationResult = ValidateModel(_defaultInputModel);
+        Assert.That(validationResult, Is.Not.Empty);
+    }
+
+    [Test]
+    public void PreferredWorkoutTime_ShouldFailValidationWhenPreferredWorkoutTimeIsInvalid()
+    {
+        string invalidPreferredWorkoutTime = "Night";
+
+        _defaultInputModel.PreferredWorkoutTime = invalidPreferredWorkoutTime;
+
+        var validationResult = ValidateModel(_defaultInputModel);
         Assert.That(validationResult, Is.Not.Empty);
     }
 }

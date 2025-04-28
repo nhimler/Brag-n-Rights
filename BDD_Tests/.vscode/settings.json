@@ -13,4 +13,5 @@
   "cucumber.features": [ // sets the location of the feature files
     "Features/*.feature",
   ],
+  "dotnet-test-explorer.testProjectPath": "",
 }
