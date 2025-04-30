@@ -137,6 +137,7 @@ namespace GymBro_App.DAL.Concrete
                     IsActive = p.StepCompetition.IsActive,
                     Participants = p.StepCompetition.Participants
                         .Where(part => part.IsActive)
+                        .OrderByDescending(part => part.Steps)
                         .Select(part => new ParticipantViewModel
                         {
                             Username = part.User.Username,
@@ -145,6 +146,33 @@ namespace GymBro_App.DAL.Concrete
                 })
                 .ToListAsync();
         }
+
+        public async Task<List<UserCompetitionViewModel>> GetPastCompetitionsForUserAsync(string identityId)
+        {
+            return await _context.StepCompetitionParticipants
+                .Where(p => p.IdentityId == identityId && !p.StepCompetition.IsActive)
+                .Include(p => p.StepCompetition)
+                    .ThenInclude(sc => sc.Participants)
+                        .ThenInclude(part => part.User)
+                .Select(p => new UserCompetitionViewModel
+                {
+                    CompetitionID = p.StepCompetition.CompetitionID,
+                    StartDate     = p.StepCompetition.StartDate,
+                    EndDate       = p.StepCompetition.EndDate,
+                    IsActive      = p.StepCompetition.IsActive,
+                    Participants  = p.StepCompetition.Participants
+                        .Where(part => !part.IsActive)
+                        .OrderByDescending(part => part.Steps)
+                        .Select(part => new ParticipantViewModel
+                        {
+                            Username = part.User.Username,
+                            Steps    = part.Steps
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
+        }
+
 
         public async Task<bool> LeaveCompetitionAsync(string identityId,int competitionID)
         {

@@ -18,12 +18,13 @@ namespace BDD_Tests.StepDefinitions
             _wait.Until(driver =>
             {
                 var competitionList = driver.FindElement(By.Id("competitionListContainer"));
-                return competitionList.Text.Contains("7 Day Step Competition🔥");
+               return competitionList.Text.Contains("7 Day Step Competition 🔥");
             });
             var competitionList = _driver.FindElement(By.Id("competitionListContainer"));
-            Assert.That(competitionList.Text.Contains("7 Day Step Competition🔥"),
+           Assert.That(competitionList.Text.Contains("7 Day Step Competition 🔥"),
                         "The new competition was not found in the competition list.");
         }
+
 
         [Then(@"I should no longer see The competition")]
         public void ThenIShouldNoLongerSeeTheCompetition()
@@ -32,11 +33,12 @@ namespace BDD_Tests.StepDefinitions
             longWait.Until(driver =>
             {
                 var competitionList = driver.FindElement(By.Id("competitionListContainer"));
-                return !competitionList.Text.Contains("7 Day Step Competition🔥");
+            return !competitionList.Text.Contains("7 Day Step Competition 🔥");
             });
             var competitionList = _driver.FindElement(By.Id("competitionListContainer"));
-            Assert.That(!competitionList.Text.Contains("7 Day Step Competition🔥"),
+        Assert.That(!competitionList.Text.Contains("7 Day Step Competition 🔥"),
                         "The competition is still visible in the competition list.");
         }
+
     }
 }

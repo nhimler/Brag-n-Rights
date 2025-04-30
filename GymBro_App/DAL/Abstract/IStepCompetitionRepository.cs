@@ -9,7 +9,11 @@ public interface IStepCompetitionRepository : IRepository<StepCompetition>
     Task<List<string>> SearchUsersWithTokenAsync(string query, string currentUserIdentityId);
     Task<StepCompetition> CreateCompetitionAsync( string currentUserIdentityId);
     Task InviteUsersToCompetitionAsync(string currentUserIdentityId, StepCompetition competition, List<string> invitedUsernames);
+
     Task<List<UserCompetitionViewModel>> GetCompetitionsForUserAsync(string identityId);
+    
+    Task<List<UserCompetitionViewModel>> GetPastCompetitionsForUserAsync(string identityId);
+
 
     Task<bool> LeaveCompetitionAsync(string identityId, int competitionID);
 }
