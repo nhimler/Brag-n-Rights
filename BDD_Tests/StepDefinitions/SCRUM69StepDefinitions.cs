@@ -22,8 +22,8 @@ public sealed class SCRUM69StepDefinitions : IDisposable
         options.AddArgument("--disable-dev-shm-usage");
 
         _driver = new ChromeDriver(options);
-        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-        _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(8));
+        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
+        _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
     }
 
     public void Dispose()
@@ -81,10 +81,11 @@ public sealed class SCRUM69StepDefinitions : IDisposable
     }
 
     [Then("the meal creation fields should be filled with the selected suggestions details")]
-    public void ThenTheMealCreationFieldsShouldBeFilledWithTheSelectedSuggestionSDetails()
+    public void ThenTheMealCreationFieldsShouldBeFilledWithTheSelectedSuggestionsDetails()
     {
-        Assert.That(_driver.FindElement(By.Id("meal-name")).GetAttribute("value"), Is.Not.Empty);
-        Assert.That(_driver.FindElement(By.Id("meal-description")).GetAttribute("value"), Is.Not.Empty);
+        _wait.Until(driver => driver.FindElement(By.Id("MealName")).GetAttribute("value") != string.Empty);
+        Assert.That(_driver.FindElement(By.Id("MealName")).GetAttribute("value"), Is.Not.Empty);
+        Assert.That(_driver.FindElement(By.Id("Description")).GetAttribute("value"), Is.Not.Empty);
     }
 
     [When("I select a suggestion from the list")]

@@ -54,7 +54,7 @@ public class AiService : IAiService
         var prompt = new StringBuilder();
         prompt.AppendLine("Give me 5 meal suggestions.");
         prompt.AppendLine("These suggestions should be a list of what the meals are called with no elaboration.");
-        prompt.AppendLine("There should be nothing else in your response except the list.");
+        prompt.AppendLine("There should be nothing else in your response except the list, not even a header.");
         prompt.AppendLine("Also try to list meals that contain one or more of the following ingredients:");
         prompt.AppendLine(query);
         return prompt.ToString();
@@ -64,9 +64,12 @@ public class AiService : IAiService
     {
         var prompt = new StringBuilder();
         prompt.AppendLine($"Write a breif description of {query} and classify it as either Breakfast, Lunch, Dinner, or a snack.");
-        prompt.AppendLine("Format your response like the following:");
-        prompt.AppendLine("Description: Here is the Description");
-        prompt.AppendLine("Type: Here is the type (1 word)");
+        prompt.AppendLine("Format your response in json like the following:");
+        prompt.AppendLine("{");
+        prompt.AppendLine("description: \"Here is the Description\"");
+        prompt.AppendLine("type: \"Here is the type (1 word)\"");
+        prompt.AppendLine("}");
+        prompt.AppendLine("Do not include any other information in your response. Only include the json.");
         prompt.AppendLine(query);
         return prompt.ToString();
     }
@@ -119,8 +122,8 @@ public class AiService : IAiService
             var result = await JsonSerializer.DeserializeAsync<AiResponse>(await response.Content.ReadAsStreamAsync(), options);
             result = result ?? new AiResponse();
             return result.choices.FirstOrDefault()?.message?.content ?? "No response from AI";
-        } catch {
-            return "No response from AI";
+        } catch (Exception ex){
+            return "No response from AI: " + ex.Message;
         }
     }
 
