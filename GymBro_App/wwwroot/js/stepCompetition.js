@@ -1,3 +1,41 @@
+// Toggle past competitions
+const compButton = document.getElementById('ViewPastCompetitions');
+const pastContainerId = 'pastCompetitionsContainer';
+let pastVisible = false;
+
+compButton.addEventListener('click', async () => {
+  const container = document.getElementById(pastContainerId);
+
+  if (pastVisible) {
+    // hide
+    container.innerHTML = '';
+    compButton.textContent = 'View Past Competitions';
+    pastVisible = false;
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/StepCompetitionAPI/PastCompetitions');
+    if (!res.ok) throw new Error('Fetch failed');
+
+    const data = await res.json();
+    if (data.length === 0) {
+      container.innerHTML = '<p>No past competitions found for this user.</p>';
+    } else {
+      // note: showLeaveButton = false here
+      renderCompetitions(data, pastContainerId, false);
+    }
+
+    compButton.textContent = 'Hide Past Competitions';
+    pastVisible = true;
+
+  } catch (err) {
+    console.error(err);
+    alert('Could not load past competitions.');
+  }
+});
+
+
 function addInvitedUser(username) {
     const invitedList = document.getElementById('invitedUserList');
     const invitedInputs = document.getElementById('invitedUserInputs');
@@ -40,45 +78,72 @@ function resetCompetitionForm() {
     document.getElementById('suggestions').style.display = 'none';
 }
 
-function renderCompetitions(competitions) {
-    const container = document.getElementById('competitionListContainer');
-    container.innerHTML = '';  // Clear any existing content in the container
 
+function renderCompetitions(competitions, containerId, showLeaveButton) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+  
     competitions.forEach(comp => {
-        const card = document.createElement('div');
-        card.className = 'card mb-3';
-        card.id = `competition-${comp.competitionID}`;  // Correctly use `competitionID` from the response
-
-        const cardBody = document.createElement('div');
-        cardBody.className = 'card-body';
-
-        const title = document.createElement('h5');
-        title.textContent = `7 Day Step Competition🔥`;
-
-        const dates = document.createElement('p');
-        dates.textContent = `From ${new Date(comp.startDate).toLocaleDateString()} to ${new Date(comp.endDate).toLocaleDateString()}`;
-
-        const participantList = document.createElement('ul');
-        comp.participants.forEach(p => {
-            const li = document.createElement('li');
-            li.textContent = `${p.username} - ${p.steps} steps`;
-            participantList.appendChild(li);
-        });
-
-
-       
-     const leaveBtn = createLeaveButton(comp.competitionID);
-
-
-        // Append the elements to the card body and card
-        cardBody.appendChild(title);
-        cardBody.appendChild(dates);
-        cardBody.appendChild(participantList);
+      // Card wrapper
+      const card = document.createElement('div');
+      card.className = 'card mb-3';
+      card.id = `competition-${comp.competitionID}`;
+  
+      const cardBody = document.createElement('div');
+      cardBody.className = 'card-body';
+  
+      // 1) Title
+      const title = document.createElement('h5');
+      title.textContent = '7 Day Step Competition 🔥';
+  
+      // 2) Status line
+      //    find the participant with the max steps
+      const top = comp.participants.reduce(
+        (best, curr) => curr.steps > best.steps ? curr : best,
+        comp.participants[0]
+      );
+  
+      const status = document.createElement('p');
+      if (comp.isActive) {
+        status.textContent = `${top.username} is winning with ${top.steps} steps!`;
+        status.className = 'text-info';      // optional Bootstrap styling
+      } else {
+        status.textContent = `${top.username} won with ${top.steps} steps! 🎉`;
+        status.className = 'text-success';   // optional Bootstrap styling
+      }
+  
+      // 3) Date range
+      const dates = document.createElement('p');
+      dates.textContent =
+        `From ${new Date(comp.startDate).toLocaleDateString()} `
+        + `to ${new Date(comp.endDate).toLocaleDateString()}`;
+  
+      // 4) Participant list
+      const ul = document.createElement('ul');
+      comp.participants.forEach(p => {
+        const li = document.createElement('li');
+        li.textContent = `${p.username} – ${p.steps} steps`;
+        ul.appendChild(li);
+      });
+  
+      // assemble
+      cardBody.appendChild(title);
+      cardBody.appendChild(status);
+      cardBody.appendChild(dates);
+      cardBody.appendChild(ul);
+  
+      // 5) optional leave‐button
+      if (showLeaveButton) {
+        const leaveBtn = createLeaveButton(comp.competitionID);
         cardBody.appendChild(leaveBtn);
-        card.appendChild(cardBody);
-        container.appendChild(card);  
+      }
+  
+      card.appendChild(cardBody);
+      container.appendChild(card);
     });
-}
+  }
+  
+  
 
 function createLeaveButton(competitionID) {
     const LeaveBtn = document.createElement('button');
@@ -103,6 +168,8 @@ function createLeaveButton(competitionID) {
 
     return LeaveBtn;
 }
+
+
 
 // DOM interaction only runs after DOM is ready
 window.addEventListener('DOMContentLoaded', () => {
@@ -186,7 +253,7 @@ window.addEventListener('DOMContentLoaded', () => {
             const competitions = await response.json();
             document.getElementById('competitionPopup').style.display = 'none';
             resetCompetitionForm();
-            renderCompetitions(competitions);
+            renderCompetitions(competitions, 'competitionListContainer', true);
 
         } catch (error) {
             console.error('Error:', error);
@@ -196,12 +263,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Load existing competitions
     (async () => {
-        const response = await fetch('/api/StepCompetitionAPI/UserCompetitions');
-        if (response.ok) {
-            const competitions = await response.json();
-            renderCompetitions(competitions);
+        const res = await fetch('/api/StepCompetitionAPI/UserCompetitions');
+        if (res.ok) {
+          const data = await res.json();
+          renderCompetitions(data, 'competitionListContainer', true);
         }
-    })();
+      })();
 });
 
 export { addInvitedUser, resetCompetitionForm, renderCompetitions };
