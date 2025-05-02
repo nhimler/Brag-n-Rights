@@ -76,7 +76,7 @@ public sealed class SCRUM10StepDefinitions
         Assert.That(verificationMessage.Displayed, Is.True);
     }
 
-    [When(@"I login with {string} and {string}")]
+    [When("I login with {string} and {string}")]
     public void AndILoginWithUsernameAndPassword(string username, string password)
     {
         var usernameField = _driver.FindElement(By.Id("login-username"));
