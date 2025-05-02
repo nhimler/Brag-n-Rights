@@ -12,3 +12,7 @@
 #view-btn, #archive-btn {
     display: inline-block;
 }
+
+.suggestion-button {
+    display: block;
+}
