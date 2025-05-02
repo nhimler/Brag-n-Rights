@@ -9,36 +9,15 @@ namespace BDD_Tests.StepDefinitions;
 
 [Binding]
 [Scope(Tag = "SCRUM65")]
-public sealed class SCRUM65StepDefinitions : IDisposable
+public sealed class SCRUM65StepDefinitions
 {
     private IWebDriver _driver;
 
     [BeforeScenario]
     public void Setup()
     {
-        new WebDriverManager.DriverManager().SetUpDriver(new WebDriverManager.DriverConfigs.Impl.FirefoxConfig());
-        var option = new FirefoxOptions();
-        option.AddArgument("--headless");
-        option.AddArgument("--no-sandbox");
-        option.AddArgument("--disable-dev-shm-usage");
-
-        _driver = new FirefoxDriver(option);
-        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
-    }
-
-    public void Dispose()
-    {
-        if (_driver != null)
-        {
-            _driver.Quit();
-            _driver.Dispose();
-        }
-    }
-
-    [AfterScenario]
-    public void Teardown()
-    {
-        _driver.Quit();
+        _driver = GlobalDriverSetup.Driver;
+        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
     }
 
     [Given("I open the index page")]
