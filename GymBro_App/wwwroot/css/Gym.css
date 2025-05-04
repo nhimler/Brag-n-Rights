@@ -1,5 +1,5 @@
 #nearby-gyms-map {
-    height: 75vh;
+    height: 85vh;
     width: 100%;
 }
 
@@ -11,4 +11,21 @@
     overflow-y: auto;
     max-height: 75vh;
     scrollbar-width: thin; /* TODO: This does not work on Safari. Find alternative in the future */
+}
+
+#set-gym-location-span {
+    padding: 0 0;
+}
+
+/* Removing input number arrows */
+#postal-code-gym-search::-webkit-outer-spin-button,
+#postal-code-gym-search::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Removing input number arrows for Firefox */
+#postal-code-gym-search[type=number] {
+    appearance: textfield;
+    -moz-appearance: textfield;
 }

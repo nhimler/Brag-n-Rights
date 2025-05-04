@@ -6,16 +6,17 @@
 <div class="container">
     <h1 class="text-center">Find a gym near you</h1>
     <hr/>
-    <div class="row">
+    <div class="row d-flex align-items-stretch">
         <div class="col-4 col-md-4 d-flex flex-column">
-            <form id="nearby-gym-search-form" class="mb-3 col">
-                <div class="row g-0">
-                    <div class="col me-0 pe-0">
-                        <input type="text" id="search-input" class="form-control" placeholder="Enter a postal code" required />
-                    </div>
-                    <div class="col-auto ms-0 pe-0">
-                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    </div>
+            <form id="nearby-gym-search-form" class="mb-3 col-sm-12">
+                <div class="input-group">
+                    <input type="number" id="postal-code-gym-search" value="" class="form-control" placeholder="Enter a postal code" required />
+                    <span id="set-gym-location-span" class="input-group-text">
+                        <button class="btn" id="set-location-button" type="button"><i class="fa-solid fa-location-dot"></i></button>
+                    </span>
+                    <button type="submit" class="btn btn-primary ms-1">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
                 </div>
             </form>
             <div id="nearby-gym-search-list"><!-- This is where the search results go --></div>
@@ -29,7 +30,7 @@
                 src=""
                 allowfullscreen
             ></iframe>
-            <button class="btn btn-primary my-3" id="set-location-button">Set My Location</button>
+            @* <button class="btn btn-primary mt-3" id="set-location-button">Find My Location</button> *@
         </div>
     </div>
 </div>

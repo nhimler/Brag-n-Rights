@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
         embedDefaultMap()
         navigator.geolocation.getCurrentPosition(embedMapAtUserPosition, getPositionError)
     }
+
     const setLocationButton = document.getElementById("set-location-button");
     if (setLocationButton) {
         setLocationButton.addEventListener("click", () => {
@@ -24,6 +25,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     else {
         console.log("getUserLocation-btn not found")
+    }
+
+    const searchGymPostalCode = document.getElementById("nearby-gym-search-form")
+    if (searchGymPostalCode) {
+        searchGymPostalCode.addEventListener("submit", async (event) => {
+            event.preventDefault()
+            let postalCode = document.getElementById("postal-code-gym-search").value
+            console.log(postalCode)
+            let coordinates = await geocodePostal(postalCode)
+            console.log(coordinates)
+
+            if (coordinates) {
+                let lat = coordinates.latitude
+                let long = coordinates.longitude
+                embedMapAtUserPosition({ coords: { latitude: lat, longitude: long } })
+                getNearbyGyms({ coords: { latitude: lat, longitude: long } })
+            }
+            else {
+                console.error("Error: couldn't get coordinates for postal code")
+            }
+        })
     }
 })
 
@@ -150,6 +172,24 @@ async function reverseGeocode(lat, long) {
         let userLocation = document.getElementById("user-location")
         userLocation.innerHTML = `Location: ${result.address}`
         
+    }
+    else {
+        console.log("Error: " + response.status)
+    }
+}
+
+async function geocodePostal(postalCode) {
+    let response = await fetch(`/api/maps/geocode/${postalCode}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    if(response.ok){
+        let result = await response.json()
+        console.log(result)
+        return result
     }
     else {
         console.log("Error: " + response.status)
