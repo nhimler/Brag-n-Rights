@@ -29,7 +29,7 @@ public class AiAPIController_Tests
         // Arrange
         var query = "chicken, rice, broccoli";
         var response = "Chicken and Rice Bowl\nBroccoli Stir Fry\nChicken Salad\nRice and Broccoli Casserole\nChicken Fried Rice";
-        _mockService.Setup(service => service.GetResponse(query)).ReturnsAsync(response);
+        _mockService.Setup(service => service.GetResponse(query, IAiService.AiServiceType.Suggestion)).ReturnsAsync(response);
 
         // Act
         var result = await _controller.Suggest(query);
@@ -65,7 +65,7 @@ public class AiAPIController_Tests
     {
         // Arrange
         var query = "chicken, rice, broccoli";
-        _mockService.Setup(service => service.GetResponse(query)).ThrowsAsync(new Exception("Service error"));
+        _mockService.Setup(service => service.GetResponse(query, IAiService.AiServiceType.Suggestion)).ThrowsAsync(new Exception("Service error"));
 
         // Act
         var result = await _controller.Suggest(query);

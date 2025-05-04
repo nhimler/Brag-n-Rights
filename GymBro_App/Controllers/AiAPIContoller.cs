@@ -28,7 +28,28 @@ public class AiAPIController : ControllerBase
             return BadRequest("Query cannot be null or empty.");
         }
         try{
-            var res = await _aiService.GetResponse(query);
+            var res = await _aiService.GetResponse(query, IAiService.AiServiceType.Suggestion);
+            return Ok(res);
+        }
+        catch
+        {
+            _logger.LogError("Error occurred while getting AI response.");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+        }
+    }
+
+    [HttpGet("fill")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+    public async Task<IActionResult> Fill([FromQuery(Name = "q")] string query)
+    {
+        if (string.IsNullOrEmpty(query))
+        {
+            return BadRequest("Query cannot be null or empty.");
+        }
+        try{
+            var res = await _aiService.GetResponse(query, IAiService.AiServiceType.Fill);
             return Ok(res);
         }
         catch
