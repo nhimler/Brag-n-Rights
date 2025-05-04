@@ -77,14 +77,39 @@ namespace GymBro_App.Controllers
             var plan = _workoutPlanRepository.FindById(planId);
             if (plan == null) return NotFound($"Plan {planId} not found.");
 
-            var list = new List<ExerciseDTO>();
+            var result = new List<object>();
             foreach (var wpe in plan.WorkoutPlanExercises)
             {
                 var exs = await _exerciseService.GetExerciseByIdAsync(wpe.ApiId);
-                if (exs?.Count > 0)
-                    list.Add(exs.First());
+                var ex = exs?.FirstOrDefault();
+                if (ex == null) continue;
+                result.Add(new {
+                    ex.Id,
+                    ex.Name,
+                    ex.GifUrl,
+                    BodyPart = ex.BodyPart,
+                    Equipment = ex.Equipment,
+                    Target = ex.Target,
+                    SecondaryMuscles = ex.SecondaryMuscles,
+                    Instructions = ex.Instructions,
+                    Sets = wpe.Sets ?? 0,
+                    Reps = wpe.Reps ?? 0
+                });
             }
-            return Ok(list);
+            return Ok(result);
+        }
+
+        [HttpPut("Exercise")]
+        public IActionResult UpdateExercise([FromBody] UpdateExerciseDTO dto)
+        {
+            var plan = _workoutPlanRepository.FindById(dto.PlanId);
+            if (plan == null) return NotFound();
+            var wpe = plan.WorkoutPlanExercises.FirstOrDefault(e => e.ApiId == dto.ApiId);
+            if (wpe == null) return NotFound();
+            wpe.Sets = dto.Sets;
+            wpe.Reps = dto.Reps;
+            _workoutPlanRepository.Update(plan);
+            return NoContent();
         }
     }
 }

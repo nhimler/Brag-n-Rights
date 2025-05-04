@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      container.innerHTML = '';
       exercises.forEach((ex, idx) => {
         container.innerHTML += `
           <div class="exercise-detail mb-4">
@@ -21,35 +20,83 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img src="${ex.gifUrl}" class="img-fluid" alt="${ex.name}">
               </div>
               <div class="col-6">
-                <h5 class="mb-2">${ex.name}</h5>
+                <h5>${ex.name}</h5>
+                <div class="mb-2">
+                  <label>Sets:
+                    <input type="number"
+                           class="form-control sets-input"
+                           data-apiid="${ex.id}"
+                           value="${ex.sets}" />
+                  </label>
+                </div>
+                <div class="mb-2">
+                  <label>Reps:
+                    <input type="number"
+                           class="form-control reps-input"
+                           data-apiid="${ex.id}"
+                           value="${ex.reps}" />
+                  </label>
+                </div>
+                <div class="mb-2">
+                  <button class="btn btn-success btn-sm save-changes-btn"
+                          type="button"
+                          data-apiid="${ex.id}">
+                    Save Changes
+                  </button>
+                </div>
                 <button class="btn btn-sm btn-outline-primary mb-2"
                         type="button"
                         data-bs-toggle="collapse"
-                        data-bs-target="#details-${idx}"
-                        aria-expanded="false"
-                        aria-controls="details-${idx}">
+                        data-bs-target="#details-${idx}">
                   Show more details
                 </button>
                 <div class="collapse" id="details-${idx}">
-                  <p><b>Equipment:</b> ${ex.equipment.charAt(0).toUpperCase() + ex.equipment.slice(1)}</p>
-                  <p><b>Body Part:</b> ${ex.bodyPart.charAt(0).toUpperCase() + ex.bodyPart.slice(1)}</p>
-                  <p><b>Primary Target Muscle:</b> ${ex.target.charAt(0).toUpperCase() + ex.target.slice(1)}</p>
-                  <p><b>Secondary Target Muscle(s):</b> ${
+                  <p><b>Equipment:</b> ${capitalize(ex.equipment)}</p>
+                  <p><b>Body Part:</b> ${capitalize(ex.bodyPart)}</p>
+                  <p><b>Primary Target:</b> ${capitalize(ex.target)}</p>
+                  <p><b>Secondary:</b> ${
                     ex.secondaryMuscles.length
-                      ? ex.secondaryMuscles
-                          .map(m => m.charAt(0).toUpperCase() + m.slice(1))
-                          .join(', ')
+                      ? ex.secondaryMuscles.map(capitalize).join(', ')
                       : 'None'
                   }</p>
-                  <h6 class="mt-3">Instructions:</h6>
-                  <ol class="list-group list-group-numbered">
-                    ${ex.instructions.map(i => `<li class="list-group-item">${i}</li>`).join('')}
+                  <h6>Instructions:</h6>
+                  <ol class="list-group list-group-numbered mb-3">
+                    ${ex.instructions.map(i => `<li>${i}</li>`).join('')}
                   </ol>
                 </div>
               </div>
             </div>
           </div>`;
       });
+
+      container.querySelectorAll('.save-changes-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const apiId = btn.dataset.apiid;
+          const sets  = container.querySelector(`.sets-input[data-apiid="${apiId}"]`).value;
+          const reps  = container.querySelector(`.reps-input[data-apiid="${apiId}"]`).value;
+          const res = await fetch('/api/Workouts/Exercise', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              planId: parseInt(planId),
+              apiId,
+              sets: parseInt(sets),
+              reps: parseInt(reps)
+            })
+          });
+          if (res.ok) {
+            btn.textContent = 'Saved';
+            btn.classList.replace('btn-success','btn-secondary');
+          } else {
+            btn.textContent = 'Error';
+          }
+        });
+      });
+
     });
   });
 });
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
