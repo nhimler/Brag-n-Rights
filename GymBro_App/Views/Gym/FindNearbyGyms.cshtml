@@ -4,8 +4,11 @@
 <link rel="stylesheet" href="~/css/Gym.css" />
 
 <div class="container">
-    <h1 class="text-center">Find a gym near you</h1>
+    <h1 class="mb-4 pt-4">Nearby Gyms</h1>
     <hr/>
+    <div>
+        @Html.Partial("../UserPage/_ProfileNav")
+    </div>
     <div class="row d-flex align-items-stretch">
         <div class="col-4 col-md-4 d-flex flex-column">
             <form id="nearby-gym-search-form" class="mb-3 col-sm-12">
@@ -19,6 +22,7 @@
                     </button>
                 </div>
             </form>
+            <h5 id="nearby-gyms-results-header" class="mb-3 text-center">Find a gym near you</h5>
             <div id="nearby-gym-search-list"><!-- This is where the search results go --></div>
         </div>
         

@@ -1,5 +1,5 @@
 #nearby-gyms-map {
-    height: 85vh;
+    height: 100%;
     width: 100%;
 }
 
@@ -9,8 +9,12 @@
 
 #nearby-gym-search-list {
     overflow-y: auto;
-    max-height: 75vh;
+    height: 90vh;
     scrollbar-width: thin; /* TODO: This does not work on Safari. Find alternative in the future */
+}
+
+#nearby-gym-search-form {
+    height: 5vh;
 }
 
 #set-gym-location-span {
