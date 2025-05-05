@@ -7,7 +7,7 @@
     <h1 class="mb-4 pt-4">Nearby Gyms</h1>
     <hr/>
     <div>
-        @Html.Partial("../UserPage/_ProfileNav")
+        <partial name="../UserPage/_ProfileNav" />
     </div>
     <div class="row d-flex align-items-stretch">
         <div class="col-4 col-md-4 d-flex flex-column">
@@ -17,7 +17,7 @@
                     <span id="set-gym-location-span" class="input-group-text">
                         <button class="btn" id="set-location-button" type="button"><i class="fa-solid fa-location-dot"></i></button>
                     </span>
-                    <button type="submit" class="btn btn-primary ms-1">
+                    <button id="postal-code-gym-search-button" type="submit" class="btn btn-primary ms-1">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>

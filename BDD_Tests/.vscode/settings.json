@@ -8,6 +8,7 @@
     "**/bin/": true,
   },
   "cucumber.glue": [ // sets the location of the step definition classes
+    "StepDefinitions/*.cs",
     "StepDefinitions/AwardMedal/*.cs",
     "StepDefinitions/Gym/*.cs",
     "StepDefinitions/Home/*.cs",
@@ -18,6 +19,7 @@
     "StepDefinitions/Workouts/*.cs"
   ],
   "cucumber.features": [ // sets the location of the feature files
+    "Features/*.feature",
     "Features/AwardMedal/*.feature",
     "Features/Gym/*.feature",
     "Features/Home/*.feature",
