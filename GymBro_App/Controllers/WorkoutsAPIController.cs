@@ -100,7 +100,7 @@ namespace GymBro_App.Controllers
         }
 
         [HttpPut("Exercise")]
-        public IActionResult UpdateExercise([FromBody] UpdateExerciseDTO dto)
+        public IActionResult UpdateSetsAndReps([FromBody] UpdateExerciseDTO dto)
         {
             var plan = _workoutPlanRepository.FindById(dto.PlanId);
             if (plan == null) return NotFound();
