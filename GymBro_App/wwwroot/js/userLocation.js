@@ -119,7 +119,9 @@ async function getNearbyGyms(pos) {
             document.getElementById("nearby-gyms-results-header").innerText = "No nearby gyms found."
             return
         }
-        gymList.innerHTML = `<p class="text-center">No nearby gyms found.</p>`
+        else {
+            document.getElementById("nearby-gyms-results-header").innerText = `Found ${result.length} nearby gyms`
+        }
         for (let i = 0; i < result.length; i++) {
             let gym = result[i]
             // console.log(gym.regularOpeningHours)

@@ -7,3 +7,9 @@ Scenario: User can search for gyms using a postal code
     When I enter 97361 as a postal code in the search bar
     And I click the postal search button
     Then I should see a list of gyms appear
+
+Scenario: User can search for gyms using a postal code with no results
+    Given I am on the gym search page
+    When I enter 00000 as a postal code in the search bar
+    And I click the postal search button
+    Then I should see a message telling me there are no gyms nearby

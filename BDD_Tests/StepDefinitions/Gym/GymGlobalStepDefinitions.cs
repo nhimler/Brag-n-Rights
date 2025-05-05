@@ -32,4 +32,11 @@ public sealed class GymGlobalStepDefinitions
         var gymListItems = gymList.FindElements(By.ClassName("card"));
         Assert.That(gymListItems.Count, Is.GreaterThan(0), "No gyms found in the list.");
     }
+
+    [Then("I should see a message telling me there are no gyms nearby")]
+    public void ThenIShouldSeeAMessageTellingMeThereAreNoGymsNearby()
+    {
+        var gymResultHeader = _driver.FindElement(By.Id("nearby-gyms-results-header"));
+        Assert.That(gymResultHeader.Displayed, Is.True, "No gyms message is not displayed.");
+    }
 }
