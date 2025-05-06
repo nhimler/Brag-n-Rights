@@ -11,6 +11,8 @@ public sealed class SCRUM25StepDefinitions : IDisposable
 {
     private IWebDriver _driver;
     
+    // This cannot use the GlobalDriverSetup.Driver because it needs to add options to the driver
+    // and the GlobalDriverSetup is not set up to handle that.
     [BeforeScenario]
     public void Setup()
     {

@@ -11,35 +11,15 @@ namespace BDD_Tests.StepDefinitions;
 
 [Binding]
 [Scope(Tag = "SCRUM66")]
-public sealed class SCRUM66StepDefinitions : IDisposable
+public sealed class SCRUM66StepDefinitions
 {
     private IWebDriver _driver;
 
     [BeforeScenario]
     public void Setup()
     {
-        var option = new FirefoxOptions();
-        option.AddArgument("--headless");
-        option.AddArgument("--no-sandbox");
-        option.AddArgument("--disable-dev-shm-usage");
-
-        _driver = new FirefoxDriver(option);
+        _driver = GlobalDriverSetup.Driver;
         _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-    }
-
-    public void Dispose()
-    {
-        if (_driver != null)
-        {
-            _driver.Quit();
-            _driver.Dispose();
-        }
-    }
-
-    [AfterScenario]
-    public void Teardown()
-    {
-        _driver.Quit();
     }
 
     [Given("I open the index page")]
