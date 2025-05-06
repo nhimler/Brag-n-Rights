@@ -51,7 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function noNearbyGyms() {
     let gymList = document.getElementById("nearby-gym-search-list")
-    gymList.innerHTML = `<p class="text-center">No nearby gyms found.</p>`
+    document.getElementById("nearby-gyms-results-header").innerText = "No nearby gyms found."
+    gymList.innerHTML = ""
 }
 
 function getPositionError(err) {
@@ -117,6 +118,7 @@ async function getNearbyGyms(pos) {
         if (result.length === 0) {
             console.log("No nearby gyms found.")
             document.getElementById("nearby-gyms-results-header").innerText = "No nearby gyms found."
+            gymList.innerHTML = ""
             return
         }
         else {
