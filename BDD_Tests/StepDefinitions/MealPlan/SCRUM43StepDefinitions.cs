@@ -82,7 +82,6 @@ public sealed class SCRUM43StepDefinitions : IDisposable
         // Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/MealPlan"));
     }
 
-
     [Given(@"I visit the details page of a meal plan")]
     public void GivenIVisitTheDetailsPageOfAMealPlan()
     {
