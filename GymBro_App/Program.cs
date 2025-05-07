@@ -102,7 +102,7 @@ public class Program
 
         // NearbySearchMapService API Configuration
         string googleNearbySearchApiUrl = "https://places.googleapis.com/v1/places:searchNearby";
-        string googleNearbySearchFieldMask = "places.formattedAddress,places.displayName,places.regularOpeningHours,places.websiteUri";
+        string googleNearbySearchFieldMask = "places.formattedAddress,places.displayName,places.regularOpeningHours,places.websiteUri,places.name";
         builder.Services.AddHttpClient<INearbySearchMapService, NearbySearchMapService>((client, services) =>
         {
             client.BaseAddress = new Uri(googleNearbySearchApiUrl);

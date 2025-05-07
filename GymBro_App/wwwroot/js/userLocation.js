@@ -130,6 +130,18 @@ async function getNearbyGyms(pos) {
             
             // Gets open/close status and the next time it opens/closes. TODO: Fix this so it adjusts for UTC time and 24/7 gyms
             // let gymOpenStatus = gym.regularOpeningHours.openNow ? "Open" : "Closed"
+            // const daysOfWeek = []
+            // const currentDay = new Date().getDay()
+            // console
+            // console.log(`Open Status: ${gymOpenStatus}`)
+            // console.log(`Today's hours: ${gym.regularOpening}`)
+            // if (gymOpenStatus === "Open") {
+            //     console.log("Today's hours: " + gym.regularOpeningHours.openingHours[currentDay])
+            //     console.log("Closes at: " + gym.regularOpeningHours.nextCloseTime)
+            // }
+            // else {
+            //     console.log("Opens at: " + gym.regularOpeningHours.nextOpenTime)
+            // }
             // console.log(`${gym.regularOpeningHours.nextCloseTime} ${gym.regularOpeningHours.nextOpenTime}`)
             // let gymNextStatusHours = gymOpenStatus ? `Closes at ${gym.regularOpeningHours.nextCloseTime} ` : `Opens at ${gym.regularOpeningHours.nextOpenTime}`
             // gymNextStatusHours = gymNextStatusHours.split("T")[1].slice(0, -1)
@@ -138,19 +150,27 @@ async function getNearbyGyms(pos) {
 
 
             let gymHours = gym.regularOpeningHours.weekdayDescriptions
-            let gymHoursParagraphs = ""
+            console.log(gym)
+            let gymPlaceID = gym.name.replace("places/", "")
+            let gymHoursParagraphs = "<div class='d-flex flex-column mb-3'>"
             gymHours.forEach(day => {
                 gymHoursParagraphs += `<p class="card-text my-1">${day}</p>`
             });
+            gymHoursParagraphs += "</div>"
             
             gymListHTML += `
-                <a target="_blank" rel="noopener noreferrer" href="${gym.websiteUri}" class="card mb-3 text-decoration-none text-dark diplayed-gym-card">
+                
+                <div class="card mb-3 text-decoration-none text-dark diplayed-gym-card">        
                     <div class="card-body">
                         <h5 class="card-title">${gym.displayName.text}</h5>
                         <p class="card-text"><small class="text-body-secondary">${gym.formattedAddress}</small></p>
                         ${gymHoursParagraphs}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn bookmark-gym-button" id="${gymPlaceID}" type="button"><i class="fa-solid fa-star"></i> Add to Favorites</button>
+                            <a target="_blank" rel="noopener noreferrer" href="${gym.websiteUri}" class="text-decoration-none text-dark"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Gym Website</a>
+                        </div>
                     </div>
-                </a>
+                </div>
             `
             gymList.innerHTML = gymListHTML
             // console.log(gym)

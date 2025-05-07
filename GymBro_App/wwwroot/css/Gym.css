@@ -21,6 +21,10 @@
     padding: 0 0;
 }
 
+.bookmark-gym-button {
+    padding: 0 0;
+}
+
 /* Removing input number arrows */
 #postal-code-gym-search::-webkit-outer-spin-button,
 #postal-code-gym-search::-webkit-inner-spin-button {
