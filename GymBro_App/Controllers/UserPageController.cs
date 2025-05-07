@@ -58,6 +58,13 @@ public class UserPageController : Controller
         return View("ChangeInfo", userInfoModel);
     }
 
+    [Authorize]
+    [HttpGet]
+    public IActionResult BookmarkedGyms()
+    {
+        return View("BookmarkedGyms");
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

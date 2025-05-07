@@ -1,4 +1,10 @@
+let userSignedIn = false;
+
 document.addEventListener("DOMContentLoaded", () => {
+    if (isLoggedIn) {
+        userSignedIn = true
+    }
+
     const mapElement = document.getElementById("nearby-gyms-map")
     if (mapElement) {
         embedDefaultMap()
@@ -90,7 +96,7 @@ async function embedMapAtUserPosition(position) {
     if (response.ok) {
         let result = await response.json()
         // console.log("Got response")
-        
+
         let lat = coordinates.latitude.toFixed(6)
         let long = coordinates.longitude.toFixed(6)
 
@@ -116,7 +122,7 @@ async function getNearbyGyms(pos) {
         let gymListHTML = ""
 
         if (result.length === 0) {
-            console.log("No nearby gyms found.")
+            // console.log("No nearby gyms found.")
             document.getElementById("nearby-gyms-results-header").innerText = "No nearby gyms found."
             gymList.innerHTML = ""
             return
@@ -127,8 +133,8 @@ async function getNearbyGyms(pos) {
         for (let i = 0; i < result.length; i++) {
             let gym = result[i]
             // console.log(gym.regularOpeningHours)
-            
-            // Gets open/close status and the next time it opens/closes. TODO: Fix this so it adjusts for UTC time and 24/7 gyms
+
+            // // Gets open/close status and the next time it opens/closes. TODO: Fix this so it adjusts for UTC time and 24/7 gyms
             // let gymOpenStatus = gym.regularOpeningHours.openNow ? "Open" : "Closed"
             // const daysOfWeek = []
             // const currentDay = new Date().getDay()
@@ -148,30 +154,35 @@ async function getNearbyGyms(pos) {
             // console.log("Closes at: " + gym.regularOpeningHours.nextCloseTime)
             // console.log("Opens at: " + gym.regularOpeningHours.nextOpenTime)
 
-
             let gymHours = gym.regularOpeningHours.weekdayDescriptions
-            console.log(gym)
+            // console.log(gym)
+
+            // Preparing the gym's id for the bookmark button (if they're logged in)
             let gymPlaceID = gym.name.replace("places/", "")
+            let bookmarkButton = ""
+            if (userSignedIn) {
+                bookmarkButton = `<button class="btn bookmark-gym-button" id="${gymPlaceID}" type="button"><i class="fa-solid fa-star"></i> Add to Favorites</button>`
+            }
+
+            // Preparing the gym's hours
             let gymHoursParagraphs = "<div class='d-flex flex-column mb-3'>"
             gymHours.forEach(day => {
                 gymHoursParagraphs += `<p class="card-text my-1">${day}</p>`
             });
             gymHoursParagraphs += "</div>"
-            
-            gymListHTML += `
-                
-                <div class="card mb-3 text-decoration-none text-dark diplayed-gym-card">        
-                    <div class="card-body">
-                        <h5 class="card-title">${gym.displayName.text}</h5>
-                        <p class="card-text"><small class="text-body-secondary">${gym.formattedAddress}</small></p>
-                        ${gymHoursParagraphs}
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button class="btn bookmark-gym-button" id="${gymPlaceID}" type="button"><i class="fa-solid fa-star"></i> Add to Favorites</button>
-                            <a target="_blank" rel="noopener noreferrer" href="${gym.websiteUri}" class="text-decoration-none text-dark"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Gym Website</a>
-                        </div>
+
+            gymListHTML += 
+            `<div class="card mb-3 text-decoration-none text-dark diplayed-gym-card">        
+                <div class="card-body">
+                    <h5 class="card-title">${gym.displayName.text}</h5>
+                    <p class="card-text"><small class="text-body-secondary">${gym.formattedAddress}</small></p>
+                    ${gymHoursParagraphs}
+                    <div class="d-flex justify-content-between align-items-center">
+                        ${bookmarkButton}
+                        <a target="_blank" rel="noopener noreferrer" href="${gym.websiteUri}" class="text-decoration-none text-dark"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Gym Website</a>
                     </div>
                 </div>
-            `
+            </div>`
             gymList.innerHTML = gymListHTML
             // console.log(gym)
             // console.log(gym.displayName.text)
