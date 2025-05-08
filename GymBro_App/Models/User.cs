@@ -73,6 +73,9 @@ public partial class User
     public virtual ICollection<BiometricDatum> BiometricData { get; set; } = new List<BiometricDatum>();
 
     [InverseProperty("User")]
+    public virtual ICollection<GymUser> GymUsers { get; set; } = new List<GymUser>();
+
+    [InverseProperty("User")]
     public virtual ICollection<Leaderboard> Leaderboards { get; set; } = new List<Leaderboard>();
 
     [InverseProperty("User")]
@@ -90,10 +93,6 @@ public partial class User
     [ForeignKey("UserId")]
     [InverseProperty("Users")]
     public virtual ICollection<FitnessChallenge> Challenges { get; set; } = new List<FitnessChallenge>();
-
-    [ForeignKey("UserId")]
-    [InverseProperty("Users")]
-    public virtual ICollection<Gym> Gyms { get; set; } = new List<Gym>();
 
     public virtual ICollection<StepCompetition> CreatedCompetitions { get; set; } = new List<StepCompetition>();
 

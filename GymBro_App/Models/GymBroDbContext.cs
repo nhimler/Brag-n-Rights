@@ -21,7 +21,7 @@ public partial class GymBroDbContext : DbContext
 
     public virtual DbSet<Food> Foods { get; set; }
 
-    public virtual DbSet<Gym> Gyms { get; set; }
+    public virtual DbSet<GymUser> GymUsers { get; set; }
 
     public virtual DbSet<Leaderboard> Leaderboards { get; set; }
 
@@ -50,7 +50,6 @@ public partial class GymBroDbContext : DbContext
 
 
     public virtual DbSet<WorkoutPlanExercise> WorkoutPlanExercises { get; set; }
-
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -100,26 +99,11 @@ public partial class GymBroDbContext : DbContext
                 .HasConstraintName("FK__Food__MealID__54CB950F");
         });
 
-        modelBuilder.Entity<Gym>(entity =>
+        modelBuilder.Entity<GymUser>(entity =>
         {
-            entity.HasKey(e => e.GymId).HasName("PK__Gym__1A3A7CB6B1D159AB");
+            entity.HasKey(e => e.GymUserId).HasName("PK__GymUser__198C43EE844A57A4");
 
-            entity.HasMany(d => d.Users).WithMany(p => p.Gyms)
-                .UsingEntity<Dictionary<string, object>>(
-                    "GymUser",
-                    r => r.HasOne<User>().WithMany()
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("FK__GymUser__UserID__3FD07829"),
-                    l => l.HasOne<Gym>().WithMany()
-                        .HasForeignKey("GymId")
-                        .HasConstraintName("FK__GymUser__GymID__3EDC53F0"),
-                    j =>
-                    {
-                        j.HasKey("GymId", "UserId").HasName("PK__GymUser__CB42F07C103F76D0");
-                        j.ToTable("GymUser");
-                        j.IndexerProperty<int>("GymId").HasColumnName("GymID");
-                        j.IndexerProperty<int>("UserId").HasColumnName("UserID");
-                    });
+            entity.HasOne(d => d.User).WithMany(p => p.GymUsers).HasConstraintName("FK__GymUser__UserID__473C8FC7");
         });
 
         modelBuilder.Entity<Leaderboard>(entity =>
@@ -211,7 +195,6 @@ public partial class GymBroDbContext : DbContext
                 .HasConstraintName("FK__WorkoutEx__Worko__2022C2A6");
         });
 
-
         modelBuilder.Entity<WorkoutPlan>(entity =>
         {
             entity.HasKey(e => e.WorkoutPlanId).HasName("PK__WorkoutP__8C51605B9B7D06CA");
@@ -239,7 +222,6 @@ public partial class GymBroDbContext : DbContext
         modelBuilder.Entity<TokenEntity>(entity =>
 
         modelBuilder.Entity<WorkoutPlanExercise>(entity =>
-
         {
             entity.HasKey(e => e.WorkoutPlanExerciseId).HasName("PK__WorkoutP__8D1477A67A1078DF");
 
