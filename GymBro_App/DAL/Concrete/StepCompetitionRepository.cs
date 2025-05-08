@@ -147,10 +147,23 @@ namespace GymBro_App.DAL.Concrete
                 .ToListAsync();
         }
 
-        public async Task<List<UserCompetitionViewModel>> GetPastCompetitionsForUserAsync(string identityId)
+        public async Task<List<UserCompetitionViewModel>> GetPastCompetitionsForUserAsync(
+            string identityId,
+            int daysToSkip = 3)
         {
+
+            TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+ 
+
+            var nowPacific       = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pacificZone);
+            var cutoffPacific    = nowPacific.Date.AddDays(-daysToSkip);
+
             return await _context.StepCompetitionParticipants
-                .Where(p => p.IdentityId == identityId && !p.StepCompetition.IsActive)
+                .Where(p =>
+                    p.IdentityId == identityId &&
+                    !p.StepCompetition.IsActive &&
+                    p.StepCompetition.EndDate < cutoffPacific
+                )
                 .Include(p => p.StepCompetition)
                     .ThenInclude(sc => sc.Participants)
                         .ThenInclude(part => part.User)
@@ -172,6 +185,52 @@ namespace GymBro_App.DAL.Concrete
                 })
                 .ToListAsync();
         }
+
+
+        public async Task<List<UserCompetitionViewModel>> GetRecentlyEndedCompetitionsForUserAsync(
+            string identityId)
+        {
+            const int lookbackDays = 3;
+
+            TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            
+
+
+            var nowUtc     = DateTime.UtcNow;
+            var nowPacific = TimeZoneInfo.ConvertTimeFromUtc(nowUtc, pacificZone);
+
+            var cutoffPacific = nowPacific.Date.AddDays(-lookbackDays);
+
+
+            return await _context.StepCompetitionParticipants
+                .Where(p =>
+                    p.IdentityId == identityId
+                    && !p.StepCompetition.IsActive
+                    && p.StepCompetition.EndDate >= cutoffPacific
+                    && p.StepCompetition.EndDate <= nowPacific
+                )
+                .Include(p => p.StepCompetition)
+                    .ThenInclude(sc => sc.Participants)
+                        .ThenInclude(part => part.User)
+                .Select(p => new UserCompetitionViewModel
+                {
+                    CompetitionID = p.StepCompetition.CompetitionID,
+                    StartDate     = p.StepCompetition.StartDate,
+                    EndDate       = p.StepCompetition.EndDate,
+                    IsActive      = p.StepCompetition.IsActive,
+                    Participants  = p.StepCompetition.Participants
+                        .Where(part => !part.IsActive)
+                        .OrderByDescending(part => part.Steps)
+                        .Select(part => new ParticipantViewModel
+                        {
+                            Username = part.User.Username,
+                            Steps    = part.Steps
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
+        }
+
 
 
         public async Task<bool> LeaveCompetitionAsync(string identityId,int competitionID)

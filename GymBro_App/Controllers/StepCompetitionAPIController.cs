@@ -77,7 +77,7 @@ namespace GymBro_App.Controllers
             if (string.IsNullOrEmpty(identityId))
                 return Unauthorized();
 
-            var competitions = await _stepCompetitionRepository.GetPastCompetitionsForUserAsync(identityId);
+            var competitions = await _stepCompetitionRepository.GetPastCompetitionsForUserAsync(identityId, 3);
             return Ok(competitions);
         }
 
@@ -98,6 +98,18 @@ namespace GymBro_App.Controllers
             {
                 return BadRequest("Failed to leave the competition.");
             }
+        }
+
+        [Authorize]
+        [HttpGet("RecentlyEndedCompetitions")]
+        public async Task<IActionResult> GetRecentlyEndedCompetitions()
+        {
+            var identityId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(identityId))
+                return Unauthorized();
+
+            var competitions = await _stepCompetitionRepository.GetRecentlyEndedCompetitionsForUserAsync(identityId);
+            return Ok(competitions);
         }
     }
 }

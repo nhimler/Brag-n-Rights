@@ -267,6 +267,23 @@ window.addEventListener('DOMContentLoaded', () => {
         if (res.ok) {
           const data = await res.json();
           renderCompetitions(data, 'competitionListContainer', true);
+        } else {
+          console.error('Failed to load competitions', await res.text());
+        }
+
+        const recentRes = await fetch('/api/StepCompetitionAPI/RecentlyEndedCompetitions');
+        if (recentRes.ok) {
+          const recentData = await recentRes.json();
+          if (recentData.length === 0) return;           // nothing to show
+          const wrapper = document.getElementById('RecentlyEndedComp');
+          wrapper.innerHTML = `
+            <h5>Recently Ended Competitions</h5>
+            <div id="recentCompetitionList"></div>
+          `;
+      
+          renderCompetitions(recentData, 'recentCompetitionList', false);
+        } else {
+          console.error('Failed to load recently ended competitions', await recentRes.text());
         }
       })();
 });
