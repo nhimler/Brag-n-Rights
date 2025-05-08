@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace GymBro_App.Models.DTOs
 {
     // Yes, all of this this could have been placed in GoogleMapsService.cs, but this makes testing easier
-    public class ReverseGeocodeDTO
+    public class GeocodeDTO
     {
         [JsonPropertyName("plus_code")]
         public PlusCode PlusCode { get; set; } = new PlusCode();

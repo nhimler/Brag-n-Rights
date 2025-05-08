@@ -7,6 +7,12 @@ using GymBro_App.Services;
 
 namespace GymBro_App.Services
 {
+    public class GeocodeResult(double latitude, double longitude)
+    {
+        public double Latitude { get; set; } = latitude;
+        public double Longitude { get; set; } = longitude;
+    }
+
     public class GoogleMapsService : IGoogleMapsService
     {
         readonly HttpClient _httpClient;
@@ -33,12 +39,40 @@ namespace GymBro_App.Services
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                ReverseGeocodeDTO myDeserializedClass = JsonSerializer.Deserialize<ReverseGeocodeDTO>(responseContent) ?? new ReverseGeocodeDTO();
+                GeocodeDTO myDeserializedClass = JsonSerializer.Deserialize<GeocodeDTO>(responseContent) ?? new GeocodeDTO();
                 return myDeserializedClass.Results[0].FormattedAddress;
             }
             else
             {
                 return "";
+            }
+        }
+
+        public async Task<GeocodeResult> GeocodePostalCode(string postalCode)
+        {
+            string apiKey = _httpClient.DefaultRequestHeaders.GetValues("X-goog-api-key").FirstOrDefault() ?? "";
+            string url = $"api/geocode/json?components=postal_code:{postalCode}&key={apiKey}";
+             var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                GeocodeDTO myDeserializedClass = JsonSerializer.Deserialize<GeocodeDTO>(responseContent) ?? new GeocodeDTO();
+                if (myDeserializedClass.Results.Count > 0)
+                {
+                    double lat = myDeserializedClass.Results[0].Geometry.Location.Lat;
+                    double lng = myDeserializedClass.Results[0].Geometry.Location.Lng;
+                    return new GeocodeResult(lat, lng);
+                }
+                else
+                {
+                    _logger.LogError($"No results found for postal code: {postalCode}");
+                    return new GeocodeResult(0, 0);
+                }
+            }
+            else
+            {
+                _logger.LogError($"Error in GeocodePostalCode Service: {response.StatusCode} - {response.ReasonPhrase}");
+                return new GeocodeResult(0, 0);
             }
         }
 
