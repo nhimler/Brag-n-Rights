@@ -15,7 +15,7 @@ namespace GymBro_App.DAL.Abstract
 
         Task AddBatchUserMedalsAsync(List<UserMedal> userMedals);
 
-        
+
     }
-    
+
 }

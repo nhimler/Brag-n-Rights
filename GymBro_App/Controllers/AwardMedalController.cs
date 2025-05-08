@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;  
-using System.Security.Claims;  
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using GymBro_App.Services;
-using GymBro_App.Models;  
+using GymBro_App.Models;
 
 namespace GymBro_App.Controllers
 {
-     // Ensure that the controller requires authentication
+    // Ensure that the controller requires authentication
     public class AwardMedalController : Controller
     {
         private readonly IAwardMedalService _awardMedalService;
@@ -28,7 +28,7 @@ namespace GymBro_App.Controllers
                 return Unauthorized();
 
             if (!await _oauthService.UserHasFitbitToken(identityId))
-                return View("ConnectFitbit");  
+                return View("ConnectFitbit");
 
 
             try

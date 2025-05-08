@@ -13,7 +13,7 @@ namespace GymBro_App.Services
         private readonly IBiometricDatumRepository _biometricDatumRepository;  // Declare the field
         private readonly IOAuthService _oAuthService;
 
-        public AwardMedalService(IUserRepository userRepository, IMedalRepository medalRepository, 
+        public AwardMedalService(IUserRepository userRepository, IMedalRepository medalRepository,
             IUserMedalRepository userMedalRepository, IBiometricDatumRepository biometricDatumRepository
             , IOAuthService oAuthService)
         {
@@ -77,11 +77,11 @@ namespace GymBro_App.Services
                 UserId = userId,
                 AwardedMedals = awardedMedals
             };
-        } 
+        }
         public async Task SaveActivityData(string identityId)
         {
             var pacificTime = GetPacificTime();  // Use the helper method to get Pacific Time
-            var today = DateOnly.FromDateTime(pacificTime.Date); 
+            var today = DateOnly.FromDateTime(pacificTime.Date);
 
             var Token = await _oAuthService.GetAccessToken(identityId);
             var steps = await _oAuthService.GetUserSteps(Token, today.ToString("yyyy-MM-dd"));
@@ -102,7 +102,7 @@ namespace GymBro_App.Services
                     {
                         UserId = userId,
                         Steps = steps,
-                       LastUpdated = GetPacificTime() 
+                        LastUpdated = GetPacificTime()
                     };
 
                     await _biometricDatumRepository.AddAsync(biometricData);

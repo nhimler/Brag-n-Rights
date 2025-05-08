@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;  
+using System.Security.Claims;
 using GymBro_App.DAL.Abstract;
 
 namespace GymBro_App.Controllers
@@ -29,10 +29,10 @@ namespace GymBro_App.Controllers
 
 
             // Call the repository method to search for users with the given username
-            var users = await _stepCompetitionRepository.SearchUsersWithTokenAsync(username,identityId);
+            var users = await _stepCompetitionRepository.SearchUsersWithTokenAsync(username, identityId);
 
             return Ok(users);
-            
+
         }
 
         [Authorize]

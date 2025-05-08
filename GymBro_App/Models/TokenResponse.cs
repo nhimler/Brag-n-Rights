@@ -10,13 +10,13 @@ namespace GymBro_App.Models
         [Key]
         [ForeignKey("User")]
         public int UserId { get; set; }  // UserID as Foreign Key and Primary Key
-        
+
         [Required]
         public string AccessToken { get; set; } = null!;
-        
+
         [Required]
         public string RefreshToken { get; set; } = null!;
-        
+
         [Required]
         public DateTime ExpirationTime { get; set; }
 
