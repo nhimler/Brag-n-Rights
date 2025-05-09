@@ -1,7 +1,5 @@
 Feature: SCRUM32
 
-This will cover the gym search functionality
-
 @SCRUM32
 Scenario: User updates their information and confirms changes
 	Given I am on my change info page

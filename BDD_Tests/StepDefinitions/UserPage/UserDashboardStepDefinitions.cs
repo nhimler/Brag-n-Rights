@@ -6,35 +6,15 @@ using Reqnroll;
 namespace BDD_Tests.StepDefinitions;
 
 [Binding]
-public sealed class UserDashboardStepDefinitions : IDisposable
+public sealed class UserDashboardStepDefinitions
 {
     private IWebDriver _driver;
-    
+
     [BeforeScenario]
     public void Setup()
     {
-        var options = new ChromeOptions();
-        options.AddArgument("--headless");
-        options.AddArgument("--no-sandbox");
-        options.AddArgument("--disable-dev-shm-usage");
-
-        _driver = new ChromeDriver(options);
+        _driver = GlobalDriverSetup.Driver;
         _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-    }
-
-    public void Dispose()
-    {
-        if(_driver != null)
-        {
-            _driver.Quit();
-            _driver.Dispose();
-        }
-    }
-
-    [AfterScenario]
-    public void Teardown()
-    {
-        _driver.Quit();
     }
 
     [Given("I open the user page")]
