@@ -13,12 +13,14 @@ namespace GymBro_App.Controllers
     {
         private readonly ILogger<UserAPIController> _logger;
         private readonly IUserRepository _userRepository;
+        private readonly IGymUserRepository _gymUserRepository;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public UserAPIController(ILogger<UserAPIController> logger, IUserRepository userRepository, UserManager<IdentityUser> userManager)
+        public UserAPIController(ILogger<UserAPIController> logger, IUserRepository userRepository, IGymUserRepository gymUserRepository,UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             _userRepository = userRepository;
+            _gymUserRepository = gymUserRepository;
             _userManager = userManager;
         }
 
@@ -49,6 +51,39 @@ namespace GymBro_App.Controllers
 
             return Ok("Profile picture updated successfully.");
         }
+
+        [HttpPost]
+        [Route("bookmarkGym")]
+        public Task<IActionResult> BookmarkGym(string gymPlaceId)
+        {
+            string identityId = _userManager.GetUserId(User) ?? "";
+            var user = _userRepository.GetUserByIdentityUserId(identityId);
+
+            if (user == null)
+            {
+                return Task.FromResult<IActionResult>(NotFound("User not found."));
+            }
+
+            GymUser gymUser = new GymUser
+            {
+                GymUserId = user.UserId,
+                ApiGymId = gymPlaceId,
+            };
+
+            foreach (var gym in _gymUserRepository.GetAllGymUsersByUserId(user.UserId))
+            {
+                _logger.LogInformation($"GymUserId: {gym.GymUserId}, ApiGymId: {gym.ApiGymId}");
+                if (gym.ApiGymId == gymPlaceId)
+                {
+                    _logger.LogInformation($"User {gym.GymUserId} has already bookmarked gym: {gym.ApiGymId}");
+                    return Task.FromResult<IActionResult>(BadRequest("Gym already bookmarked."));
+                }
+            }
+            _gymUserRepository.AddOrUpdate(gymUser);
+            _logger.LogInformation($"User {user.UserId} bookmarked gym: {gymPlaceId}");
+            return Task.FromResult<IActionResult>(Ok("Gym bookmarked successfully."));
+        }
+
 
         // Removed the UserLocation method because it was determined to be too invasive.
         // [HttpPut]
