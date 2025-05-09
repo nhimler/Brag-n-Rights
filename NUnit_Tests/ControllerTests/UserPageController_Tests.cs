@@ -16,6 +16,7 @@ public class UserPageController_Test
 {
     private Mock<ILogger<UserPageController>> _mockLogger;
     private Mock<IUserRepository> _mockUserRepo;
+    private Mock<IGymUserRepository> _mockGymUserRepo;
     private Mock<UserManager<IdentityUser>> _mockUserManager;
     private Mock<UserInfoModel> _mockUserInfoModel;
     private UserPageController _userController;
@@ -25,12 +26,13 @@ public class UserPageController_Test
     {
         _mockLogger = new Mock<ILogger<UserPageController>>();
         _mockUserRepo = new Mock<IUserRepository>();
+        _mockGymUserRepo = new Mock<IGymUserRepository>();
         _mockUserManager = new Mock<UserManager<IdentityUser>>(
             new Mock<IUserStore<IdentityUser>>().Object,
             null, null, null, null, null, null, null, null);
         _mockUserInfoModel = new Mock<UserInfoModel>();
 
-        _userController = new UserPageController(_mockLogger.Object, _mockUserRepo.Object, _mockUserManager.Object);
+        _userController = new UserPageController(_mockLogger.Object, _mockUserRepo.Object, _mockGymUserRepo.Object, _mockUserManager.Object);
 
         // Mock the HttpContext with a user principal
         var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]

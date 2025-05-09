@@ -1,4 +1,4 @@
-@model GymBro_App.ViewModels.UserInfoModel;
+@model GymBro_App.ViewModels.BookmarkedGymsView;
 @{
     ViewData["Title"] = "Change Info";
 }
@@ -10,6 +10,10 @@
         <partial name="_ProfileNav" />
     </div>
     <div>
-        
+        <p>You have @Model.AllGyms.Count gyms favorited.</p>
+        @foreach (var gym in Model.AllGyms)
+        {
+            <p>@gym.ApiGymId</p>
+        }
     </div>
 </div>

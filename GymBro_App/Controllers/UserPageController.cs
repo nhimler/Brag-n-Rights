@@ -12,12 +12,14 @@ public class UserPageController : Controller
 {
     private readonly ILogger<UserPageController> _logger;
     private readonly IUserRepository _userRepository;
+    private readonly IGymUserRepository _gymUserRepository;
     private readonly UserManager<IdentityUser> _userManager;
 
-    public UserPageController(ILogger<UserPageController> logger, IUserRepository userRepository, UserManager<IdentityUser> userManager)
+    public UserPageController(ILogger<UserPageController> logger, IUserRepository userRepository, IGymUserRepository gymUserRepository, UserManager<IdentityUser> userManager)
     {
         _logger = logger;
         _userRepository = userRepository;
+        _gymUserRepository = gymUserRepository;
         _userManager = userManager;
     }
 
@@ -60,9 +62,17 @@ public class UserPageController : Controller
 
     [Authorize]
     [HttpGet]
-    public IActionResult BookmarkedGyms()
+    public IActionResult BookmarkedGyms(BookmarkedGymsView userBookmarkedGyms)
     {
-        return View("BookmarkedGyms");
+        string identityId = _userManager.GetUserId(User) ?? "";
+        var user = _userRepository.GetUserByIdentityUserId(identityId);
+        if (user == null)
+        {
+            return NotFound("User not found.");
+        }
+
+        userBookmarkedGyms.AllGyms = _gymUserRepository.GetAllGymUsersByUserId(user.UserId);
+        return View("BookmarkedGyms", userBookmarkedGyms);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

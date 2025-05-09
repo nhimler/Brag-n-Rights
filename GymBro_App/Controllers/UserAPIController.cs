@@ -79,15 +79,6 @@ namespace GymBro_App.Controllers
                 _logger.LogInformation($"User {user.UserId} has already bookmarked gym: {gymPlaceId}");
                 return Task.FromResult<IActionResult>(BadRequest("Gym already bookmarked."));
             }
-            // foreach (var gym in _gymUserRepository.GetAllGymUsersByUserId(user.UserId))
-            // {
-            //     _logger.LogInformation($"GymUserId: {gym.GymUserId}, ApiGymId: {gym.ApiGymId}");
-            //     if (gym.ApiGymId == gymPlaceId)
-            //     {
-            //         _logger.LogInformation($"User {gym.GymUserId} has already bookmarked gym: {gym.ApiGymId}");
-            //         return Task.FromResult<IActionResult>(BadRequest("Gym already bookmarked."));
-            //     }
-            // }
             
             _logger.LogInformation($"User {user.UserId} is bookmarking gym: {gymPlaceId}");
             _gymUserRepository.AddOrUpdate(gymUser);

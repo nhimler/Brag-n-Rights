@@ -183,7 +183,7 @@ namespace Controller_Tests
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
             Assert.That(okResult.Value, Is.EqualTo("Gym bookmarked successfully."));
-            _mockGymUserRepository.Verify(repo => repo.AddOrUpdate(It.Is<GymUser>(g => g.ApiGymId == gymPlaceId && g.GymUserId == 1)), Times.Once);
+            _mockGymUserRepository.Verify(repo => repo.AddOrUpdate(It.Is<GymUser>(g => g.ApiGymId == gymPlaceId && g.UserId == 1)), Times.Once);
         }
 
         [Test]
@@ -199,12 +199,13 @@ namespace Controller_Tests
 
             var existingGymUsers = new List<GymUser>
             {
-                new GymUser { GymUserId = 1, ApiGymId = "gym123" }
+                new GymUser { GymUserId = 1, ApiGymId = "gym123", UserId = 1 }
             };
 
             _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("1");
             _mockUserRepository.Setup(repo => repo.GetUserByIdentityUserId("1")).Returns(user);
             _mockGymUserRepository.Setup(repo => repo.GetAllGymUsersByUserId(1)).Returns(existingGymUsers);
+            _mockGymUserRepository.Setup(repo => repo.IsGymBookmarked(gymPlaceId, user.UserId)).Returns(true);
 
             // Act
             var result = await _userAPIController.BookmarkGym(gymPlaceId);
