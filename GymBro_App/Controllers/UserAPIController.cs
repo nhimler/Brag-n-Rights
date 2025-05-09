@@ -3,6 +3,7 @@ using GymBro_App.Models.DTOs;
 using GymBro_App.Services;
 using Microsoft.AspNetCore.Identity;
 using GymBro_App.DAL.Abstract;
+using GymBro_App.DAL.Concrete;
 using GymBro_App.Models;
 
 namespace GymBro_App.Controllers
@@ -53,9 +54,10 @@ namespace GymBro_App.Controllers
         }
 
         [HttpPost]
-        [Route("bookmarkGym")]
+        [Route("bookmarkGym/{gymPlaceId}")]
         public Task<IActionResult> BookmarkGym(string gymPlaceId)
         {
+            _logger.LogInformation($"Bookmarking gym with ID: {gymPlaceId}");
             string identityId = _userManager.GetUserId(User) ?? "";
             var user = _userRepository.GetUserByIdentityUserId(identityId);
 
@@ -66,7 +68,7 @@ namespace GymBro_App.Controllers
 
             GymUser gymUser = new GymUser
             {
-                GymUserId = user.UserId,
+                UserId = user.UserId,
                 ApiGymId = gymPlaceId,
             };
 
@@ -79,6 +81,8 @@ namespace GymBro_App.Controllers
                     return Task.FromResult<IActionResult>(BadRequest("Gym already bookmarked."));
                 }
             }
+            
+            _logger.LogInformation($"User {user.UserId} is bookmarking gym: {gymPlaceId}");
             _gymUserRepository.AddOrUpdate(gymUser);
             _logger.LogInformation($"User {user.UserId} bookmarked gym: {gymPlaceId}");
             return Task.FromResult<IActionResult>(Ok("Gym bookmarked successfully."));
