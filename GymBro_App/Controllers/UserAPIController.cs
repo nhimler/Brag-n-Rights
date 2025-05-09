@@ -72,20 +72,42 @@ namespace GymBro_App.Controllers
                 ApiGymId = gymPlaceId,
             };
 
-            foreach (var gym in _gymUserRepository.GetAllGymUsersByUserId(user.UserId))
+
+            bool isBookmarked = _gymUserRepository.IsGymBookmarked(gymPlaceId, user.UserId);
+            if (isBookmarked)
             {
-                _logger.LogInformation($"GymUserId: {gym.GymUserId}, ApiGymId: {gym.ApiGymId}");
-                if (gym.ApiGymId == gymPlaceId)
-                {
-                    _logger.LogInformation($"User {gym.GymUserId} has already bookmarked gym: {gym.ApiGymId}");
-                    return Task.FromResult<IActionResult>(BadRequest("Gym already bookmarked."));
-                }
+                _logger.LogInformation($"User {user.UserId} has already bookmarked gym: {gymPlaceId}");
+                return Task.FromResult<IActionResult>(BadRequest("Gym already bookmarked."));
             }
+            // foreach (var gym in _gymUserRepository.GetAllGymUsersByUserId(user.UserId))
+            // {
+            //     _logger.LogInformation($"GymUserId: {gym.GymUserId}, ApiGymId: {gym.ApiGymId}");
+            //     if (gym.ApiGymId == gymPlaceId)
+            //     {
+            //         _logger.LogInformation($"User {gym.GymUserId} has already bookmarked gym: {gym.ApiGymId}");
+            //         return Task.FromResult<IActionResult>(BadRequest("Gym already bookmarked."));
+            //     }
+            // }
             
             _logger.LogInformation($"User {user.UserId} is bookmarking gym: {gymPlaceId}");
             _gymUserRepository.AddOrUpdate(gymUser);
             _logger.LogInformation($"User {user.UserId} bookmarked gym: {gymPlaceId}");
             return Task.FromResult<IActionResult>(Ok("Gym bookmarked successfully."));
+        }
+
+        [HttpGet]
+        [Route("isGymBookmarked/{gymPlaceId}")]
+        public Task<IActionResult> IsGymBookmarked(string gymPlaceId)
+        {
+            string identityId = _userManager.GetUserId(User) ?? "";
+            var user = _userRepository.GetUserByIdentityUserId(identityId);
+            if (user == null)
+            {
+                return Task.FromResult<IActionResult>(NotFound("User not found."));
+            }
+
+            bool isBookmarked = _gymUserRepository.IsGymBookmarked(gymPlaceId, user.UserId);
+            return Task.FromResult<IActionResult>(Ok(isBookmarked));
         }
 
 

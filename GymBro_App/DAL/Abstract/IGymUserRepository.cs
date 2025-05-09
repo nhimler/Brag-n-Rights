@@ -6,4 +6,5 @@ namespace GymBro_App.DAL.Abstract;
 public interface IGymUserRepository : IRepository<GymUser>
 {
     List<GymUser> GetAllGymUsersByUserId(int userId);
+    bool IsGymBookmarked(string gymPlaceId, int userId);
 }

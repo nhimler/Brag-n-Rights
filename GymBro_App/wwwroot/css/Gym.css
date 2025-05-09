@@ -37,3 +37,7 @@
     appearance: textfield;
     -moz-appearance: textfield;
 }
+
+.favorited-star {
+    color: #1b50e2;
+}

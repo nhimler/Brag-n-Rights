@@ -182,23 +182,38 @@ async function getNearbyGyms(pos) {
             // Preparing the gym's id for the bookmark button (if they're logged in)
             if (userSignedIn) {
                 let gymPlaceID = gym.name.replace("places/", "")
+                let isBookmarked = await isGymBookmarked(gymPlaceID)
 
                 let bookmarkButton = document.createElement("button")
                 bookmarkButton.setAttribute("class", "btn bookmark-gym-button")
                 bookmarkButton.setAttribute("id", gymPlaceID)
                 bookmarkButton.setAttribute("type", "button")
                 
-                let bookmarkStar = document.createElement("i")
-                bookmarkStar.setAttribute("class", "fa-solid fa-star")
-                bookmarkButton.appendChild(bookmarkStar)
-
-                bookmarkButton.appendChild(document.createTextNode(" Add to Favorites"))
-                bookmarkButton.addEventListener("click", () => {
-                    console.log("Bookmark button clicked")
-                    bookmarkGym(gymPlaceID)
+                if (isBookmarked) {
                     bookmarkButton.setAttribute("disabled", "true")
-                })
-                gymResultActions.appendChild(bookmarkButton)
+                    let bookmarkStar = document.createElement("i")
+                    bookmarkStar.setAttribute("class", "fa-solid fa-star favorited-star")
+                    bookmarkButton.appendChild(bookmarkStar)
+                    bookmarkButton.appendChild(document.createTextNode(" Favorited"))
+                    bookmarkButton.setAttribute("class", "btn bookmark-gym-button disabled")
+                    bookmarkButton.setAttribute("aria-disabled", "true")
+                    bookmarkButton.setAttribute("disabled", "true")
+                    gymResultActions.appendChild(bookmarkButton)
+                }
+
+                else {
+                    let bookmarkStar = document.createElement("i")
+                    bookmarkStar.setAttribute("class", "fa-solid fa-star")
+                    bookmarkButton.appendChild(bookmarkStar)
+
+                    bookmarkButton.appendChild(document.createTextNode(" Add to Favorites"))
+                    bookmarkButton.addEventListener("click", () => {
+                        console.log("Bookmark button clicked")
+                        bookmarkGym(gymPlaceID)
+                        bookmarkButton.setAttribute("disabled", "true")
+                    })
+                    gymResultActions.appendChild(bookmarkButton)
+                }
             }
 
             let gymWebsiteButton = document.createElement("a")
@@ -238,6 +253,23 @@ async function bookmarkGym(gymPlaceID) {
         console.log("Error: " + response.status)
     }
 }
+
+async function isGymBookmarked(gymPlaceID) {
+    let response = await fetch(`/api/users/isGymBookmarked/${gymPlaceID}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'}
+        })
+        if (response.ok) {
+            let result = await response.json()
+            console.log(result)
+            return result
+        }
+        else {
+            console.log("Error in isGymBookmarked: " + response.status)
+        }
+}
+
 
 async function reverseGeocode(lat, long) {
     let response = await fetch(`/api/maps/reversegeocode/${lat}/${long}`, {

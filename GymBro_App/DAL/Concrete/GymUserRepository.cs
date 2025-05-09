@@ -17,5 +17,10 @@ namespace GymBro_App.DAL.Concrete
         {
             return _gymUser.Where(u => u.UserId == userId).ToList();
         }
+
+        public bool IsGymBookmarked(string gymUserId, int userId)
+        {
+            return _gymUser.Any(u => u.ApiGymId == gymUserId && u.UserId == userId);
+        }
     }
 }
