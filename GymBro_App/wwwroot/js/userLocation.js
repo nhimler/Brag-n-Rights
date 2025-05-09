@@ -119,6 +119,7 @@ async function getNearbyGyms(pos) {
     if(response.ok){
         let result = await response.json()
         let gymList = document.getElementById("nearby-gym-search-list")
+        gymList.textContent = ""
 
         if (result.length === 0) {
             document.getElementById("nearby-gyms-results-header").innerText = "No nearby gyms found."
@@ -211,6 +212,14 @@ async function getNearbyGyms(pos) {
                         console.log("Bookmark button clicked")
                         bookmarkGym(gymPlaceID)
                         bookmarkButton.setAttribute("disabled", "true")
+                        bookmarkButton.setAttribute("class", "btn bookmark-gym-button disabled")
+                        bookmarkButton.setAttribute("aria-disabled", "true")
+                        bookmarkButton.textContent = ""
+
+                        let bookmarkedStar = document.createElement("i")
+                        bookmarkedStar.setAttribute("class", "fa-solid fa-star fa-bounce freshly-favorited-star")
+                        bookmarkButton.appendChild(bookmarkedStar)
+                        bookmarkButton.appendChild(document.createTextNode(" Favorited"))
                     })
                     gymResultActions.appendChild(bookmarkButton)
                 }

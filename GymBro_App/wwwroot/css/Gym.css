@@ -41,3 +41,8 @@
 .favorited-star {
     color: #1b50e2;
 }
+
+.freshly-favorited-star {
+    color: #1b50e2;
+    --fa-animation-iteration-count: 1;
+}
