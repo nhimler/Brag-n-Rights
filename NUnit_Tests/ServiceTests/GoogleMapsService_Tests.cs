@@ -2,11 +2,7 @@ using GymBro_App.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
-using NUnit.Framework;
 using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Text.Json;
 using GymBro_App.Models.DTOs;
 
@@ -58,7 +54,7 @@ namespace Service_Tests
             var latitude = 47.7510741;
             var longitude = -120.7401385;
 
-            var root = new ReverseGeocodeDTO
+            var root = new GeocodeDTO
             {
                 Results = new List<Result>
                 {
@@ -98,7 +94,7 @@ namespace Service_Tests
             var latitude = 0.0;
             var longitude = 0.0;
 
-            var root = new ReverseGeocodeDTO
+            var root = new GeocodeDTO
             {
                 Results = new List<Result>()
             };
@@ -119,6 +115,54 @@ namespace Service_Tests
 
             // Assert
             Assert.That(result, Is.EqualTo(expectedAddress));
+        }
+
+        [Test]
+        public async Task Geocode_ShouldReturnTheLatitudeAndLongitudeCoordinatesOfAPostalCode()
+        {
+            // Arrange
+            string apiKey = Environment.GetEnvironmentVariable("GoogleMapsApiKey") ?? "";
+            _httpClient.DefaultRequestHeaders.Add("X-goog-api-key", apiKey);
+
+            var expectedLatitude = 47.7510741;
+            var expectedLongitude = -120.7401385;
+            var postalCode = "12345";
+
+            var root = new GeocodeDTO
+            {
+                Results = new List<Result>
+                {
+                    new Result
+                    {
+                        Geometry = new Geometry
+                        {
+                            Location = new Location
+                            {
+                                Lat = expectedLatitude,
+                                Lng = expectedLongitude
+                            }
+                        }
+                    }
+                }
+            };
+
+            var jsonResponse = JsonSerializer.Serialize(root);
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(jsonResponse)
+            };
+
+            _mockHttpMessageHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(httpResponseMessage);
+
+            // Act
+            var result = await _googleMapsService.GeocodePostalCode(postalCode);
+
+            // Assert
+            Assert.That(result.Latitude, Is.EqualTo(expectedLatitude));
+            Assert.That(result.Longitude, Is.EqualTo(expectedLongitude));
         }
 
         [TearDown]

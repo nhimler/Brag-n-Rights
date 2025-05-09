@@ -25,7 +25,6 @@ namespace BDD_Tests.StepDefinitions
                         "The new competition was not found in the competition list.");
         }
 
-
         [Then(@"I should no longer see The competition")]
         public void ThenIShouldNoLongerSeeTheCompetition()
         {
