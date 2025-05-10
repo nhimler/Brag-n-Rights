@@ -46,7 +46,6 @@ namespace Controller_Tests
                 _exerciseServiceMock.Object 
             );
 
-            // existing HttpContext setup
             var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, "identity_user_id") };
             var identity = new ClaimsIdentity(claims, "TestAuthType");
             var principal = new ClaimsPrincipal(identity);
@@ -244,6 +243,13 @@ namespace Controller_Tests
             _exerciseServiceMock.Verify(s => s.GetExerciseByIdAsync("id1"), Times.Once);
             _exerciseServiceMock.Verify(s => s.GetExerciseByIdAsync("id2"), Times.Once);
         }
+
+        /*public async Task UpdateSetsAndReps_SuccessOnValidInput()
+        {
+            //Arrange
+            //Act
+            //Assert
+        }*/
 
         [TearDown]
         public void TearDown()
