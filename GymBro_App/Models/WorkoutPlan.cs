@@ -42,6 +42,8 @@ public partial class WorkoutPlan
     [StringLength(20)]
     public string? DifficultyLevel { get; set; }
 
+    public bool ArchivedWorkout { get; set; }
+
     [ForeignKey("UserId")]
     [InverseProperty("WorkoutPlans")]
     public virtual User? User { get; set; }

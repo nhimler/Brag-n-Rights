@@ -1,0 +1,2 @@
+ALTER TABLE WorkoutPlan
+ADD ArchivedWorkout BIT NOT NULL DEFAULT 0;
