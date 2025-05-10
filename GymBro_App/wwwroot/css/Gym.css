@@ -38,11 +38,11 @@
     -moz-appearance: textfield;
 }
 
-.favorited-star {
+.bookmarked-star {
     color: #1b50e2;
 }
 
-.freshly-favorited-star {
+.freshly-bookmarked-star {
     color: #1b50e2;
     --fa-animation-iteration-count: 1;
 }

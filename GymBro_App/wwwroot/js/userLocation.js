@@ -193,9 +193,9 @@ async function getNearbyGyms(pos) {
                 if (isBookmarked) {
                     bookmarkButton.setAttribute("disabled", "true")
                     let bookmarkStar = document.createElement("i")
-                    bookmarkStar.setAttribute("class", "fa-solid fa-star favorited-star")
+                    bookmarkStar.setAttribute("class", "fa-solid fa-star bookmarked-star")
                     bookmarkButton.appendChild(bookmarkStar)
-                    bookmarkButton.appendChild(document.createTextNode(" Favorited"))
+                    bookmarkButton.appendChild(document.createTextNode(" Bookmarked"))
                     bookmarkButton.setAttribute("class", "btn bookmark-gym-button disabled")
                     bookmarkButton.setAttribute("aria-disabled", "true")
                     bookmarkButton.setAttribute("disabled", "true")
@@ -207,7 +207,7 @@ async function getNearbyGyms(pos) {
                     bookmarkStar.setAttribute("class", "fa-solid fa-star")
                     bookmarkButton.appendChild(bookmarkStar)
 
-                    bookmarkButton.appendChild(document.createTextNode(" Add to Favorites"))
+                    bookmarkButton.appendChild(document.createTextNode(" Add to Boomarks"))
                     bookmarkButton.addEventListener("click", () => {
                         console.log("Bookmark button clicked")
                         bookmarkGym(gymPlaceID)
@@ -217,9 +217,9 @@ async function getNearbyGyms(pos) {
                         bookmarkButton.textContent = ""
 
                         let bookmarkedStar = document.createElement("i")
-                        bookmarkedStar.setAttribute("class", "fa-solid fa-star fa-bounce freshly-favorited-star")
+                        bookmarkedStar.setAttribute("class", "fa-solid fa-star fa-bounce freshly-bookmarked-star")
                         bookmarkButton.appendChild(bookmarkedStar)
-                        bookmarkButton.appendChild(document.createTextNode(" Favorited"))
+                        bookmarkButton.appendChild(document.createTextNode(" Bookmarked"))
                     })
                     gymResultActions.appendChild(bookmarkButton)
                 }
