@@ -330,4 +330,40 @@ public sealed class WorkoutsStepDefinitions
         _driver.Navigate().GoToUrl("http://localhost:5075/Workouts/");
         Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/Workouts/"), $"Test error when navigating to the landing page. Current URL: {_driver.Url}");
     }
+
+    [Then("I should see buttons for each body part")]
+    public void ThenIShouldSeeButtonsForEachBodyPart()
+    {
+        var bodyPartButtons = _driver.FindElements(By.Id("bodyPartRadioButtons"));
+        Assert.IsTrue(bodyPartButtons.Count > 0, "No body part buttons found.");
+        foreach (var button in bodyPartButtons)
+        {
+            Assert.IsTrue(button.Displayed, "A body part button is not displayed.");
+        }
+    }
+
+    [When("I click on a body part button")]
+    public void WhenIClickOnABodyPartButton()
+    {
+        var bodyPartButtons = _driver.FindElements(By.Id("bodyPartRadioButtons"));
+        if (bodyPartButtons.Count > 0)
+        {
+            var randomButton = bodyPartButtons[new Random().Next(bodyPartButtons.Count)];
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", randomButton);
+        }
+        else
+        {
+            Assert.Fail("No body part buttons found to click.");
+        }
+    }
+
+    [Then("I should see a list of exercises that target the selected body part")]
+    public void ThenIShouldSeeAListOfExercisesThatTargetTheSelectedBodyPart()
+    {
+        var exerciseList = _driver.FindElement(By.Id("exerciseSearchResults"));
+        var exerciseCards = _driver.FindElements(By.ClassName("exercise-card"));
+        Assert.That(exerciseList.Displayed, Is.EqualTo(true), "Exercise list is not displayed.");
+        Assert.That(exerciseCards.Count, Is.GreaterThan(0), "No exercises found in the list.");
+
+    }
 }
