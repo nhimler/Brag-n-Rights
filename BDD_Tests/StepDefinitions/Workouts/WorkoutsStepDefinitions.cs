@@ -323,4 +323,11 @@ public sealed class WorkoutsStepDefinitions
         var completeWorkoutButtons = _driver.FindElements(By.Id("completeWorkoutPlanButton"));
         Assert.That(completeWorkoutButtons.Count, Is.EqualTo(0), "Workout plans are still displayed on the page.");
     }
+
+    [When("I navigate to the index page")]
+    public void WhenINavigateToTheIndexPage()
+    {
+        _driver.Navigate().GoToUrl("http://localhost:5075/Workouts/");
+        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/Workouts/"), $"Test error when navigating to the landing page. Current URL: {_driver.Url}");
+    }
 }
