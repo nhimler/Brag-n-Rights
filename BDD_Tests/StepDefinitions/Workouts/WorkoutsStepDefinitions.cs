@@ -73,8 +73,8 @@ public sealed class WorkoutsStepDefinitions
     [Given("I open the workout index page")]
     public void GivenIOpenTheWorkoutIndexPage()
     {
-        _driver.Navigate().GoToUrl("http://localhost:5075/Workouts/Index");
-        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/Workouts/Index"), $"Test error when navigating to the workout index page. Current URL: {_driver.Url}");
+        _driver.Navigate().GoToUrl("http://localhost:5075/Workouts");
+        Assert.That(_driver.Url, Does.Contain("/Workouts"), $"Test error when navigating to the workout index page. Current URL: {_driver.Url}");
     }
 
     [When("I click on the {string} button")]
@@ -149,7 +149,7 @@ public sealed class WorkoutsStepDefinitions
         });
         Assert.IsTrue(resultsLoaded, "Exercise search results did not load.");
     }
-
+    
     [Then("I should see my workout plans")]
     public void ThenIshouldSeeMyWorkoutPlans()
     {
@@ -308,5 +308,107 @@ public sealed class WorkoutsStepDefinitions
         Assert.That(exerciseTitle.GetAttribute("innerHTML"), Is.Not.Empty, "Exercise title is empty.");
         Assert.That(exerciseContent.GetAttribute("outerHTML"), Is.Not.Empty, "Exercise content is empty.");
         Assert.That(exerciseImage.GetAttribute("src"), Is.Not.Empty, "Exercise image is empty.");
+    }
+
+    [When("I click on the Complete Workout Plan button")]
+    public void WhenIClickOnTheCompleteWorkoutPlanButton()
+    {
+        var completeWorkoutPlanButton = _driver.FindElement(By.Id("completeWorkoutPlanButton"));
+        completeWorkoutPlanButton.Click();
+    }
+
+    [Then("I should not see the workout plan on the page")]
+    public void ThenIShouldNotSeeTheWorkoutPlanOnThePage()
+    {
+        var completeWorkoutButtons = _driver.FindElements(By.Id("completeWorkoutPlanButton"));
+        Assert.That(completeWorkoutButtons.Count, Is.EqualTo(0), "Workout plans are still displayed on the page.");
+    }
+
+    [When("I navigate to the index page")]
+    public void WhenINavigateToTheIndexPage()
+    {
+        _driver.Navigate().GoToUrl("http://localhost:5075/Workouts/");
+        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/Workouts/"), $"Test error when navigating to the landing page. Current URL: {_driver.Url}");
+    }
+
+    [Then("I should see buttons for each body part")]
+    public void ThenIShouldSeeButtonsForEachBodyPart()
+    {
+        var bodyPartButtons = _driver.FindElements(By.Id("bodyPartRadioButtons"));
+        Assert.IsTrue(bodyPartButtons.Count > 0, "No body part buttons found.");
+        foreach (var button in bodyPartButtons)
+        {
+            Assert.IsTrue(button.Displayed, "A body part button is not displayed.");
+        }
+    }
+
+    [When("I click on a body part button")]
+    public void WhenIClickOnABodyPartButton()
+    {
+        var bodyPartButtons = _driver.FindElements(By.Id("bodyPartRadioButtons"));
+        if (bodyPartButtons.Count > 0)
+        {
+            var randomButton = bodyPartButtons[new Random().Next(bodyPartButtons.Count)];
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", randomButton);
+        }
+        else
+        {
+            Assert.Fail("No body part buttons found to click.");
+        }
+    }
+
+    [Then("I should see a list of exercises that target the selected body part")]
+    public void ThenIShouldSeeAListOfExercisesThatTargetTheSelectedBodyPart()
+    {
+        var exerciseList = _driver.FindElement(By.Id("exerciseSearchResults"));
+        var exerciseCards = _driver.FindElements(By.ClassName("exercise-card"));
+        Assert.That(exerciseList.Displayed, Is.EqualTo(true), "Exercise list is not displayed.");
+        Assert.That(exerciseCards.Count, Is.GreaterThan(0), "No exercises found in the list.");
+
+    }
+
+    [When("I click on the View Exercises button")]
+    public void WhenIClickOnTheViewExercisesButton()
+    {
+        var viewExercisesButton = _driver.FindElement(By.Id("viewExercisesButton"));
+        viewExercisesButton.Click();
+    }
+
+    [Then("I should see the list of exercises in the workout plan")]
+    public void ThenIShouldSeeTheListOfExercisesInTheWorkoutPlan()
+    {
+        var container = _driver.FindElement(By.Id("exercisesModalBody"));
+        var details = container.FindElements(By.ClassName("exercise-detail"));
+        Assert.IsTrue(details.Count > 0, "No exercises found in the workout plan.");
+
+        var setsInputs = container.FindElements(By.CssSelector(".sets-input"));
+        var repsInputs = container.FindElements(By.CssSelector(".reps-input"));
+        var saveBtns   = container.FindElements(By.CssSelector(".save-changes-btn"));
+
+        Assert.IsTrue(setsInputs.Count > 0, "Set inputs are not present.");
+        Assert.IsTrue(repsInputs.Count > 0, "Reps inputs are not present.");
+        Assert.IsTrue(saveBtns.Count > 0,   "Save Changes buttons are not present.");
+    }
+
+    [Then("I should be able to set the sets and reps for the exercises")]
+    public void ThenIShouldBeAbleToSetTheSetsAndRepsForTheExercises()
+    {
+        var container   = _driver.FindElement(By.Id("exercisesModalBody"));
+        var firstDetail = container.FindElement(By.ClassName("exercise-detail"));
+        var setsInput   = firstDetail.FindElement(By.CssSelector(".sets-input"));
+        var repsInput   = firstDetail.FindElement(By.CssSelector(".reps-input"));
+        var saveButton  = firstDetail.FindElement(By.CssSelector(".save-changes-btn"));
+
+        setsInput.Clear();
+        setsInput.SendKeys("3");
+        repsInput.Clear();
+        repsInput.SendKeys("12");
+        saveButton.Click();
+
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+        wait.Until(driver => saveButton.Text.Contains("Saved"));
+
+        Assert.That(saveButton.Text, Is.EqualTo("Saved"), "Save button did not update to 'Saved'.");
+        Assert.That(saveButton.GetAttribute("class"), Does.Contain("btn-secondary"), "Button did not change to secondary style.");
     }
 }

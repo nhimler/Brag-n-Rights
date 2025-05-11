@@ -41,7 +41,8 @@
                                             class="btn btn-outline-secondary view-exercises-btn"
                                             data-bs-toggle="modal"
                                             data-bs-target="#exercisesModal"
-                                            data-plan-id="@plan.WorkoutPlanId">
+                                            data-plan-id="@plan.WorkoutPlanId"
+                                            id="viewExercisesButton">
                                             View Exercises
                                         </button>
                                         <a asp-action="ExerciseSearch"
@@ -51,7 +52,7 @@
                                         </a>
                                         <form asp-action="Archive" asp-route-id="@plan.WorkoutPlanId" method="post">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-warning">
+                                            <button type="submit" class="btn btn-warning" id="completeWorkoutPlanButton">
                                                 Complete Workout Plan
                                             </button>
                                         </form>
