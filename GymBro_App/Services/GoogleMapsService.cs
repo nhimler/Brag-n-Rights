@@ -31,6 +31,28 @@ namespace GymBro_App.Services
             return apiKey;
         }
 
+        public async Task<PlaceDTO> GetPlaceDetails(string placeId)
+        {
+            string apiKey = _httpClient.DefaultRequestHeaders.GetValues("X-goog-api-key").FirstOrDefault() ?? "";
+            string url = $"https://places.googleapis.com/v1/places/{placeId}?fields=formattedAddress,displayName,regularOpeningHours,websiteUri&key={apiKey}";
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                PlaceDTO myDeserializedClass = JsonSerializer.Deserialize<PlaceDTO>(responseContent, options) ?? new PlaceDTO();
+                return myDeserializedClass;
+            }
+            else
+            {
+                _logger.LogError($"Error in GetPlaceDetails Service: {response.StatusCode} - {response.ReasonPhrase}");
+                return new PlaceDTO();
+            }
+        }
+
         public async Task<string> ReverseGeocode(double latitude, double longitude)
         {
             string apiKey = _httpClient.DefaultRequestHeaders.GetValues("X-goog-api-key").FirstOrDefault() ?? "";

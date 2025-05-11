@@ -22,6 +22,8 @@ namespace GymBro_App.Services
             public DisplayName DisplayName { get; set; } = new DisplayName();
             [JsonPropertyName("formattedAddress")]
             public string FormattedAddress { get; set; } = "";
+            [JsonPropertyName("name")]
+            public string Name { get; set; } = "";
         }
 
         public class DisplayName
@@ -78,13 +80,15 @@ namespace GymBro_App.Services
                     DisplayName = p.DisplayName,
                     FormattedAddress = p.FormattedAddress,
                     RegularOpeningHours = p.RegularOpeningHours,
-                    WebsiteUri = p.WebsiteUri
+                    WebsiteUri = p.WebsiteUri,
+                    Name = p.Name,
                 }).ToList();
                 return places;
             }
             else
             {
                 _logger.LogError("Failed to get nearby places. Status Code: {0}", response.StatusCode);
+                _logger.LogInformation("Request Headers: {0}", _httpClient.DefaultRequestHeaders.GetValues("X-Goog-FieldMask").FirstOrDefault() ?? "");
                 return [];
             }
         }

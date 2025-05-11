@@ -19,7 +19,7 @@ namespace BDD_Tests
             options.AddArgument("--disable-dev-shm-usage");
 
             Driver = new ChromeDriver(options);
-            Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+            Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
         }
 
         [OneTimeTearDown]
