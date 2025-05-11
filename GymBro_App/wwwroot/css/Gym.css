@@ -21,6 +21,10 @@
     padding: 0 0;
 }
 
+.bookmark-gym-button {
+    padding: 0 0;
+}
+
 /* Removing input number arrows */
 #postal-code-gym-search::-webkit-outer-spin-button,
 #postal-code-gym-search::-webkit-inner-spin-button {
@@ -32,4 +36,13 @@
 #postal-code-gym-search[type=number] {
     appearance: textfield;
     -moz-appearance: textfield;
+}
+
+.bookmarked-star {
+    color: #1b50e2;
+}
+
+.freshly-bookmarked-star {
+    color: #1b50e2;
+    --fa-animation-iteration-count: 1;
 }

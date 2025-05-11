@@ -2,7 +2,7 @@ Feature: SCRUM15
 
 As a user, I want to search for food items and view their nutritional information.
 
-@SCRUM15
+@MealPlan
 Scenario: Food search
     Given I am a user who has logged in
     And I have created a meal plan
@@ -11,7 +11,7 @@ Scenario: Food search
     And I click the search button
     Then I should see a list of food items related to chicken
 
-@SCRUM15
+@MealPlan
 Scenario: Navigation from details page to meal plan home page
     Given I am a user who has logged in
     When I go to create a meal

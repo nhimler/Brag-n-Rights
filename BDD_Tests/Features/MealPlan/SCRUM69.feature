@@ -2,7 +2,7 @@ Feature: SCRUM69
 
 As a user, I want to be able to fill meal creation fields based on suggestions
 
-@SCRUM69
+@MealPlan
 Scenario: Fill meal creation fields based on suggestions
     Given I am a user who has logged in
     And I have created a meal plan

@@ -2,7 +2,7 @@ Feature: SCRUM71
 
 As a user, I want my meal plans to be archived if they are no longer relevant
 
-@SCRUM71
+@MealPlan
 Scenario: Old meal plans are archived
     Given I am a user who has logged in
     And I create an out of date meal plan
