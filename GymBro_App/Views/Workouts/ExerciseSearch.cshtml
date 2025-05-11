@@ -7,13 +7,41 @@
 </head>
 
 <h1>Let's search our API for a workout</h1>
+
+<!-- body-part radio button group -->
+<div class="btn-group mb-3" role="group" aria-label="Body part filter">
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-back" value="back" autocomplete="off">
+    <label class="btn btn-outline-primary" for="bp-back">Back</label>
+
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-cardio" value="cardio" autocomplete="off">
+    <label class="btn btn-outline-primary" for="bp-cardio">Cardio</label>
+
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-chest" value="chest" autocomplete="off">
+    <label class="btn btn-outline-primary" for="bp-chest">Chest</label>
+
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-lower-arms" value="lower arms" autocomplete="off">
+    <label class="btn btn-outline-primary" for="bp-lower-arms">Lower Arms</label>
+
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-lower-legs" value="lower legs" autocomplete="off">
+    <label class="btn btn-outline-primary" for="bp-lower-legs">Lower Legs</label>
+
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-neck" value="neck" autocomplete="off">
+    <label class="btn btn-outline-primary" for="bp-neck">Neck</label>
+
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-shoulders" value="shoulders" autocomplete="off">
+    <label class="btn btn-outline-primary" for="bp-shoulders">Shoulders</label>
+
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-upper-arms" value="upper arms" autocomplete="off">
+    <label class="btn btn-outline-primary" for="bp-upper-arms">Upper Arms</label>
+
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-upper-legs" value="upper legs" autocomplete="off">
+    <label class="btn btn-outline-primary" for="bp-upper-legs">Upper Legs</label>
+
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-waist" value="waist" autocomplete="off">
+    <label class="btn btn-outline-primary" for="bp-waist">Waist</label>
+</div>
+
 <div class="row align-items-center mb-3" id="searchRow">
-    <div class="col-auto" id="exerciseSearchTypeSelector">
-        <select id="exerciseSearchType" class="form-select">
-            <option value="name" selected>Name</option>
-            <option value="bodyPart">Body Part</option>
-        </select>
-    </div>
     <div class="col">
         <div class="input-group">
             <input type="text" class="form-control" id="exerciseInput" placeholder="Search by an exercise name ex) bench press" aria-label="Search by an exercise name">
