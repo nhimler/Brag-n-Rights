@@ -149,7 +149,7 @@ public sealed class WorkoutsStepDefinitions
         });
         Assert.IsTrue(resultsLoaded, "Exercise search results did not load.");
     }
-
+    
     [Then("I should see my workout plans")]
     public void ThenIshouldSeeMyWorkoutPlans()
     {
@@ -308,5 +308,19 @@ public sealed class WorkoutsStepDefinitions
         Assert.That(exerciseTitle.GetAttribute("innerHTML"), Is.Not.Empty, "Exercise title is empty.");
         Assert.That(exerciseContent.GetAttribute("outerHTML"), Is.Not.Empty, "Exercise content is empty.");
         Assert.That(exerciseImage.GetAttribute("src"), Is.Not.Empty, "Exercise image is empty.");
+    }
+
+    [When("I click on the Complete Workout Plan button")]
+    public void WhenIClickOnTheCompleteWorkoutPlanButton()
+    {
+        var completeWorkoutPlanButton = _driver.FindElement(By.Id("completeWorkoutPlanButton"));
+        completeWorkoutPlanButton.Click();
+    }
+
+    [Then("I should not see the workout plan on the page")]
+    public void ThenIShouldNotSeeTheWorkoutPlanOnThePage()
+    {
+        var completeWorkoutButtons = _driver.FindElements(By.Id("completeWorkoutPlanButton"));
+        Assert.That(completeWorkoutButtons.Count, Is.EqualTo(0), "Workout plans are still displayed on the page.");
     }
 }
