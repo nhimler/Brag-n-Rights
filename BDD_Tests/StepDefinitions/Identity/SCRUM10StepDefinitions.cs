@@ -24,6 +24,23 @@ public sealed class SCRUM10StepDefinitions
         _driver.Navigate().GoToUrl("http://localhost:5075");
     }
 
+    [Given("I am not logged in")]
+    public void GivenIAmNotLoggedIn()
+    {
+        try
+        {
+            var logoutButton = _driver.FindElement(By.Id("logout"));
+            if (logoutButton.Displayed)
+            {
+                logoutButton.Click();
+            }
+        }
+        catch (NoSuchElementException)
+        {
+            // Continue if the logout button is not found. They are logged out.
+        }
+    }
+
     [When("I click on the {string} link")]
     public void WhenIClickOnTheLink(string link)
     {

@@ -58,6 +58,7 @@ namespace GymBro_App.Models.DTOs
         public string FormattedAddress { get; set; } = "";
         public RegularOpeningHours RegularOpeningHours { get; set; } = new RegularOpeningHours();
         public string WebsiteUri { get; set; } = "";
+        public string Name { get; set; } = "";
     }
 }
 

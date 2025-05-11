@@ -65,29 +65,29 @@ namespace BDD_Tests.StepDefinitions
             _driver.FindElement(By.Id("login-submit")).Click();
         }
 
-[Then(@"I should see ""(.*)"" page")]
-public void ThenIShouldSeePageWithHeader(string expectedHeader)
-{
-    // Increase the timeout if needed:
-    var localWait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
+        [Then(@"I should see ""(.*)"" page")]
+        public void ThenIShouldSeePageWithHeader(string expectedHeader)
+        {
+            // Increase the timeout if needed:
+            var localWait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
 
-    // Wait until an H1 element that contains the expected header text is displayed.
-    var headerText = localWait.Until(driver =>
-    {
-        try
-        {
-            var headerElement = driver.FindElement(By.XPath($"//h1[contains(., '{expectedHeader}')]"));
-            return headerElement.Displayed ? headerElement.Text : null;
-        }
-        catch (NoSuchElementException)
-        {
-            return null;
-        }
-        catch (StaleElementReferenceException)
-        {
-            return null;
-        }
-    });
+            // Wait until an H1 element that contains the expected header text is displayed.
+            var headerText = localWait.Until(driver =>
+            {
+                try
+                {
+                    var headerElement = driver.FindElement(By.XPath($"//h1[contains(., '{expectedHeader}')]"));
+                    return headerElement.Displayed ? headerElement.Text : null;
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return null;
+                }
+            });
 
     // Verify that we found the expected header.
     Assert.IsNotNull(headerText, $"Header containing '{expectedHeader}' was not found within the timeout.");
