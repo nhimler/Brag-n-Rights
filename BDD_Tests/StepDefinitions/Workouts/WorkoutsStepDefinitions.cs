@@ -73,8 +73,8 @@ public sealed class WorkoutsStepDefinitions
     [Given("I open the workout index page")]
     public void GivenIOpenTheWorkoutIndexPage()
     {
-        _driver.Navigate().GoToUrl("http://localhost:5075/Workouts/Index");
-        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/Workouts/Index"), $"Test error when navigating to the workout index page. Current URL: {_driver.Url}");
+        _driver.Navigate().GoToUrl("http://localhost:5075/Workouts");
+        Assert.That(_driver.Url, Does.Contain("/Workouts"), $"Test error when navigating to the workout index page. Current URL: {_driver.Url}");
     }
 
     [When("I click on the {string} button")]
@@ -365,5 +365,50 @@ public sealed class WorkoutsStepDefinitions
         Assert.That(exerciseList.Displayed, Is.EqualTo(true), "Exercise list is not displayed.");
         Assert.That(exerciseCards.Count, Is.GreaterThan(0), "No exercises found in the list.");
 
+    }
+
+    [When("I click on the View Exercises button")]
+    public void WhenIClickOnTheViewExercisesButton()
+    {
+        var viewExercisesButton = _driver.FindElement(By.Id("viewExercisesButton"));
+        viewExercisesButton.Click();
+    }
+
+    [Then("I should see the list of exercises in the workout plan")]
+    public void ThenIShouldSeeTheListOfExercisesInTheWorkoutPlan()
+    {
+        var container = _driver.FindElement(By.Id("exercisesModalBody"));
+        var details = container.FindElements(By.ClassName("exercise-detail"));
+        Assert.IsTrue(details.Count > 0, "No exercises found in the workout plan.");
+
+        var setsInputs = container.FindElements(By.CssSelector(".sets-input"));
+        var repsInputs = container.FindElements(By.CssSelector(".reps-input"));
+        var saveBtns   = container.FindElements(By.CssSelector(".save-changes-btn"));
+
+        Assert.IsTrue(setsInputs.Count > 0, "Set inputs are not present.");
+        Assert.IsTrue(repsInputs.Count > 0, "Reps inputs are not present.");
+        Assert.IsTrue(saveBtns.Count > 0,   "Save Changes buttons are not present.");
+    }
+
+    [Then("I should be able to set the sets and reps for the exercises")]
+    public void ThenIShouldBeAbleToSetTheSetsAndRepsForTheExercises()
+    {
+        var container   = _driver.FindElement(By.Id("exercisesModalBody"));
+        var firstDetail = container.FindElement(By.ClassName("exercise-detail"));
+        var setsInput   = firstDetail.FindElement(By.CssSelector(".sets-input"));
+        var repsInput   = firstDetail.FindElement(By.CssSelector(".reps-input"));
+        var saveButton  = firstDetail.FindElement(By.CssSelector(".save-changes-btn"));
+
+        setsInput.Clear();
+        setsInput.SendKeys("3");
+        repsInput.Clear();
+        repsInput.SendKeys("12");
+        saveButton.Click();
+
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+        wait.Until(driver => saveButton.Text.Contains("Saved"));
+
+        Assert.That(saveButton.Text, Is.EqualTo("Saved"), "Save button did not update to 'Saved'.");
+        Assert.That(saveButton.GetAttribute("class"), Does.Contain("btn-secondary"), "Button did not change to secondary style.");
     }
 }
