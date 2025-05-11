@@ -73,6 +73,7 @@ public sealed class SCRUM42StepDefinitions : IDisposable
         //Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/CreateMealPlan/new"));
         _driver.FindElement(By.Id("PlanName")).SendKeys("Test Meal Plan");
         _driver.FindElement(By.Id("create-btn")).Click();
+        Console.WriteLine(_driver.Url);
 
         _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan");
         // Thread.Sleep(1000); // Wait for the page to load
