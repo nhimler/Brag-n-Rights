@@ -99,5 +99,3 @@ public partial class User
     [InverseProperty("User")]
     public virtual ICollection<StepCompetitionParticipant> StepCompetitions { get; set; } = new List<StepCompetitionParticipant>();
 }
-
-
