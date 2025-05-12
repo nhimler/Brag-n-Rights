@@ -74,8 +74,6 @@ namespace GymBro_App.Services
                     PropertyNameCaseInsensitive = true
                 };
                 Root root = await JsonSerializer.DeserializeAsync<Root>(responseStream, options) ?? new Root();
-                _logger.LogInformation("Request Headers: {0}", _httpClient.DefaultRequestHeaders.GetValues("X-Goog-FieldMask").FirstOrDefault() ?? "");
-                _logger.LogInformation($"First name: {root.Places[0].Name}");
 
                 var places = root.Places.Select(p => new PlaceDTO
                 {

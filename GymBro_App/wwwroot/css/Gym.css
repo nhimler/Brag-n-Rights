@@ -37,3 +37,12 @@
     appearance: textfield;
     -moz-appearance: textfield;
 }
+
+.bookmarked-star {
+    color: #1b50e2;
+}
+
+.freshly-bookmarked-star {
+    color: #1b50e2;
+    --fa-animation-iteration-count: 1;
+}

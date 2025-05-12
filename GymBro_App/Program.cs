@@ -45,6 +45,7 @@ public class Program
         builder.Services.AddScoped<IGoogleMapsService, GoogleMapsService>();
         builder.Services.AddScoped<INearbySearchMapService, NearbySearchMapService>();
         builder.Services.AddScoped<IStepCompetitionRepository, StepCompetitionRepository>();
+        builder.Services.AddScoped<IGymUserRepository, GymUserRepository>();
 
         // Configure the email sender service for SendGrid
         builder.Services.AddTransient<IEmailSender, EmailSender>();
@@ -128,7 +129,7 @@ public class Program
         builder.Services.Configure<IdentityOptions>(options =>
         {
             // Sign in requirements
-            options.SignIn.RequireConfirmedAccount = true;
+            options.SignIn.RequireConfirmedAccount = false;
 
             // Password requirements
             options.Password.RequireDigit = false;

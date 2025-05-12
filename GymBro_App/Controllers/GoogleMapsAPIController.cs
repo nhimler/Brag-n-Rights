@@ -54,4 +54,18 @@ public class GoogleMapsAPIController : ControllerBase
             return NotFound("No results found for the given postal code.");
         }
     }
+
+    [HttpGet("place/{placeId}")]
+    public async Task<IActionResult> GetPlaceDetailsById(string placeId)
+    {
+        var placeDetails = await _googleMapsService.GetPlaceDetails(placeId);
+        if (placeDetails != null)
+        {
+            return Ok(placeDetails);
+        }
+        else
+        {
+            return NotFound("No results found for the given place ID.");
+        }
+    }
 }
