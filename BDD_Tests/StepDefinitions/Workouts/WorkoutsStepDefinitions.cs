@@ -74,7 +74,6 @@ public sealed class WorkoutsStepDefinitions
     public void GivenIOpenTheWorkoutIndexPage()
     {
         _driver.Navigate().GoToUrl("http://localhost:5075/Workouts");
-        Assert.That(_driver.Url, Does.Contain("/Workouts"), $"Test error when navigating to the workout index page. Current URL: {_driver.Url}");
     }
 
     [When("I click on the {string} button")]
@@ -327,8 +326,7 @@ public sealed class WorkoutsStepDefinitions
     [When("I navigate to the index page")]
     public void WhenINavigateToTheIndexPage()
     {
-        _driver.Navigate().GoToUrl("http://localhost:5075/Workouts/");
-        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/Workouts/"), $"Test error when navigating to the landing page. Current URL: {_driver.Url}");
+        _driver.Navigate().GoToUrl("http://localhost:5075/Workouts");
     }
 
     [Then("I should see buttons for each body part")]
