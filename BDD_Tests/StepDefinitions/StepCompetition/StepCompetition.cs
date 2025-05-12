@@ -89,10 +89,10 @@ namespace BDD_Tests.StepDefinitions
                 }
             });
 
-    // Verify that we found the expected header.
-    Assert.IsNotNull(headerText, $"Header containing '{expectedHeader}' was not found within the timeout.");
-    Assert.That(headerText, Does.Contain(expectedHeader), $"Expected header to contain '{expectedHeader}', but found '{headerText}'.");
-}
+            // Verify that we found the expected header.
+            Assert.IsNotNull(headerText, $"Header containing '{expectedHeader}' was not found within the timeout.");
+            Assert.That(headerText, Does.Contain(expectedHeader), $"Expected header to contain '{expectedHeader}', but found '{headerText}'.");
+        }
 
 
         [When(@"I click the ""(.*)"" button")]

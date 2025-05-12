@@ -10,7 +10,7 @@ namespace GymBro_App.Services
         public Task<string> GetAccessToken(string identityId);
         public Task<int> GetUserSteps(string accessToken, string date);
 
-        public Task ExchangeCodeForToken(string userId ,string code);
+        public Task ExchangeCodeForToken(string userId, string code);
 
         Task<bool> UserHasFitbitToken(string identityId);
     }

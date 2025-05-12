@@ -4,6 +4,7 @@ document.querySelectorAll(".old-food").forEach(async function (f) {
     console.log(f.getAttribute("data-api-id"));
     let response =  await fetch("/api/food/" + f.getAttribute("data-api-id"));
     if(response.ok){
+        document.getElementById("empty-message").hidden = true
         let result = await response.json();
         console.log(result);
         document.getElementById("selectedFood").appendChild(generateAccordionItem(result, true));
@@ -132,11 +133,15 @@ function generateAddButton(isSelected){
                 let movedItem = this.parentElement.parentElement.parentElement;
                 this.parentElement.parentElement.parentElement.remove();
                 document.getElementById("selectedFood").appendChild(movedItem);
+                document.getElementById("empty-message").hidden = true;
             }else{
                 this.textContent = "Add";
                 let movedItem = this.parentElement.parentElement.parentElement;
                 this.parentElement.parentElement.parentElement.remove();
                 document.getElementById("searchResultsAccordion").prepend(movedItem);
+                if(document.getElementById("selectedFood").childElementCount === 0){
+                    document.getElementById("empty-message").hidden = false;
+                }
             }
         } catch (error) {
             //console.error(error);

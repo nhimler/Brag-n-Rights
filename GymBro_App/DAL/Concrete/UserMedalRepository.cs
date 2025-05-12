@@ -18,12 +18,12 @@ namespace GymBro_App.DAL.Concrete
 
         public async Task<IEnumerable<UserMedalDto>> GetAllUserMedalsAsync(string identityId)
         {
-                var user = await _context.Users
-                             .FirstOrDefaultAsync(u => u.IdentityUserId == identityId);
-           if (user == null)
-           {
-               return Enumerable.Empty<UserMedalDto>();
-           }
+            var user = await _context.Users
+                         .FirstOrDefaultAsync(u => u.IdentityUserId == identityId);
+            if (user == null)
+            {
+                return Enumerable.Empty<UserMedalDto>();
+            }
 
             // Convert to Pacific Time
             var pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
