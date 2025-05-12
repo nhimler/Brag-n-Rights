@@ -247,5 +247,32 @@ namespace GymBro_App.DAL.Concrete
             }
             return false; // Participant not found
         }
+
+        public async Task<List<StepCompetition>> GetActiveCompetitionsAsync()
+        {
+            return await _context.StepCompetitions
+                .Where(sc => sc.IsActive)
+                .Include(sc => sc.Participants)
+                .ToListAsync();
+        }
+
+        public async Task UpdateAsync(StepCompetition competition)
+        {
+            _context.StepCompetitions.Update(competition);
+            await _context.SaveChangesAsync();
+        }
+
+        public Task SetIsActiveToFalseForAllParticipantsAsync(int competitionID)
+        {
+            var participants = _context.StepCompetitionParticipants
+                .Where(p => p.StepCompetitionId == competitionID);
+
+            foreach (var participant in participants)
+            {
+                participant.IsActive = false;
+            }
+
+            return _context.SaveChangesAsync();
+        }
     }
 }

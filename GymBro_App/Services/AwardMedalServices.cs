@@ -1,7 +1,6 @@
 using GymBro_App.Models;
 using GymBro_App.Models.DTOs;
 using GymBro_App.DAL.Abstract;
-using Azure.Core;
 
 namespace GymBro_App.Services
 {
@@ -26,7 +25,16 @@ namespace GymBro_App.Services
 
         public async Task<AwardMedal> AwardUserdMedalsAsync(string identityId)
         {
-            await SaveActivityData(identityId);
+            try
+            {
+                await SaveActivityData(identityId);
+            }
+            catch (Exception ex)
+            {
+                // Optionally log the error and continue
+                Console.WriteLine($"Error in SaveActivityData: {ex.Message}");
+            }
+
             var userId = _userRepository.GetIdFromIdentityId(identityId);
 
             var medals = await _medalRepository.GetAllMedalsAsync();// get all medals
@@ -88,7 +96,7 @@ namespace GymBro_App.Services
 
             try
             {
-                if (steps != null)
+                if (steps >= 0)
                 {
                     var userId = _userRepository.GetIdFromIdentityId(identityId);
 

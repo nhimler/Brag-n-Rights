@@ -227,6 +227,10 @@ namespace GymBro_App.Services
                     // Failed to refresh — assume refresh token is also bad or expired
                     Console.WriteLine($"Refresh failed: {ex.Message}");
 
+                    //delete the expired token from the database
+                    _context.Tokens.Remove(token);
+                    await _context.SaveChangesAsync();
+
                     // Optional: create a custom exception for easier handling
                     throw new TokenExpiredException("Both access and refresh tokens expired.");
                 }

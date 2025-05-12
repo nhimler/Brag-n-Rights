@@ -16,6 +16,11 @@ public interface IStepCompetitionRepository : IRepository<StepCompetition>
 
     Task<List<UserCompetitionViewModel>> GetRecentlyEndedCompetitionsForUserAsync(string identityId);
 
-
     Task<bool> LeaveCompetitionAsync(string identityId, int competitionID);
+    
+    Task<List<StepCompetition>> GetActiveCompetitionsAsync();
+
+    Task UpdateAsync(StepCompetition competition);
+
+    Task SetIsActiveToFalseForAllParticipantsAsync(int competitionID);
 }
