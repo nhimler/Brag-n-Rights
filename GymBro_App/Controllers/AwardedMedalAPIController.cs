@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;  
+using System.Security.Claims;
 using GymBro_App.DAL;
 using GymBro_App.DAL.Abstract;
 
@@ -12,7 +12,7 @@ namespace GymBro_App.Controllers
     {
         private readonly IUserMedalRepository _userMedalRepository;
 
-        public AwardedMedalAPIController( IUserMedalRepository userMedalRepository)
+        public AwardedMedalAPIController(IUserMedalRepository userMedalRepository)
         {
             _userMedalRepository = userMedalRepository;
         }
@@ -27,7 +27,7 @@ namespace GymBro_App.Controllers
                 return Unauthorized();
 
             // Get the user's identity ID from the claims
-        
+
             var identityId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (string.IsNullOrEmpty(identityId))
@@ -37,6 +37,6 @@ namespace GymBro_App.Controllers
             // Return the medals as a JSON response
             return Ok(medals);
         }
-        
+
     }
 }
