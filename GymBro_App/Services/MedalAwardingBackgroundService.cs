@@ -1,6 +1,4 @@
 using GymBro_App.DAL.Abstract;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace GymBro_App.Services
 {
