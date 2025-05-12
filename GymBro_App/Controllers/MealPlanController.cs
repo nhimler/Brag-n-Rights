@@ -152,6 +152,37 @@ public class MealPlanController : Controller
     }
 
     [Authorize]
+    [HttpGet]
+    public IActionResult Clear()
+    {
+        if (!(User.Identity?.IsAuthenticated ?? false))
+        {
+            return View();
+        }
+        var user = _userManager.GetUserAsync(User).Result;
+        if (user == null)
+        {
+            return View();
+        }
+        int userId = _userRepository.GetIdFromIdentityId(user.Id);
+        var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
+
+        mealPlans = mealPlans?.OrderBy(mp => mp.StartDate).ToList();
+        if (mealPlans == null)
+        {
+            return View(null);
+        }
+        foreach (MealPlan mealPlan in mealPlans)
+        {
+            if (mealPlan.Archived)
+            {
+                _mealPlanRepository.Delete(mealPlan);
+            }
+        }
+        return RedirectToAction("Archive");
+    }
+
+    [Authorize]
     [HttpGet("MealPlanDetails/{id}")]
     public IActionResult MealPlanDetails(string id)
     {

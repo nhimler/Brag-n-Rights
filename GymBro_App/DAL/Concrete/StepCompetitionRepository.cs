@@ -16,11 +16,11 @@ namespace GymBro_App.DAL.Concrete
             _context = context;
         }
 
-            public async Task AddAsync(StepCompetition competition)
-            {
-                await _context.StepCompetitions.AddAsync(competition);
-                await _context.SaveChangesAsync();
-            }
+        public async Task AddAsync(StepCompetition competition)
+        {
+            await _context.StepCompetitions.AddAsync(competition);
+            await _context.SaveChangesAsync();
+        }
         public StepCompetition AddOrUpdate(StepCompetition entity)
         {
             throw new NotImplementedException();
@@ -107,7 +107,7 @@ namespace GymBro_App.DAL.Concrete
                     StepCompetitionId = competition.CompetitionID,
                     IdentityId = user.IdentityUserId,
                 };
-               await _context.StepCompetitionParticipants.AddAsync(participant);
+                await _context.StepCompetitionParticipants.AddAsync(participant);
             }
 
             // Add the current user as a participant
@@ -147,26 +147,39 @@ namespace GymBro_App.DAL.Concrete
                 .ToListAsync();
         }
 
-        public async Task<List<UserCompetitionViewModel>> GetPastCompetitionsForUserAsync(string identityId)
+        public async Task<List<UserCompetitionViewModel>> GetPastCompetitionsForUserAsync(
+            string identityId,
+            int daysToSkip = 3)
         {
+
+            TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+
+
+            var nowPacific = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pacificZone);
+            var cutoffPacific = nowPacific.Date.AddDays(-daysToSkip);
+
             return await _context.StepCompetitionParticipants
-                .Where(p => p.IdentityId == identityId && !p.StepCompetition.IsActive)
+                .Where(p =>
+                    p.IdentityId == identityId &&
+                    !p.StepCompetition.IsActive &&
+                    p.StepCompetition.EndDate < cutoffPacific
+                )
                 .Include(p => p.StepCompetition)
                     .ThenInclude(sc => sc.Participants)
                         .ThenInclude(part => part.User)
                 .Select(p => new UserCompetitionViewModel
                 {
                     CompetitionID = p.StepCompetition.CompetitionID,
-                    StartDate     = p.StepCompetition.StartDate,
-                    EndDate       = p.StepCompetition.EndDate,
-                    IsActive      = p.StepCompetition.IsActive,
-                    Participants  = p.StepCompetition.Participants
+                    StartDate = p.StepCompetition.StartDate,
+                    EndDate = p.StepCompetition.EndDate,
+                    IsActive = p.StepCompetition.IsActive,
+                    Participants = p.StepCompetition.Participants
                         .Where(part => !part.IsActive)
                         .OrderByDescending(part => part.Steps)
                         .Select(part => new ParticipantViewModel
                         {
                             Username = part.User.Username,
-                            Steps    = part.Steps
+                            Steps = part.Steps
                         })
                         .ToList()
                 })
@@ -174,7 +187,53 @@ namespace GymBro_App.DAL.Concrete
         }
 
 
-        public async Task<bool> LeaveCompetitionAsync(string identityId,int competitionID)
+        public async Task<List<UserCompetitionViewModel>> GetRecentlyEndedCompetitionsForUserAsync(
+            string identityId)
+        {
+            const int lookbackDays = 3;
+
+            TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+
+
+
+            var nowUtc = DateTime.UtcNow;
+            var nowPacific = TimeZoneInfo.ConvertTimeFromUtc(nowUtc, pacificZone);
+
+            var cutoffPacific = nowPacific.Date.AddDays(-lookbackDays);
+
+
+            return await _context.StepCompetitionParticipants
+                .Where(p =>
+                    p.IdentityId == identityId
+                    && !p.StepCompetition.IsActive
+                    && p.StepCompetition.EndDate >= cutoffPacific
+                    && p.StepCompetition.EndDate <= nowPacific
+                )
+                .Include(p => p.StepCompetition)
+                    .ThenInclude(sc => sc.Participants)
+                        .ThenInclude(part => part.User)
+                .Select(p => new UserCompetitionViewModel
+                {
+                    CompetitionID = p.StepCompetition.CompetitionID,
+                    StartDate = p.StepCompetition.StartDate,
+                    EndDate = p.StepCompetition.EndDate,
+                    IsActive = p.StepCompetition.IsActive,
+                    Participants = p.StepCompetition.Participants
+                        .Where(part => !part.IsActive)
+                        .OrderByDescending(part => part.Steps)
+                        .Select(part => new ParticipantViewModel
+                        {
+                            Username = part.User.Username,
+                            Steps = part.Steps
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
+        }
+
+
+
+        public async Task<bool> LeaveCompetitionAsync(string identityId, int competitionID)
         {
             var participant = await _context.StepCompetitionParticipants
                 .FirstOrDefaultAsync(p => p.IdentityId == identityId && p.StepCompetitionId == competitionID);
@@ -187,6 +246,33 @@ namespace GymBro_App.DAL.Concrete
                 return true; // Successfully left the competition
             }
             return false; // Participant not found
+        }
+
+        public async Task<List<StepCompetition>> GetActiveCompetitionsAsync()
+        {
+            return await _context.StepCompetitions
+                .Where(sc => sc.IsActive)
+                .Include(sc => sc.Participants)
+                .ToListAsync();
+        }
+
+        public async Task UpdateAsync(StepCompetition competition)
+        {
+            _context.StepCompetitions.Update(competition);
+            await _context.SaveChangesAsync();
+        }
+
+        public Task SetIsActiveToFalseForAllParticipantsAsync(int competitionID)
+        {
+            var participants = _context.StepCompetitionParticipants
+                .Where(p => p.StepCompetitionId == competitionID);
+
+            foreach (var participant in participants)
+            {
+                participant.IsActive = false;
+            }
+
+            return _context.SaveChangesAsync();
         }
     }
 }

@@ -53,7 +53,7 @@ public sealed class MealPlanStepDefinitions
         _driver.FindElement(By.Id("PlanName")).SendKeys("Very Old Test Meal Plan");
         _driver.FindElement(By.Id("StartDate")).SendKeys("01010001");
         _driver.FindElement(By.Id("EndDate")).SendKeys("01010001");
-        _driver.FindElement(By.Id("create-btn")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("create-btn")));
 
         _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan");
     }
@@ -105,10 +105,22 @@ public sealed class MealPlanStepDefinitions
         _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan/Archive");
     }
 
+    [When("I click the delete all button")]
+    public void WhenIClickTheDeleteAllButton()
+    {
+        _driver.FindElement(By.Id("del-btn")).Click();
+    }
+
     [Then("I should see my archived meal plans")]
     public void ThenIShouldSeeMyArchivedMealPlans()
     {
         Assert.That(_driver.PageSource, Does.Contain("Very Old Test Meal Plan"));
+    }
+
+    [Then("I should see no archived meal plans")]
+    public void ThenIShouldSeeNoArchivedMealPlans()
+    {
+        Assert.That(_driver.PageSource, Does.Not.Contain("Very Old Test Meal Plan"));
     }
 
     [Then("I should be taken to the meal plan archive page")]

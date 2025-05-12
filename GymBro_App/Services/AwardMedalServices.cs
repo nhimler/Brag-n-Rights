@@ -1,7 +1,6 @@
 using GymBro_App.Models;
 using GymBro_App.Models.DTOs;
 using GymBro_App.DAL.Abstract;
-using Azure.Core;
 
 namespace GymBro_App.Services
 {
@@ -13,7 +12,7 @@ namespace GymBro_App.Services
         private readonly IBiometricDatumRepository _biometricDatumRepository;  // Declare the field
         private readonly IOAuthService _oAuthService;
 
-        public AwardMedalService(IUserRepository userRepository, IMedalRepository medalRepository, 
+        public AwardMedalService(IUserRepository userRepository, IMedalRepository medalRepository,
             IUserMedalRepository userMedalRepository, IBiometricDatumRepository biometricDatumRepository
             , IOAuthService oAuthService)
         {
@@ -26,7 +25,16 @@ namespace GymBro_App.Services
 
         public async Task<AwardMedal> AwardUserdMedalsAsync(string identityId)
         {
-            await SaveActivityData(identityId);
+            try
+            {
+                await SaveActivityData(identityId);
+            }
+            catch (Exception ex)
+            {
+                // Optionally log the error and continue
+                Console.WriteLine($"Error in SaveActivityData: {ex.Message}");
+            }
+
             var userId = _userRepository.GetIdFromIdentityId(identityId);
 
             var medals = await _medalRepository.GetAllMedalsAsync();// get all medals
@@ -77,18 +85,18 @@ namespace GymBro_App.Services
                 UserId = userId,
                 AwardedMedals = awardedMedals
             };
-        } 
+        }
         public async Task SaveActivityData(string identityId)
         {
             var pacificTime = GetPacificTime();  // Use the helper method to get Pacific Time
-            var today = DateOnly.FromDateTime(pacificTime.Date); 
+            var today = DateOnly.FromDateTime(pacificTime.Date);
 
             var Token = await _oAuthService.GetAccessToken(identityId);
             var steps = await _oAuthService.GetUserSteps(Token, today.ToString("yyyy-MM-dd"));
 
             try
             {
-                if (steps != null)
+                if (steps >= 0)
                 {
                     var userId = _userRepository.GetIdFromIdentityId(identityId);
 
@@ -102,7 +110,7 @@ namespace GymBro_App.Services
                     {
                         UserId = userId,
                         Steps = steps,
-                       LastUpdated = GetPacificTime() 
+                        LastUpdated = GetPacificTime()
                     };
 
                     await _biometricDatumRepository.AddAsync(biometricData);

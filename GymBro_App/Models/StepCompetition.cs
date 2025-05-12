@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymBro_App.Models
 {
-        [Table("StepCompetition")]
-        public class StepCompetition
+    [Table("StepCompetition")]
+    public class StepCompetition
     {
         public int CompetitionID { get; set; }  // Primary Key (CompetitionID)
         public string CreatorIdentityId { get; set; }  // IdentityId of the user who created the competition
