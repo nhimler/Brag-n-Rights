@@ -362,4 +362,10 @@ public sealed class MealPlanStepDefinitions
         var calendarView = _driver.FindElement(By.Id("calendar"));
         Assert.That(calendarView.GetAttribute("hidden"), Is.EqualTo("true"), "Calendar view is displayed when it should not be");
     }
+
+    [Then("I should see a date input field")]
+    public void ThenIShouldSeeADateInputField()
+    {
+        Assert.That(_driver.FindElement(By.Id("Date")).Displayed, Is.True);
+    }
 }
