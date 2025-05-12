@@ -6,27 +6,36 @@
 
 <a asp-action="Index"><button class="btn btn-primary mb-2" id="home-btn">Back to Meal Plans</button></a>
 <br>
-<a asp-action="Clear"><button class="btn btn-danger mb-2" id="del-btn">Delete All</button></a>
+
 
 @if(Model != null){
-    <table class="table table-striped table-hover table-bordered">
-        <thead>
-            <tr>
-                <th>Meal Plan Name</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var plan in Model.MealPlans){
+
+    @if(Model.MealPlans.Count == 0){
+        <div class="alert alert-info" role="alert">
+            No archived meal plans yet!
+        </div>
+    }else{
+    <a asp-action="Clear"><button class="btn btn-danger mb-2" id="del-btn">Delete All</button></a>
+    <br>
+        <table class="table table-striped table-hover table-bordered">
+            <thead>
                 <tr>
-                    <td>@plan.PlanName</td>
-                    <td>@plan.StartDate.ToString("MM/dd/yyyy")</td>
-                    <td>@plan.EndDate.ToString("MM/dd/yyyy")</td>
-                    <td><a asp-action="MealPlanDetails" asp-route-id="@plan.Id">View Details</a></td>
+                    <th>Meal Plan Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach(var plan in Model.MealPlans){
+                    <tr>
+                        <td>@plan.PlanName</td>
+                        <td>@plan.StartDate.ToString("MM/dd/yyyy")</td>
+                        <td>@plan.EndDate.ToString("MM/dd/yyyy")</td>
+                        <td><a asp-action="MealPlanDetails" asp-route-id="@plan.Id">View Details</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }

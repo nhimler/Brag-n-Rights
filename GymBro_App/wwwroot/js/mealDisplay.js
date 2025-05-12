@@ -23,6 +23,11 @@ async function getSchedule(user) {
             var listEl = document.getElementById('list');
 
             document.getElementById('view-btn').addEventListener('click', function() {
+                if (this.textContent === 'Calendar View') {
+                    this.textContent = 'List View';
+                } else {
+                    this.textContent = 'Calendar View';
+                }
                 listEl.toggleAttribute('hidden');
                 calendarEl.toggleAttribute('hidden');
                 calendar.render();

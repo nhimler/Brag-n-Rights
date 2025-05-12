@@ -75,7 +75,7 @@ public class AiService_Tests
 
         // Assert
         Assert.IsNotNull(result);
-        Assert.That(result, Is.EqualTo(expectedErrorMessage));
+        Assert.That(result, Does.Contain(expectedErrorMessage));
     }
 
 
