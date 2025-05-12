@@ -3,14 +3,18 @@
     ViewData["Title"] = "Meal Plan";
 }
 
-
-<p>Welcome to the Meal Plan page!</p>
-
 <a asp-action="CreateMealPlan" asp-route-id="new"><button class="btn btn-primary">Create Meal Plan</button></a>
-<hr>
+
+@if(Model?.MealPlans.Count == 0){
+    <hr>
+    <div class="alert alert-info" role="alert">
+        You have no meal plans yet. Create one to get started!
+    </div>
+}else{
 <a asp-action="CreateMeal" asp-route-id="new"><button class="btn btn-primary" id="create-meal-btn">Create Meal</button></a>
 <hr>
-<button class="btn btn-secondary mb-2 mr-2" id="view-btn">Switch View</button>
+
+<button class="btn btn-secondary mb-2 mr-2" id="view-btn">Calendar View</button>
 <a asp-action="Archive"><button class="btn btn-secondary mb-2" id="archive-btn">Archived Meals</button></a>
 
 @if(Model != null && Model.didArchive){
@@ -26,27 +30,51 @@
             <img src="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret.png" srcset="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_2x.png 2x, https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_3x.png 3x" border="0"/>
         </a>
 
-        @foreach(var plan in Model.MealPlans){
-            <a class="title-link" asp-action="MealPlanDetails" asp-route-id="@plan.Id"><h3>@plan.PlanName - @plan.StartDate.Month/@plan.StartDate.Day/@plan.StartDate.Year</h3></a>
-            <h4>Meals</h4>
-            <ol>
-                @foreach(var meal in plan.Meals)
-                {
-                    <li>
-                            <a class="title-link" asp-action="MealDetails" asp-route-id="@meal.Id"><h3>@meal.MealName:</h3></a>
-                            @foreach(long f in meal.Foods)
+        <table class="table table-striped table-hover table-bordered">
+            <thead>
+                <!--tr>
+                    <th>Meal Plan Name</th>
+                    <th>Meals</th>
+                    <th>End Date</th>
+                    <th>Actions</th>
+                </tr-->
+            </thead>
+            <tbody>
+            @foreach(var plan in Model.MealPlans){
+                <tr>
+                    <td>
+                        <a class="title-link" asp-action="MealPlanDetails" asp-route-id="@plan.Id"><h3>@plan.PlanName - Starting @plan.StartDate.Month/@plan.StartDate.Day/@plan.StartDate.Year</h3></a>
+                    </td>
+                    <td>
+                        <h4>Meals</h4>
+                        @if(plan.Meals.Count == 0){
+                            <p>No meals in this plan</p>
+                        }
+                        <ol>
+                            @foreach(var meal in plan.Meals)
                             {
-                                <p class="food-from-api" data-api-id="@f">-</p>
+                                <li>
+                                        <a class="title-link" asp-action="MealDetails" asp-route-id="@meal.Id"><h3>@meal.MealName:</h3></a>
+                                        @foreach(long f in meal.Foods)
+                                        {
+                                            <p class="food-from-api" data-api-id="@f">-</p>
+                                        }
+                                </li>
                             }
-                    </li>
-                }
-            </ol>
-        }
+                        </ol>
+                    </td>
+                
+                </tr>
+            }
+            </tbody>
+
+        </table>
     }
 </div>
 
 
 <div id="calendar" hidden></div>
+}
 
 <script src="~/js/mealDisplay.js" asp-append-version="true"></script>
 <link rel="stylesheet" href="~/css/MealPlan.css" asp-append-version="true" />
