@@ -15,6 +15,4 @@ namespace GymBro_App.ViewModels
         public string Username { get; set; } = string.Empty;
         public int Steps { get; set; }
     }
-
-
 }

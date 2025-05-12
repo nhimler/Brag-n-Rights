@@ -4,12 +4,26 @@
 <link rel="stylesheet" href="~/css/Gym.css" />
 
 <div class="container">
-    <h1>Find Nearby Gyms</h1>
+    <h1 class="mb-4 pt-4">Nearby Gyms</h1>
     <hr/>
-    <div class="row">
+    <div>
+        <partial name="../UserPage/_ProfileNav" />
+    </div>
+    <div class="row d-flex align-items-stretch">
         <div class="col-4 col-md-4 d-flex flex-column">
-            <div id="nearby-gym-search-list">
-            </div>
+            <form id="nearby-gym-search-form" class="mb-3 col-sm-12">
+                <div class="input-group">
+                    <input type="number" id="postal-code-gym-search" value="" class="form-control" placeholder="Enter a postal code" required />
+                    <span id="set-gym-location-span" class="input-group-text">
+                        <button class="btn" id="set-location-button" type="button"><i class="fa-solid fa-location-dot"></i></button>
+                    </span>
+                    <button id="postal-code-gym-search-button" type="submit" class="btn btn-primary ms-1">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </form>
+            <h5 id="nearby-gyms-results-header" class="mb-3 text-center">Find a gym near you</h5>
+            <div id="nearby-gym-search-list"><!-- This is where the search results go --></div>
         </div>
         
         <div class="col-8 col-md-8 d-flex flex-column">
@@ -20,11 +34,12 @@
                 src=""
                 allowfullscreen
             ></iframe>
-            <button class="btn btn-primary my-3" id="set-location-button">Set My Location</button>
+            @* <button class="btn btn-primary mt-3" id="set-location-button">Find My Location</button> *@
         </div>
     </div>
 </div>
 
+<script>var isLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower())</script>
 @section Scripts {
     <script type="text/javascript" src="~/js/userLocation.js"></script>
 }

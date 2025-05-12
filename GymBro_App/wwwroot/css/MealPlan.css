@@ -12,3 +12,19 @@
 #view-btn, #archive-btn {
     display: inline-block;
 }
+
+.suggestion-button {
+    display: block;
+}
+
+#del-form {
+    display: inline-block;
+}
+
+.title-w-btn {
+    display: inline-block;
+}
+
+.inl-bl {
+    display: inline-block;
+}

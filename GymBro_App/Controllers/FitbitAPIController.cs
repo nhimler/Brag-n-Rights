@@ -8,7 +8,7 @@ namespace GymBro_App.Controllers
     public class FitbitAPIController : Controller
     {
         private readonly IOAuthService _oauthService;
-        
+
         public FitbitAPIController(IOAuthService oauthService)
         {
             _oauthService = oauthService;

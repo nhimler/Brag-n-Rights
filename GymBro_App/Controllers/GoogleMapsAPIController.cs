@@ -40,4 +40,32 @@ public class GoogleMapsAPIController : ControllerBase
         var address = await _googleMapsService.ReverseGeocode(latitude, longitude);
         return Ok(new { address });
     }
+
+    [HttpGet("geocode/{postalCode}")]
+    public async Task<IActionResult> GeocodePostalCode(string postalCode)
+    {
+        var result = await _googleMapsService.GeocodePostalCode(postalCode);
+        if (result != null)
+        {
+            return Ok(new { latitude = result.Latitude, longitude = result.Longitude });
+        }
+        else
+        {
+            return NotFound("No results found for the given postal code.");
+        }
+    }
+
+    [HttpGet("place/{placeId}")]
+    public async Task<IActionResult> GetPlaceDetailsById(string placeId)
+    {
+        var placeDetails = await _googleMapsService.GetPlaceDetails(placeId);
+        if (placeDetails != null)
+        {
+            return Ok(placeDetails);
+        }
+        else
+        {
+            return NotFound("No results found for the given place ID.");
+        }
+    }
 }

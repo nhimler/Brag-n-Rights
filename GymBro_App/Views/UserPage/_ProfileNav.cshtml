@@ -1,13 +1,22 @@
-@inject Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper HtmlHelper
+@using Microsoft.AspNetCore.Identity
 
-<ul class="nav nav-pills mb-3">
-    <li class="nav-item">
-        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="UserPage" asp-action="Index">Dashboard</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "FindNearbyGyms" ? "active" : "")" asp-controller="Gym" asp-action="FindNearbyGyms">Gyms</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "ChangeInfo" ? "active" : "")" asp-controller="UserPage" asp-action="ChangeInfo">Change Info</a>
-    </li>
-</ul>
+@inject Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper HtmlHelper
+@inject SignInManager<IdentityUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <ul class="nav nav-pills mb-3">
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="UserPage" asp-action="Index">Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "FindNearbyGyms" ? "active" : "")" asp-controller="Gym" asp-action="FindNearbyGyms">Gyms</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "ChangeInfo" ? "active" : "")" asp-controller="UserPage" asp-action="ChangeInfo">Change Info</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "BookmarkedGyms" ? "active" : "")" asp-controller="UserPage" asp-action="BookmarkedGyms">My Gyms</a>
+        </li>
+    </ul>
+}

@@ -46,7 +46,7 @@ public class AiService_Tests
             .ReturnsAsync(responseMessage);
 
         // Act
-        var result = await _aiService.GetResponse("apple, banana");
+        var result = await _aiService.GetResponse("apple, banana", IAiService.AiServiceType.Suggestion);
 
         // Assert
         Assert.IsNotNull(result);
@@ -71,11 +71,11 @@ public class AiService_Tests
         string expectedErrorMessage = "No response from AI";
 
         // Act
-        var result = await _aiService.GetResponse("apple, banana");
+        var result = await _aiService.GetResponse("apple, banana", IAiService.AiServiceType.Suggestion);
 
         // Assert
         Assert.IsNotNull(result);
-        Assert.That(result, Is.EqualTo(expectedErrorMessage));
+        Assert.That(result, Does.Contain(expectedErrorMessage));
     }
 
 

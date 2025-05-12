@@ -1,9 +1,16 @@
+let userSignedIn = false;
+
 document.addEventListener("DOMContentLoaded", () => {
+    if (isLoggedIn) {
+        userSignedIn = true
+    }
+
     const mapElement = document.getElementById("nearby-gyms-map")
     if (mapElement) {
         embedDefaultMap()
         navigator.geolocation.getCurrentPosition(embedMapAtUserPosition, getPositionError)
     }
+
     const setLocationButton = document.getElementById("set-location-button");
     if (setLocationButton) {
         setLocationButton.addEventListener("click", () => {
@@ -25,11 +32,33 @@ document.addEventListener("DOMContentLoaded", () => {
     else {
         console.log("getUserLocation-btn not found")
     }
+
+    const searchGymPostalCode = document.getElementById("nearby-gym-search-form")
+    if (searchGymPostalCode) {
+        searchGymPostalCode.addEventListener("submit", async (event) => {
+            event.preventDefault()
+            let postalCode = document.getElementById("postal-code-gym-search").value
+            console.log(postalCode)
+            let coordinates = await geocodePostal(postalCode)
+            console.log(coordinates)
+
+            if (coordinates) {
+                let lat = coordinates.latitude
+                let long = coordinates.longitude
+                embedMapAtUserPosition({ coords: { latitude: lat, longitude: long } })
+                getNearbyGyms({ coords: { latitude: lat, longitude: long } })
+            }
+            else {
+                console.error("Error: couldn't get coordinates for postal code")
+            }
+        })
+    }
 })
 
 function noNearbyGyms() {
     let gymList = document.getElementById("nearby-gym-search-list")
-    gymList.innerHTML = `<p class="text-center">No nearby gyms found.</p>`
+    document.getElementById("nearby-gyms-results-header").innerText = "No nearby gyms found."
+    gymList.innerHTML = ""
 }
 
 function getPositionError(err) {
@@ -67,7 +96,7 @@ async function embedMapAtUserPosition(position) {
     if (response.ok) {
         let result = await response.json()
         // console.log("Got response")
-        
+
         let lat = coordinates.latitude.toFixed(6)
         let long = coordinates.longitude.toFixed(6)
 
@@ -90,51 +119,166 @@ async function getNearbyGyms(pos) {
     if(response.ok){
         let result = await response.json()
         let gymList = document.getElementById("nearby-gym-search-list")
-        let gymListHTML = ""
+        gymList.textContent = ""
 
         if (result.length === 0) {
-            gymList.innerHTML = `<p class="text-center">No nearby gyms found.</p>`
+            document.getElementById("nearby-gyms-results-header").innerText = "No nearby gyms found."
+            gymList.parentNode.replaceChild(gymList.cloneNode(false), gymList)
             return
+        }
+        else {
+            document.getElementById("nearby-gyms-results-header").textContent = `Found ${result.length} nearby gyms`
         }
         for (let i = 0; i < result.length; i++) {
             let gym = result[i]
             // console.log(gym.regularOpeningHours)
-            
-            // Gets open/close status and the next time it opens/closes. TODO: Fix this so it adjusts for UTC time and 24/7 gyms
+
+            // // Gets open/close status and the next time it opens/closes. TODO: Fix this so it adjusts for UTC time and 24/7 gyms
             // let gymOpenStatus = gym.regularOpeningHours.openNow ? "Open" : "Closed"
+            // const daysOfWeek = []
+            // const currentDay = new Date().getDay()
+            // console
+            // console.log(`Open Status: ${gymOpenStatus}`)
+            // console.log(`Today's hours: ${gym.regularOpening}`)
+            // if (gymOpenStatus === "Open") {
+            //     console.log("Today's hours: " + gym.regularOpeningHours.openingHours[currentDay])
+            //     console.log("Closes at: " + gym.regularOpeningHours.nextCloseTime)
+            // }
+            // else {
+            //     console.log("Opens at: " + gym.regularOpeningHours.nextOpenTime)
+            // }
             // console.log(`${gym.regularOpeningHours.nextCloseTime} ${gym.regularOpeningHours.nextOpenTime}`)
             // let gymNextStatusHours = gymOpenStatus ? `Closes at ${gym.regularOpeningHours.nextCloseTime} ` : `Opens at ${gym.regularOpeningHours.nextOpenTime}`
             // gymNextStatusHours = gymNextStatusHours.split("T")[1].slice(0, -1)
             // console.log("Closes at: " + gym.regularOpeningHours.nextCloseTime)
             // console.log("Opens at: " + gym.regularOpeningHours.nextOpenTime)
+            
 
+            let gymResult = document.createElement("div")
+            gymResult.setAttribute("class", "card mb-3 text-decoration-none text-dark diplayed-gym-card")
+            
+            let gymResultBody = document.createElement("div")
+            gymResultBody.setAttribute("class", "card-body")
+            gymResultBody.appendChild(document.createElement("h5")).innerText = gym.displayName.text
+
+            let gymResultAddress = document.createElement("p")
+            gymResultAddress.setAttribute("class", "card-text")
+            gymResultAddress.innerText = gym.formattedAddress
+            gymResultBody.appendChild(gymResultAddress)
 
             let gymHours = gym.regularOpeningHours.weekdayDescriptions
-            let gymHoursParagraphs = ""
+            let gymHoursParagraphs = document.createElement("div")
+            gymHoursParagraphs.setAttribute("class", "d-flex flex-column mb-3")
             gymHours.forEach(day => {
-                gymHoursParagraphs += `<p class="card-text my-1">${day}</p>`
-            });
+                let gymHoursParagraph = document.createElement("p")
+                gymHoursParagraph.setAttribute("class", "card-text my-1")
+                gymHoursParagraph.innerText = day
+                gymHoursParagraphs.appendChild(gymHoursParagraph)
+            })
+            gymResultBody.appendChild(gymHoursParagraphs)
+
+            let gymResultActions = document.createElement("div")
+            gymResultActions.setAttribute("class", "d-flex justify-content-between align-items-center")
             
-            gymListHTML += `
-                <a target="_blank" rel="noopener noreferrer" href="${gym.websiteUri}" class="card mb-3 text-decoration-none text-dark diplayed-gym-card">
-                    <div class="card-body">
-                        <h5 class="card-title">${gym.displayName.text}</h5>
-                        <p class="card-text"><small class="text-body-secondary">${gym.formattedAddress}</small></p>
-                        ${gymHoursParagraphs}
-                    </div>
-                </a>
-            `
-            gymList.innerHTML = gymListHTML
-            // console.log(gym)
-            // console.log(gym.displayName.text)
-            // console.log(gym.formattedAddress)
-            // console.log("")
+            // Preparing the gym's id for the bookmark button (if they're logged in)
+            if (userSignedIn) {
+                let gymPlaceID = gym.name.replace("places/", "")
+                let isBookmarked = await isGymBookmarked(gymPlaceID)
+
+                let bookmarkButton = document.createElement("button")
+                bookmarkButton.setAttribute("class", "btn bookmark-gym-button")
+                bookmarkButton.setAttribute("id", gymPlaceID)
+                bookmarkButton.setAttribute("type", "button")
+                
+                if (isBookmarked) {
+                    bookmarkButton.setAttribute("disabled", "true")
+                    let bookmarkStar = document.createElement("i")
+                    bookmarkStar.setAttribute("class", "fa-solid fa-star bookmarked-star")
+                    bookmarkButton.appendChild(bookmarkStar)
+                    bookmarkButton.appendChild(document.createTextNode(" Bookmarked"))
+                    bookmarkButton.setAttribute("class", "btn bookmark-gym-button disabled")
+                    bookmarkButton.setAttribute("aria-disabled", "true")
+                    bookmarkButton.setAttribute("disabled", "true")
+                    gymResultActions.appendChild(bookmarkButton)
+                }
+
+                else {
+                    let bookmarkStar = document.createElement("i")
+                    bookmarkStar.setAttribute("class", "fa-solid fa-star")
+                    bookmarkButton.appendChild(bookmarkStar)
+
+                    bookmarkButton.appendChild(document.createTextNode(" Add to Boomarks"))
+                    bookmarkButton.addEventListener("click", () => {
+                        console.log("Bookmark button clicked")
+                        bookmarkGym(gymPlaceID)
+                        bookmarkButton.setAttribute("disabled", "true")
+                        bookmarkButton.setAttribute("class", "btn bookmark-gym-button disabled")
+                        bookmarkButton.setAttribute("aria-disabled", "true")
+                        bookmarkButton.textContent = ""
+
+                        let bookmarkedStar = document.createElement("i")
+                        bookmarkedStar.setAttribute("class", "fa-solid fa-star fa-bounce freshly-bookmarked-star")
+                        bookmarkButton.appendChild(bookmarkedStar)
+                        bookmarkButton.appendChild(document.createTextNode(" Bookmarked"))
+                    })
+                    gymResultActions.appendChild(bookmarkButton)
+                }
+            }
+
+            let gymWebsiteButton = document.createElement("a")
+            gymWebsiteButton.setAttribute("target", "_blank")
+            gymWebsiteButton.setAttribute("rel", "noopener noreferrer")
+            gymWebsiteButton.setAttribute("href", gym.websiteUri)
+            gymWebsiteButton.setAttribute("class", "text-decoration-none text-dark")
+
+            let gymWebsiteIcon = document.createElement("i")
+            gymWebsiteIcon.setAttribute("class", "fa-solid fa-arrow-up-right-from-square")
+            gymWebsiteButton.appendChild(gymWebsiteIcon)
+            gymWebsiteButton.appendChild(document.createTextNode(" View Gym Website"))
+            gymResultActions.appendChild(gymWebsiteButton)
+
+            gymResultBody.appendChild(gymResultActions)
+            gymResult.appendChild(gymResultBody)
+            gymList.appendChild(gymResult)
         }
     }
     else {
         console.log("Error: " + response.status)
     }
 }
+
+async function bookmarkGym(gymPlaceID) {
+    let response = await fetch(`/api/users/bookmarkGym/${gymPlaceID}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+
+    if (response.ok) {
+        console.log("Gym bookmarked successfully")
+    }
+    else {
+        console.log("Error: " + response.status)
+    }
+}
+
+async function isGymBookmarked(gymPlaceID) {
+    let response = await fetch(`/api/users/isGymBookmarked/${gymPlaceID}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'}
+        })
+        if (response.ok) {
+            let result = await response.json()
+            console.log(result)
+            return result
+        }
+        else {
+            console.log("Error in isGymBookmarked: " + response.status)
+        }
+}
+
 
 async function reverseGeocode(lat, long) {
     let response = await fetch(`/api/maps/reversegeocode/${lat}/${long}`, {
@@ -150,6 +294,24 @@ async function reverseGeocode(lat, long) {
         let userLocation = document.getElementById("user-location")
         userLocation.innerHTML = `Location: ${result.address}`
         
+    }
+    else {
+        console.log("Error: " + response.status)
+    }
+}
+
+async function geocodePostal(postalCode) {
+    let response = await fetch(`/api/maps/geocode/${postalCode}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    if(response.ok){
+        let result = await response.json()
+        console.log(result)
+        return result
     }
     else {
         console.log("Error: " + response.status)

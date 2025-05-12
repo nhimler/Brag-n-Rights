@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;  
+using System.Security.Claims;
 using GymBro_App.DAL.Abstract;
 
 namespace GymBro_App.Controllers
@@ -29,10 +29,10 @@ namespace GymBro_App.Controllers
 
 
             // Call the repository method to search for users with the given username
-            var users = await _stepCompetitionRepository.SearchUsersWithTokenAsync(username,identityId);
+            var users = await _stepCompetitionRepository.SearchUsersWithTokenAsync(username, identityId);
 
             return Ok(users);
-            
+
         }
 
         [Authorize]
@@ -77,7 +77,7 @@ namespace GymBro_App.Controllers
             if (string.IsNullOrEmpty(identityId))
                 return Unauthorized();
 
-            var competitions = await _stepCompetitionRepository.GetPastCompetitionsForUserAsync(identityId);
+            var competitions = await _stepCompetitionRepository.GetPastCompetitionsForUserAsync(identityId, 3);
             return Ok(competitions);
         }
 
@@ -98,6 +98,18 @@ namespace GymBro_App.Controllers
             {
                 return BadRequest("Failed to leave the competition.");
             }
+        }
+
+        [Authorize]
+        [HttpGet("RecentlyEndedCompetitions")]
+        public async Task<IActionResult> GetRecentlyEndedCompetitions()
+        {
+            var identityId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(identityId))
+                return Unauthorized();
+
+            var competitions = await _stepCompetitionRepository.GetRecentlyEndedCompetitionsForUserAsync(identityId);
+            return Ok(competitions);
         }
     }
 }

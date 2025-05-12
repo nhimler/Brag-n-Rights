@@ -3,6 +3,22 @@ let exerciseIdList = [];
 
 let isUserLoggedIn = false;
 
+async function performSearch(term, byBodyPart = false) {
+    const endpoint = byBodyPart
+        ? `/api/exercises/bodyPart/${encodeURIComponent(term)}`
+        : `/api/exercises/${encodeURIComponent(term)}`;
+    const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    });
+    if (response.ok) {
+        const result = await response.json();
+        await displayExerciseSearchResults(result);
+    } else {
+        displayExerciseSearchFailure();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof isLoggedIn !== 'undefined') {
         isUserLoggedIn = isLoggedIn;
@@ -12,35 +28,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     let exerciseSearchButton = document.getElementById("exerciseSearchButtonAddon");
-    exerciseSearchButton.addEventListener("click", async function(){
-        let query = document.getElementById("exerciseInput").value;
-        let searchType = document.getElementById("exerciseSearchType").value;
-        console.log("Search type selected:", searchType);
-        console.log("We are looking for: " + query);
-
-        let endpoint = '';
-        if (searchType === "name") {
-            endpoint = `/api/exercises/${query}`;
-        } else if (searchType === "bodyPart") {
-            endpoint = `/api/exercises/bodyPart/${query.toLowerCase()}`;
-        }
-
-        let response = await fetch(endpoint, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+    exerciseSearchButton.addEventListener("click", function() {
+        document.querySelectorAll('input[name="bodyPartOption"]').forEach(radio => {
+            radio.checked = false;
         });
 
-        let result;
-        if(response.ok){
-            result = await response.json();
-            console.log(result);
-            await displayExerciseSearchResults(result);
-        } else {
-            console.log("Error: " + response.status);
-            displayExerciseSearchFailure();
-        }
+        const term = document.getElementById("exerciseInput").value.trim();
+        if (term) performSearch(term, false);
+    });
+
+    document.querySelectorAll('input[name="bodyPartOption"]').forEach(radio => {
+        radio.addEventListener('change', e => {
+            performSearch(e.target.value, true);
+        });
     });
 });
 

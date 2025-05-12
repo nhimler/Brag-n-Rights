@@ -49,15 +49,43 @@ public class AiService : IAiService
 
     private const string MODEL = "deepseek/deepseek-chat-v3-0324:free";
 
-    private async Task<string> BuildPrompt(string query)
+    private async Task<string> BuildSuggestionPrompt(string query)
     {
         var prompt = new StringBuilder();
         prompt.AppendLine("Give me 5 meal suggestions.");
         prompt.AppendLine("These suggestions should be a list of what the meals are called with no elaboration.");
-        prompt.AppendLine("There should be nothing else in your response except the list.");
+        prompt.AppendLine("There should be nothing else in your response except the list, not even a header.");
         prompt.AppendLine("Also try to list meals that contain one or more of the following ingredients:");
         prompt.AppendLine(query);
         return prompt.ToString();
+    }
+
+    private async Task<string> BuildFillPrompt(string query)
+    {
+        var prompt = new StringBuilder();
+        prompt.AppendLine($"Write a breif description of {query} and classify it as either Breakfast, Lunch, Dinner, or a snack.");
+        prompt.AppendLine("Format your response in json like the following:");
+        prompt.AppendLine("{");
+        prompt.AppendLine("description: \"Here is the Description\"");
+        prompt.AppendLine("type: \"Here is the type (1 word)\"");
+        prompt.AppendLine("}");
+        prompt.AppendLine("Do not include any other information in your response. Only include the json.");
+        prompt.AppendLine(query);
+        return prompt.ToString();
+    }
+
+    private async Task<string> BuildPrompt(string query, IAiService.AiServiceType type)
+    {
+        switch (type)
+        {
+            case IAiService.AiServiceType.Suggestion:
+                return await BuildSuggestionPrompt(query);
+            case IAiService.AiServiceType.Fill:
+                return await BuildFillPrompt(query);
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+
     }
 
     public AiService(HttpClient httpClient, ILogger<AiService> logger)
@@ -66,7 +94,7 @@ public class AiService : IAiService
         _logger = logger;
     }
 
-    public async Task<string> GetResponse(string query)
+    public async Task<string> GetResponse(string query, IAiService.AiServiceType type)
     {
         var payload = new
         {
@@ -76,7 +104,7 @@ public class AiService : IAiService
                 new
                 {
                     role = "user",
-                    content = BuildPrompt(query).Result
+                    content = BuildPrompt(query, type).Result
                 }
             }
         };
@@ -94,8 +122,8 @@ public class AiService : IAiService
             var result = await JsonSerializer.DeserializeAsync<AiResponse>(await response.Content.ReadAsStreamAsync(), options);
             result = result ?? new AiResponse();
             return result.choices.FirstOrDefault()?.message?.content ?? "No response from AI";
-        } catch {
-            return "No response from AI";
+        } catch (Exception ex){
+            return "No response from AI: " + ex.Message;
         }
     }
 

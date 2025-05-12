@@ -10,26 +10,26 @@ using Newtonsoft.Json;
 
 namespace GymBro_App.Services
 {
-public class OAuthService : IOAuthService
-{
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IConfiguration _configuration;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IUserRepository _userRepository;
-    private readonly GymBroDbContext _context;
-    private readonly EncryptionHelper _encryptionHelper;
-
-    public OAuthService(IHttpClientFactory httpClientFactory, IConfiguration configuration, 
-        IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, GymBroDbContext context,
-        EncryptionHelper encryptionHelper)
+    public class OAuthService : IOAuthService
     {
-        _context = context;
-        _httpClientFactory = httpClientFactory;
-        _configuration = configuration;
-        _httpContextAccessor = httpContextAccessor;
-        _userRepository = userRepository;
-        _encryptionHelper = encryptionHelper;
-    }
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserRepository _userRepository;
+        private readonly GymBroDbContext _context;
+        private readonly EncryptionHelper _encryptionHelper;
+
+        public OAuthService(IHttpClientFactory httpClientFactory, IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, GymBroDbContext context,
+            EncryptionHelper encryptionHelper)
+        {
+            _context = context;
+            _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
+            _userRepository = userRepository;
+            _encryptionHelper = encryptionHelper;
+        }
 
         public async Task ExchangeCodeForToken(string identityId, string code)
         {
@@ -200,41 +200,45 @@ public class OAuthService : IOAuthService
 
         public async Task<string> GetAccessToken(string identityId)
         {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.IdentityUserId == identityId);
-                if (user == null)
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.IdentityUserId == identityId);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found.");
+            }
+
+            var token = await _context.Tokens.FirstOrDefaultAsync(t => t.UserId == user.UserId);
+            if (token == null)
+            {
+                throw new InvalidOperationException("Token not found.");
+            }
+
+            // Check if the token is expired
+            var pacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var currentPacificTime = TimeZoneInfo.ConvertTime(DateTime.Now, pacificTimeZone);
+
+            if (token.ExpirationTime < currentPacificTime)
+            {
+                try
                 {
-                    throw new InvalidOperationException("User not found.");
+                    return await RefreshAccessToken(token.RefreshToken);
                 }
-
-                var token = await _context.Tokens.FirstOrDefaultAsync(t => t.UserId == user.UserId);
-                if (token == null)
+                catch (Exception ex)
                 {
-                    throw new InvalidOperationException("Token not found.");
+                    // Failed to refresh — assume refresh token is also bad or expired
+                    Console.WriteLine($"Refresh failed: {ex.Message}");
+
+                    //delete the expired token from the database
+                    _context.Tokens.Remove(token);
+                    await _context.SaveChangesAsync();
+
+                    // Optional: create a custom exception for easier handling
+                    throw new TokenExpiredException("Both access and refresh tokens expired.");
                 }
+            }
 
-                // Check if the token is expired
-                var pacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
-                var currentPacificTime = TimeZoneInfo.ConvertTime(DateTime.Now, pacificTimeZone);
+            var decryptedAccessToken = _encryptionHelper.DecryptToken(token.AccessToken);
 
-                if (token.ExpirationTime < currentPacificTime)
-                {
-                    try
-                    {
-                        return await RefreshAccessToken(token.RefreshToken);
-                    }
-                    catch (Exception ex)
-                    {
-                        // Failed to refresh — assume refresh token is also bad or expired
-                        Console.WriteLine($"Refresh failed: {ex.Message}");
-
-                        // Optional: create a custom exception for easier handling
-                        throw new TokenExpiredException("Both access and refresh tokens expired.");
-                    }
-                }
-
-                var decryptedAccessToken = _encryptionHelper.DecryptToken(token.AccessToken);
-
-                return decryptedAccessToken; // Return the current access token if it's not expired
+            return decryptedAccessToken; // Return the current access token if it's not expired
         }
 
         private async Task<string> RefreshAccessToken(string refreshToken)
