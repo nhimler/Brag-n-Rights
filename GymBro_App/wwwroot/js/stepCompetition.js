@@ -119,18 +119,18 @@ function renderCompetitions(competitions, containerId, showLeaveButton) {
         + `to ${new Date(comp.endDate).toLocaleDateString()}`;
   
       // 4) Participant list
-      const ul = document.createElement('ul');
+      const ol = document.createElement('ol');
       comp.participants.forEach(p => {
         const li = document.createElement('li');
         li.textContent = `${p.username} – ${p.steps} steps`;
-        ul.appendChild(li);
+        ol.appendChild(li);
       });
   
       // assemble
       cardBody.appendChild(title);
       cardBody.appendChild(status);
       cardBody.appendChild(dates);
-      cardBody.appendChild(ul);
+      cardBody.appendChild(ol);
   
       // 5) optional leave‐button
       if (showLeaveButton) {
