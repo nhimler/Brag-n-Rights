@@ -129,7 +129,7 @@ public class Program
         builder.Services.Configure<IdentityOptions>(options =>
         {
             // Sign in requirements
-            options.SignIn.RequireConfirmedAccount = true;
+            options.SignIn.RequireConfirmedAccount = false;
 
             // Password requirements
             options.Password.RequireDigit = false;
