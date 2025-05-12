@@ -13,6 +13,8 @@ using GymBro_App.Models.DTOs;
 using System;
 using System.Collections.Generic;
 using GymBro_App.Services;
+using System.Linq;
+using System.Reflection;
 
 namespace Controller_Tests
 {
@@ -195,11 +197,11 @@ namespace Controller_Tests
             _workoutPlanRepoMock.Setup(x => x.FindById(1)).Returns(plan);
 
             // Act
-            var result = await _controller.GetExercisesForPlan(1) as OkObjectResult;
+            var okResult = await _controller.GetExercisesForPlan(1) as OkObjectResult;
 
             // Assert
-            Assert.IsNotNull(result);
-            var exercises = result.Value as List<ExerciseDTO>;
+            Assert.IsNotNull(okResult);
+            var exercises = okResult.Value as List<object>;
             Assert.IsNotNull(exercises);
             Assert.That(exercises.Count, Is.EqualTo(0));
         }
@@ -230,26 +232,43 @@ namespace Controller_Tests
                 .ReturnsAsync(new List<ExerciseDTO> { dto2 });
 
             // Act
-            var result = await _controller.GetExercisesForPlan(2) as OkObjectResult;
+            var okResult = await _controller.GetExercisesForPlan(2) as OkObjectResult;
 
             // Assert
-            Assert.IsNotNull(result);
-            var exercises = result.Value as List<ExerciseDTO>;
+            Assert.IsNotNull(okResult);
+            var exercises = okResult.Value as List<object>;
             Assert.IsNotNull(exercises);
             Assert.That(exercises.Count, Is.EqualTo(2));
-            Assert.That(exercises[0].Id, Is.EqualTo("id1"));
-            Assert.That(exercises[1].Id, Is.EqualTo("id2"));
+
+            var ex0 = exercises[0];
+            var ex1 = exercises[1];
+            var id0 = ex0.GetType().GetProperty("Id").GetValue(ex0);
+            var id1 = ex1.GetType().GetProperty("Id").GetValue(ex1);
+            Assert.That(id0, Is.EqualTo("id1"));
+            Assert.That(id1, Is.EqualTo("id2"));
 
             _exerciseServiceMock.Verify(s => s.GetExerciseByIdAsync("id1"), Times.Once);
             _exerciseServiceMock.Verify(s => s.GetExerciseByIdAsync("id2"), Times.Once);
         }
 
-        /*public async Task UpdateSetsAndReps_SuccessOnValidInput()
+        [Test]
+        public void UpdateSetsAndReps_Success_ReturnsNoContentAndUpdates()
         {
-            //Arrange
-            //Act
-            //Assert
-        }*/
+            // Arrange
+            var dto = new UpdateExerciseDTO { PlanId = 2, ApiId = "id1", Sets = 4, Reps = 8 };
+            var wpe = new WorkoutPlanExercise { ApiId = "id1", Sets = 1, Reps = 1 };
+            var plan = new WorkoutPlan { WorkoutPlanId = dto.PlanId, WorkoutPlanExercises = new List<WorkoutPlanExercise> { wpe } };
+            _workoutPlanRepoMock.Setup(x => x.FindById(dto.PlanId)).Returns(plan);
+
+            // Act
+            var result = _controller.UpdateSetsAndReps(dto);
+
+            // Assert
+            Assert.IsInstanceOf<NoContentResult>(result);
+            Assert.That(wpe.Sets, Is.EqualTo(dto.Sets));
+            Assert.That(wpe.Reps, Is.EqualTo(dto.Reps));
+            _workoutPlanRepoMock.Verify(x => x.Update(plan), Times.Once);
+        }
 
         [TearDown]
         public void TearDown()
