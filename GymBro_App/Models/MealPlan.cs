@@ -34,8 +34,7 @@ public partial class MealPlan
 
     public int? TargetFats { get; set; }
 
-    [Column("Archived")]
-    public bool Archived { get; set; } = false;
+    public bool Archived { get; set; }
 
     [InverseProperty("MealPlan")]
     public virtual ICollection<Meal> Meals { get; set; } = new List<Meal>();

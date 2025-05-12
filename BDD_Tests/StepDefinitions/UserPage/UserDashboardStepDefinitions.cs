@@ -6,6 +6,7 @@ using Reqnroll;
 namespace BDD_Tests.StepDefinitions;
 
 [Binding]
+[Scope(Feature = "User Dashboard")]
 public sealed class UserDashboardStepDefinitions
 {
     private IWebDriver _driver;

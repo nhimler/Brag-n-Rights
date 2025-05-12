@@ -35,7 +35,7 @@ namespace GymBro_App.Controllers
                 var userId = _userRepository.GetIdFromIdentityId(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 
                 var userWorkoutPlans = _workoutPlanRepository.GetAll()
-                    .Where(wp => wp.UserId == userId)
+                    .Where(wp => wp.UserId == userId && !wp.ArchivedWorkout)
                     .Select(wp => new { wp.WorkoutPlanId, wp.PlanName })
                     .ToList();
                 
@@ -134,6 +134,19 @@ namespace GymBro_App.Controllers
             }
             
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Archive(int id)
+        {
+            var plan = _workoutPlanRepository.GetAll().FirstOrDefault(wp => wp.WorkoutPlanId == id);
+            if (plan != null)
+            {
+                plan.ArchivedWorkout = true;
+                _workoutPlanRepository.Update(plan);
+            }
+            return RedirectToAction("Index");
         }
 
         public IActionResult WorkoutCreationActionsPartial()
