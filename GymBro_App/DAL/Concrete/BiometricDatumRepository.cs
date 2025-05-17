@@ -131,5 +131,43 @@ namespace GymBro_App.DAL.Concrete
                 .Where(b => b.UserId == userId)
                 .ToListAsync();
         }
+
+        // Get the latest biometric data for a user
+        public async Task<BiometricDatum> GetLatestBiometricDataAsync(int userId)
+        {
+            return await _context.BiometricData
+                .Where(b => b.UserId == userId)
+                .OrderByDescending(b => b.LastUpdated)
+                .FirstOrDefaultAsync() ?? throw new InvalidOperationException("No biometric data found for the user.");
+        }
+
+        public async Task<int> GetUserTotalStepsByDayAsync(
+            int userId,
+            DateTime startDate,
+            DateTime endDate)
+        {
+            var dailyMaxSteps = _context.BiometricData
+                .Where(b =>
+                    b.UserId == userId &&
+                    b.LastUpdated >= startDate &&   // Filters both date and time
+                    b.LastUpdated <= endDate)       // Filters both date and time
+                .GroupBy(b => b.LastUpdated!.Value.Date)  // Group by date, ignoring the time
+                .Select(g => g.Max(b => b.Steps));  // Get the maximum steps for each day
+
+            // Sum the total steps
+            return await dailyMaxSteps.SumAsync() ?? 0;
+        }
+
+        public async Task<int> LatestStepsBeforeCompAsync(int userId, DateTime startDate)
+        {
+            var latestSteps = await _context.BiometricData
+                .Where(b => b.UserId == userId && b.LastUpdated < startDate) // Filter by user and before startDate
+                .OrderByDescending(b => b.LastUpdated) // Order by LastUpdated descending to get the latest
+                .Select(b => b.Steps) // Select the Steps value
+                .FirstOrDefaultAsync(); // Get the latest (most recent) Steps
+
+            // If no records found, return 0
+            return latestSteps ?? 0;
+        }
     }
 }
