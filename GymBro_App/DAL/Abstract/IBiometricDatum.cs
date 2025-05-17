@@ -8,4 +8,11 @@ public interface IBiometricDatumRepository : IRepository<BiometricDatum>
     Task<IEnumerable<BiometricDatum>> GetUserBiometricDataAsync(int userId);
 
     Task<BiometricDatum> AddAsync(BiometricDatum entity);
+
+    Task<BiometricDatum> GetLatestBiometricDataAsync(int userId);
+
+    Task<int> GetUserTotalStepsByDayAsync(int userId, DateTime startDate, DateTime endDate);   
+
+    Task<int> LatestStepsBeforeCompAsync(int userId, DateTime startDate);
+    
 }

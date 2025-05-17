@@ -23,4 +23,8 @@ public interface IStepCompetitionRepository : IRepository<StepCompetition>
     Task UpdateAsync(StepCompetition competition);
 
     Task SetIsActiveToFalseForAllParticipantsAsync(int competitionID);
+
+    Task updateParticipantStepCount(string identityId, int totalSteps, int competitionID);
+
+
 }
