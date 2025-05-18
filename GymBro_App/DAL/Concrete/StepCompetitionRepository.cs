@@ -274,5 +274,20 @@ namespace GymBro_App.DAL.Concrete
 
             return _context.SaveChangesAsync();
         }
+
+        public Task updateParticipantStepCount(string identityId, int totalSteps, int competitionID)
+        {
+            var participant = _context.StepCompetitionParticipants
+                .FirstOrDefault(p => p.IdentityId == identityId && p.StepCompetitionId == competitionID);
+
+            if (participant != null)
+            {
+                participant.Steps = totalSteps;
+                return _context.SaveChangesAsync();
+            }
+
+            return Task.CompletedTask; // No action taken if participant not found
+        }
+
     }
 }

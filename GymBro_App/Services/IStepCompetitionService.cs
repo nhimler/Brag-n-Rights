@@ -5,6 +5,6 @@ namespace GymBro_App.Services
     public interface IStepCompetitionService
     {
         // Method to update competition participants step count
-        Task UpdateCompetitionParticipantStepCountAsync(StepCompetitionParticipant participant);
+        Task UpdateCompetitionParticipantStepCountAsync(StepCompetitionParticipant participant, DateTime startDate, DateTime endDate, int competitionID);
     }
 }
