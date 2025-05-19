@@ -4,6 +4,9 @@ let exerciseIdList = [];
 let isUserLoggedIn = false;
 
 async function performSearch(term, byBodyPart = false) {
+    if (!byBodyPart) {
+        term = term.toLowerCase();
+    }
     const endpoint = byBodyPart
         ? `/api/exercises/bodyPart/${encodeURIComponent(term)}`
         : `/api/exercises/${encodeURIComponent(term)}`;
@@ -13,7 +16,7 @@ async function performSearch(term, byBodyPart = false) {
     });
     if (response.ok) {
         const result = await response.json();
-        await displayExerciseSearchResults(result);
+        await displayExerciseSearchResults(result, term);
     } else {
         displayExerciseSearchFailure();
     }
@@ -39,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('input[name="bodyPartOption"]').forEach(radio => {
         radio.addEventListener('change', e => {
+            document.getElementById("exerciseInput").value = "";
             performSearch(e.target.value, true);
         });
     });
@@ -72,7 +76,7 @@ function displayExerciseSearchFailure() {
 }
 
 
-async function displayExerciseSearchResults(result) {
+async function displayExerciseSearchResults(result, term) {
     let resultList = document.getElementById("exerciseSearchResults")
     if (!resultList) {
         console.error("Elements not found")
@@ -87,7 +91,7 @@ async function displayExerciseSearchResults(result) {
     // Display heading
     let heading = document.createElement("h4")
     heading.className = "text-center mt-3 mb-3"
-    heading.textContent = `Results for "${document.getElementById("exerciseInput").value}" (${result.length})`
+    heading.textContent = `Results for "${capitalizeFirstLetterWord(term)}" (${result.length})`
     resultList.appendChild(heading)
 
     // Create a row container for the cards
