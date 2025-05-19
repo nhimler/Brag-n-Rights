@@ -24,39 +24,37 @@ namespace GymBro_App.Services
                     {
                         var stepCompetitionRepository = scope.ServiceProvider.GetRequiredService<IStepCompetitionRepository>();
                         var activeCompetitions = await stepCompetitionRepository.GetActiveCompetitionsAsync();
+
                         var pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
                         var pacificNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pacificZone);
 
                         foreach (var competition in activeCompetitions)
                         {
-                            // Logic to check if the competition has ended and update its status
 
                             if (competition.EndDate <= pacificNow)
                             {
                                 // Update the competition status to ended
                                 competition.IsActive = false;
-                                await stepCompetitionRepository.UpdateAsync(competition);
+                                await  stepCompetitionRepository.UpdateAsync(competition);
                                 //set all participants to inactive
-                                await stepCompetitionRepository.SetIsActiveToFalseForAllParticipantsAsync(competition.CompetitionID); 
+                                await  stepCompetitionRepository.SetIsActiveToFalseForAllParticipantsAsync(competition.CompetitionID); 
 
                             }else
                             {
                                 foreach (var user in competition.Participants)
                                 {
                                     if (user.IsActive == true)
-                                    {
+                                    {                                        
+
                                         // Logic to update the user's step count
                                         var stepCompetitionService = scope.ServiceProvider.GetRequiredService<IStepCompetitionService>();
-                                        await stepCompetitionService.UpdateCompetitionParticipantStepCountAsync(user); 
+                                        await stepCompetitionService.UpdateCompetitionParticipantStepCountAsync(user, competition.StartDate, competition.EndDate,competition.CompetitionID ); 
                                     }
                                 }
                                 
                             }
                         }
                     }
-
-
-
                 }
                 catch (Exception ex)
                 {

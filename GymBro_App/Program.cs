@@ -42,6 +42,8 @@ public class Program
         builder.Services.AddHttpContextAccessor(); 
         builder.Services.AddScoped<EncryptionHelper>();
         builder.Services.AddHostedService<MedalAwardingBackgroundService>();
+        builder.Services.AddHostedService<StepCompetitionsBackgroundService>();
+        builder.Services.AddScoped<IStepCompetitionService, StepCompetitionService>();
         builder.Services.AddScoped<IGoogleMapsService, GoogleMapsService>();
         builder.Services.AddScoped<INearbySearchMapService, NearbySearchMapService>();
         builder.Services.AddScoped<IStepCompetitionRepository, StepCompetitionRepository>();
