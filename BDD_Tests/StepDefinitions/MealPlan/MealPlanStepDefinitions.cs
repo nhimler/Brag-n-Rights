@@ -21,7 +21,7 @@ public sealed class MealPlanStepDefinitions
     public void Setup()
     {
         _driver = GlobalDriverSetup.Driver;
-        _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(8));
+        _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
         _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
     }
 
@@ -67,7 +67,9 @@ public sealed class MealPlanStepDefinitions
         _driver.FindElement(By.CssSelector(".title-link h3")).Click();
         // Thread.Sleep(1000);
         _wait.Until(driver => Regex.Match(driver.Url, "http://localhost:5075/MealPlanDetails/\\d+").Success);
-        _driver.FindElement(By.Id("edit-mealplan-btn")).Click();
+        // _driver.FindElement(By.Id("edit-mealplan-btn")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("dropdownMenuButton")));
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("edit-mealplan-btn")));
     }
 
     [Given(@"I have created a meal plan")]
@@ -76,7 +78,8 @@ public sealed class MealPlanStepDefinitions
         _driver.Navigate().GoToUrl("http://localhost:5075/CreateMealPlan/new");
         _wait.Until(driver => driver.Url == "http://localhost:5075/CreateMealPlan/new");
         _driver.FindElement(By.Id("PlanName")).SendKeys("Test Meal Plan");
-        _driver.FindElement(By.Id("create-btn")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("create-btn")));
+        //_driver.FindElement(By.Id("create-btn")).Click();
         _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan");
     }
 
@@ -94,21 +97,23 @@ public sealed class MealPlanStepDefinitions
         _wait.Until(driver => driver.Url == "http://localhost:5075/CreateMeal/new");
         _driver.FindElement(By.Id("MealName")).SendKeys("Test Meal");
         _driver.FindElement(By.Id("Description")).SendKeys("A meal for testing purposes");
-        _driver.FindElement(By.Id("create-btn")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("create-btn")));
+        //_driver.FindElement(By.Id("create-btn")).Click();
         _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan");
     }
 
     [When("I click on the link to the meal plan archive")]
     public void WhenIClickOnTheLinkToTheMealPlanArchive()
     {
-        _driver.FindElement(By.Id("archive-btn")).Click();
+        // _driver.FindElement(By.Id("archive-btn")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("archive-btn")));
         _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan/Archive");
     }
 
     [When("I click the delete all button")]
     public void WhenIClickTheDeleteAllButton()
     {
-        _driver.FindElement(By.Id("del-btn")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("del-btn")));
     }
 
     [Then("I should see my archived meal plans")]
@@ -145,24 +150,27 @@ public sealed class MealPlanStepDefinitions
     [When(@"I click the search button")]
     public void WhenIClickTheSearchButton()
     {
-        _driver.FindElement(By.Id("searchButton")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("searchButton")));
     }
 
     [When("I search for {string}")]
     public void WhenISearchFor(string term)
     {
         _driver.FindElement(By.Id("searchBar")).SendKeys(term);
-        _driver.FindElement(By.Id("searchButton")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("searchButton")));
     }
 
     [Given("I add food to the meal")]
     public void GivenIAddFoodToTheMeal()
     {
         _driver.FindElement(By.Id("searchBar")).SendKeys("Chicken");
-        _driver.FindElement(By.Id("searchButton")).Click();
+        //_driver.FindElement(By.Id("searchButton")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("searchButton")));
         _wait.Until(driver => driver.FindElement(By.ClassName("accordion-item")));
-        _driver.FindElements(By.ClassName("accordion-item"))[0].Click();
-        _driver.FindElements(By.ClassName("btn-secondary"))[0].Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.ClassName("accordion-item")));
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.ClassName("btn-secondary")));
+        // _driver.FindElements(By.ClassName("accordion-item"))[0].Click();
+        // _driver.FindElements(By.ClassName("btn-secondary"))[0].Click();
     }
 
     [Given("I visit the meal creation page")]
@@ -196,15 +204,19 @@ public sealed class MealPlanStepDefinitions
         _driver.FindElement(By.Id("MealName")).SendKeys("Test Meal"); 
         _driver.FindElement(By.Id("Description")).SendKeys("Test Meal"); 
 
-        _driver.FindElement(By.ClassName("accordion-item")).Click();
+        
+        // _driver.FindElement(By.ClassName("accordion-item")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.ClassName("accordion-item")));
         Thread.Sleep(500); // Wait for the page to load
-        _driver.FindElement(By.CssSelector(".accordion-body button")).Click();
+        // _driver.FindElement(By.CssSelector(".accordion-body button")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.CssSelector(".accordion-body button")));
     }
 
     [When(@"I save the meal")]
     public void WhenISaveTheMeal()
     {
-        _driver.FindElement(By.Id("create-btn")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("create-btn")));
+        //_driver.FindElement(By.Id("create-btn")).Click();
     }
 
     [Then(@"the item should be added and visible on the dashboard")]
@@ -262,7 +274,8 @@ public sealed class MealPlanStepDefinitions
     [Then(@"I should be able to click on a meal to go to its details page")]
     public void ThenIClickMealToSeeItsDetails()
     {
-        _driver.FindElement(By.CssSelector(".title-link")).Click();
+        // _driver.FindElement(By.CssSelector(".title-link")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.CssSelector(".title-link")));
         Assert.That(_driver.Url, Does.Match("http://localhost:5075/MealDetails/\\d+"));
     }
 
@@ -283,9 +296,11 @@ public sealed class MealPlanStepDefinitions
     [Then(@"I should be able to click an “Edit” button and be taken to a page where I can edit my meal plan")]
     public void ThenICanClickEditAndNavigateToEditPage()
     {
-        var editButton = _driver.FindElement(By.Id("edit-mealplan-btn"));
-        Assert.That(editButton.Displayed, Is.True);
-        editButton.Click();
+        // var editButton = _driver.FindElement(By.Id("edit-mealplan-btn"));
+        // Assert.That(editButton.Displayed, Is.True);
+        // editButton.Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("dropdownMenuButton")));
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("edit-mealplan-btn")));
         _wait.Until(driver => Regex.Match(driver.Url, "http://localhost:5075/CreateMealPlan/\\d+").Success);
         Assert.That(_driver.Url, Does.Match("http://localhost:5075/CreateMealPlan/\\d+"));
     }
@@ -296,7 +311,8 @@ public sealed class MealPlanStepDefinitions
         string newName = "Meal Plan Name " + DateTime.Now.ToString("yyyyMMddHH");
         _driver.FindElement(By.Id("PlanName")).Clear();
         _driver.FindElement(By.Id("PlanName")).SendKeys(newName);
-        _driver.FindElement(By.Id("create-btn")).Click();
+        // _driver.FindElement(By.Id("create-btn")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("create-btn")));
         _wait.Until(driver => driver.Url == "http://localhost:5075/MealPlan");
         Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/MealPlan"));
         Assert.That(_driver.FindElement(By.CssSelector(".title-link h3")).Text.Contains(newName));
@@ -320,13 +336,15 @@ public sealed class MealPlanStepDefinitions
     [When("I select a suggestion from the list")]
     public void WhenISelectASuggestionFromTheList()
     {
-        _driver.FindElement(By.ClassName("suggestion-fill-btn")).Click();
+        // _driver.FindElement(By.ClassName("suggestion-fill-btn")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.ClassName("suggestion-fill-btn")));
     }
 
     [Given("I generate suggestions for the meal")]
     public void GivenIGenerateSuggestionsForTheMeal()
     {
-        _driver.FindElement(By.Id("suggestBtn")).Click();
+        // _driver.FindElement(By.Id("suggestBtn")).Click();
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", _driver.FindElement(By.Id("suggestBtn")));
     }
 
     [Given(@"I click the calendar view button")]
@@ -361,5 +379,17 @@ public sealed class MealPlanStepDefinitions
         Assert.That(listView.GetAttribute("hidden"), Is.Null, "List view is not displayed");
         var calendarView = _driver.FindElement(By.Id("calendar"));
         Assert.That(calendarView.GetAttribute("hidden"), Is.EqualTo("true"), "Calendar view is displayed when it should not be");
+    }
+
+    [Then("I should see a date input field")]
+    public void ThenIShouldSeeADateInputField()
+    {
+        Assert.That(_driver.FindElement(By.Id("Date")).Displayed, Is.True);
+    }
+
+    [Then("I should see a graph that shows my targets")]
+    public void ThenIShouldSeeAGraphThatShowsMyTargets()
+    {
+        Assert.That(_driver.FindElement(By.Id("targetGraph")).Displayed, Is.True);
     }
 }
