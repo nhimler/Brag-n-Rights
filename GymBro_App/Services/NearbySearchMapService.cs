@@ -82,6 +82,7 @@ namespace GymBro_App.Services
                     RegularOpeningHours = p.RegularOpeningHours,
                     WebsiteUri = p.WebsiteUri,
                     Name = p.Name,
+                    Rating = p.Rating,
                 }).ToList();
                 return places;
             }

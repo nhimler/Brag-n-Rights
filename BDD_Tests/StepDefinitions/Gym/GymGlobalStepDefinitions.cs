@@ -17,6 +17,7 @@ public sealed class GymGlobalStepDefinitions
     public void Setup()
     {
         _driver = GlobalDriverSetup.Driver;
+        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
     }
 
     [Given("I am logged in")]
@@ -49,6 +50,11 @@ public sealed class GymGlobalStepDefinitions
     public void WhenINavigateToTheGymSearchPage()
     {
         _driver.Navigate().GoToUrl("http://localhost:5075/Gym/FindNearbyGyms");
+        
+        // Wait for the page eto load. Seems to take longer 
+        // var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+        // wait.Until(d => d.Url.Contains("FindNearbyGyms"));
+        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/Gym/FindNearbyGyms"), "Expected Gym Search page URL. Actual: " + _driver.Url);
     }
 
     [Then("I should see a list of gyms appear")]
@@ -98,5 +104,12 @@ public sealed class GymGlobalStepDefinitions
     {
         var allButtons = _driver.FindElements(By.ClassName("disabled"));
         Assert.That(allButtons, Is.Not.Empty, "Disabled bookmark buttons are not appearing next to gyms.");
+    }
+
+    [Then("I should see a rating next to a gym")]
+    public void IShouldSeeARatingNextToAGym()
+    {
+        var rating = _driver.FindElements(By.ClassName("gym-rating-star"));
+        Assert.That(rating.Count > 0, "Rating stars are not appearing next to gyms.");
     }
 }

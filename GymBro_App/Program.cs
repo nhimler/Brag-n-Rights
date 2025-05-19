@@ -42,6 +42,8 @@ public class Program
         builder.Services.AddHttpContextAccessor(); 
         builder.Services.AddScoped<EncryptionHelper>();
         builder.Services.AddHostedService<MedalAwardingBackgroundService>();
+        builder.Services.AddHostedService<StepCompetitionsBackgroundService>();
+        builder.Services.AddScoped<IStepCompetitionService, StepCompetitionService>();
         builder.Services.AddScoped<IGoogleMapsService, GoogleMapsService>();
         builder.Services.AddScoped<INearbySearchMapService, NearbySearchMapService>();
         builder.Services.AddScoped<IStepCompetitionRepository, StepCompetitionRepository>();
@@ -103,7 +105,7 @@ public class Program
 
         // NearbySearchMapService API Configuration
         string googleNearbySearchApiUrl = "https://places.googleapis.com/v1/places:searchNearby";
-        string googleNearbySearchFieldMask = "places.formattedAddress,places.displayName,places.regularOpeningHours,places.websiteUri,places.name";
+        string googleNearbySearchFieldMask = "places.formattedAddress,places.displayName,places.regularOpeningHours,places.websiteUri,places.name,places.rating";
         builder.Services.AddHttpClient<INearbySearchMapService, NearbySearchMapService>((client, services) =>
         {
             client.BaseAddress = new Uri(googleNearbySearchApiUrl);
