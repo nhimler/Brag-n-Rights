@@ -222,7 +222,7 @@ public class MealPlanController : Controller
         MealPlanDetailsView mealPlanDetails = new MealPlanDetailsView()
         {
             MealPlan = mealPlanView,
-            Meals = meals
+            Meals = meals.OrderBy(m => m.Date).ToList(),
         };
         return View("MealPlanDetails", mealPlanDetails);
     }
@@ -457,7 +457,8 @@ public class MealPlanController : Controller
                     MealPlanId = mv.MealPlanId,
                     MealName = mv.MealName,
                     MealType = mv.MealType,
-                    Description = mv.Description
+                    Description = mv.Description,
+                    Date = mv.Date
                 };
                 _mealRepository.Add(meal);
                 Debug.WriteLine("New Meal Created");

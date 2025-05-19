@@ -28,3 +28,7 @@
 .inl-bl {
     display: inline-block;
 }
+
+.meal-list {
+    list-style-type: none;
+}

@@ -47,21 +47,36 @@
 @if(Model.Meals.Count == 0){
     <p>No meals in this plan</p>
 }
-<ol>
-    @foreach(var meal in Model.Meals)
+<ul class="list-group">
+    @foreach(var date in Model.Meals.GroupBy(m => m.Date).OrderBy(m => m.Key))
     {
-        <li>
-            <a class="title-link" asp-action="MealDetails" asp-route-id="@meal.MealId"><h4>@meal.MealName</h4></a>
-            <p><strong>Food:</strong></p>
-            <ul>
-                @foreach(var food in meal.Foods)
+        <li class="list-group-item">
+            @if(date.Key == null)
+            {
+                <h4>Unknown Date</h4>
+            }
+            else
+            {
+                <h4>@date.Key</h4>
+            }
+                @foreach(var meal in date)
                 {
-                    <li class="food-from-api" data-api-id="@food"></li>
+                <ul class="meal-list">
+                    <li>
+                        <a class="title-link" asp-action="MealDetails" asp-route-id="@meal.MealId"><h4>@meal.MealName</h4></a>
+                        <p><strong>Food:</strong></p>
+                        <ul>
+                            @foreach(var food in meal.Foods)
+                            {
+                                <li class="food-from-api" data-api-id="@food"></li>
+                            }
+                        </ul>
+                    </li>
+                </ul>
                 }
-            </ul>
         </li>
     }
-</ol>
+</ul>
 
 <script src="~/js/mealDisplay.js" asp-append-version="true"></script>
 <link rel="stylesheet" href="~/css/MealPlan.css" asp-append-version="true" />
