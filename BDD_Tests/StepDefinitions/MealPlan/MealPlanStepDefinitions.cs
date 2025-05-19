@@ -386,4 +386,10 @@ public sealed class MealPlanStepDefinitions
     {
         Assert.That(_driver.FindElement(By.Id("Date")).Displayed, Is.True);
     }
+
+    [Then("I should see a graph that shows my targets")]
+    public void ThenIShouldSeeAGraphThatShowsMyTargets()
+    {
+        Assert.That(_driver.FindElement(By.Id("targetGraph")).Displayed, Is.True);
+    }
 }
