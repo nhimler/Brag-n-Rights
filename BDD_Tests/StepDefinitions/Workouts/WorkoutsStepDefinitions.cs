@@ -148,7 +148,7 @@ public sealed class WorkoutsStepDefinitions
         });
         Assert.IsTrue(resultsLoaded, "Exercise search results did not load.");
     }
-    
+
     [Then("I should see my workout plans")]
     public void ThenIshouldSeeMyWorkoutPlans()
     {
@@ -275,7 +275,7 @@ public sealed class WorkoutsStepDefinitions
     {
         var exerciseList = _driver.FindElement(By.Id("exerciseSearchResults"));
         var exerciseCards = _driver.FindElements(By.ClassName("exercise-card"));
-        Assert.That(exerciseList.Displayed, Is.EqualTo(true),"Exercise list is not displayed.");
+        Assert.That(exerciseList.Displayed, Is.EqualTo(true), "Exercise list is not displayed.");
         Assert.That(exerciseCards.Count, Is.GreaterThan(0), "No exercises found in the list.");
 
         var exerciseTitles = _driver.FindElements(By.ClassName("card-title"));
@@ -381,21 +381,21 @@ public sealed class WorkoutsStepDefinitions
 
         var setsInputs = container.FindElements(By.CssSelector(".sets-input"));
         var repsInputs = container.FindElements(By.CssSelector(".reps-input"));
-        var saveBtns   = container.FindElements(By.CssSelector(".save-changes-btn"));
+        var saveBtns = container.FindElements(By.CssSelector(".save-changes-btn"));
 
         Assert.IsTrue(setsInputs.Count > 0, "Set inputs are not present.");
         Assert.IsTrue(repsInputs.Count > 0, "Reps inputs are not present.");
-        Assert.IsTrue(saveBtns.Count > 0,   "Save Changes buttons are not present.");
+        Assert.IsTrue(saveBtns.Count > 0, "Save Changes buttons are not present.");
     }
 
     [Then("I should be able to set the sets and reps for the exercises")]
     public void ThenIShouldBeAbleToSetTheSetsAndRepsForTheExercises()
     {
-        var container   = _driver.FindElement(By.Id("exercisesModalBody"));
+        var container = _driver.FindElement(By.Id("exercisesModalBody"));
         var firstDetail = container.FindElement(By.ClassName("exercise-detail"));
-        var setsInput   = firstDetail.FindElement(By.CssSelector(".sets-input"));
-        var repsInput   = firstDetail.FindElement(By.CssSelector(".reps-input"));
-        var saveButton  = firstDetail.FindElement(By.CssSelector(".save-changes-btn"));
+        var setsInput = firstDetail.FindElement(By.CssSelector(".sets-input"));
+        var repsInput = firstDetail.FindElement(By.CssSelector(".reps-input"));
+        var saveButton = firstDetail.FindElement(By.CssSelector(".save-changes-btn"));
 
         setsInput.Clear();
         setsInput.SendKeys("3");
@@ -408,5 +408,52 @@ public sealed class WorkoutsStepDefinitions
 
         Assert.That(saveButton.Text, Is.EqualTo("Saved"), "Save button did not update to 'Saved'.");
         Assert.That(saveButton.GetAttribute("class"), Does.Contain("btn-secondary"), "Button did not change to secondary style.");
+    }
+
+    [When(@"I have a workout plan with the name ""([^""]*)""")]
+    public void WhenIHaveAWorkoutPlanWithTheName(string planName)
+    {
+        var workoutPlansContainer = _driver.FindElement(By.Id("workoutPlansContainer"));
+        var workoutPlanTitles = workoutPlansContainer.FindElements(By.ClassName("card-title"));
+        bool planFound = workoutPlanTitles.Any(title => title.Text.Contains(planName));
+        Assert.IsTrue(planFound, $"Workout plan with name '{planName}' was not found.");
+    }
+
+    [When("I make changes to the exercises in the workout plan")]
+    public void WhenIMakeChangesToTheExercisesInTheWorkoutPlan()
+    {
+        var container = _driver.FindElement(By.Id("exercisesModalBody"));
+        var firstDetail = container.FindElement(By.ClassName("exercise-detail"));
+        var setsInput = firstDetail.FindElement(By.CssSelector(".sets-input"));
+        var repsInput = firstDetail.FindElement(By.CssSelector(".reps-input"));
+        var saveButton = firstDetail.FindElement(By.CssSelector(".save-changes-btn"));
+
+        setsInput.Clear();
+        setsInput.SendKeys("3");
+        repsInput.Clear();
+        repsInput.SendKeys("12");
+        saveButton.Click();
+    }
+
+    [When(@"I click the {string} button")]
+    public void WhenIClickTheButton(string buttonText)
+    {
+        var button = _driver.FindElement(By.XPath(
+            $"//button[@id='saveAllExercisesBtn' and normalize-space(text())='{buttonText}']"
+        ));
+        button.Click();
+    }
+
+    [Then("I should open the workout plan back up and see the changes I made")]
+    public void ThenIOpenTheWorkoutPlanBackUpAndSeeTheChangesIMade()
+    {
+        // Open the "test3" workout plan
+        var workoutPlansContainer = _driver.FindElement(By.Id("workoutPlansContainer"));
+        var workoutPlanTitles = workoutPlansContainer.FindElements(By.ClassName("card-title"));
+        var testPlanTitle = workoutPlanTitles.FirstOrDefault(title => title.Text.Contains("test3"));
+        Assert.IsNotNull(testPlanTitle, "Workout plan with name 'test3' was not found.");
+        testPlanTitle.Click();
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+        wait.Until(driver => driver.FindElement(By.Id("exercisesModalBody")).Displayed);
     }
 }
