@@ -28,7 +28,7 @@
     </svg> 
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a asp-action="CreateMealPlan" class="dropdown-item" asp-route-id="@Model.MealPlan.MealPlanId">Edit</a>
+    <a asp-action="CreateMealPlan" class="dropdown-item" id="edit-mealplan-btn" asp-route-id="@Model.MealPlan.MealPlanId">Edit</a>
     <a href="#" class="dropdown-item" onclick="document.getElementById('del-form').submit();">Delete</a>
   </div>
 </div>
