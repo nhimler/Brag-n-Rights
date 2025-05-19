@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll;
 
 namespace BDD_Tests.StepDefinitions;
@@ -74,6 +75,9 @@ public sealed class SCRUM25StepDefinitions : IDisposable
     public void WhenINavigateToTheGymSearchPage()
     {
         _driver.Navigate().GoToUrl("http://localhost:5075/Gym/FindNearbyGyms");
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+        wait.Until(d => d.Url.Contains("FindNearbyGyms"));
+        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/Gym/FindNearbyGyms"), "Expected Gym Search page URL. Actual: " + _driver.Url);
     }
 
     [When("I click on the search button")]
