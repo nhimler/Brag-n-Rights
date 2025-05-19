@@ -177,6 +177,12 @@ async function getNearbyGyms(pos) {
             })
             gymResultBody.appendChild(gymHoursParagraphs)
 
+            console.log("Getting gym rating: " + gym.rating)
+            let gymRating = document.createElement("p")
+            gymRating.setAttribute("class", "card-text")
+            gymRating.innerText = `Rating: ${gym.rating} / 5.0`
+            gymResultBody.appendChild(gymRating)
+
             let gymResultActions = document.createElement("div")
             gymResultActions.setAttribute("class", "d-flex justify-content-between align-items-center")
             
