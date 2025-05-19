@@ -51,7 +51,7 @@ namespace GymBro_App.Models.DTOs
         public List<string> WeekdayDescriptions { get; set; } = [];
         public DateTime NextCloseTime { get; set; } = new DateTime();
     }
-    
+
     public class PlaceDTO
     {
         public DisplayName DisplayName { get; set; } = new DisplayName();
@@ -59,6 +59,7 @@ namespace GymBro_App.Models.DTOs
         public RegularOpeningHours RegularOpeningHours { get; set; } = new RegularOpeningHours();
         public string WebsiteUri { get; set; } = "";
         public string Name { get; set; } = "";
+        public double Rating { get; set; } = 0.0;
     }
 }
 

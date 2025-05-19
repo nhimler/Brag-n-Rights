@@ -6,13 +6,6 @@
 
 <a asp-action="Index"><button class="btn btn-primary" id="home-btn">Back to Meal Plans</button></a>
 <hr>
-<!--a asp-action="CreateMeal" asp-route-id="@Model.MealId"><button class="btn btn-primary">Edit Meal</button></a>
-<div class="pt-2">
-    <form method="post" asp-action="DeleteMeal" asp-route-id="" onsubmit="return confirm('Are you sure you want to delete this meal?');">
-        <button class="btn btn-danger" type="submit">Delete</button>
-        <input asp-for="MealId" hidden readonly/>
-    </form>
-</div-->
 
 <h2 class="title-w-btn mx-4">Meal Details</h2>
 <form id="del-form" method="post" asp-action="DeleteMeal" asp-route-id="" onsubmit="return confirm('Are you sure you want to delete this meal plan?');">
@@ -20,7 +13,7 @@
   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
     <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
-    </svg> 
+    </svg> <!-- This is the Gear icon -->
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
     <a asp-action="CreateMeal" class="dropdown-item" asp-route-id="@Model.MealId">Edit </a>
@@ -33,11 +26,29 @@
 <p><strong>Meal Type: </strong>@Model.MealType </p>
 <p><strong>Meal Plan:</strong> <a class="title-link" asp-action="MealPlanDetails" asp-route-id="@Model.PlanIds.FirstOrDefault()">@Model.PlanNames.FirstOrDefault()</a></p>
 <p><strong>Description: </strong> @Model.Description</p>
-<h4>Foods</h4>
-@foreach(long food in Model.Foods)
+@if (Model.Date != null)
 {
-    <p class="food-from-api" data-api-id="@food"></p>
+  <p><strong>Date: </strong> @Model.Date</p>
+} else
+{
+  <p><strong>Date: </strong> Not set</p>
 }
+
+
+<h4>Foods</h4>
+@if (Model.Foods.Count == 0)
+{
+  <p>No foods here yet!</p>
+}else{
+  <a href="https://www.fatsecret.com">
+      <img src="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret.png" srcset="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_2x.png 2x, https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_3x.png 3x" border="0"/>
+  </a>
+  @foreach(long food in Model.Foods)
+  {
+    <p class="food-from-api" data-api-id="@food"></p>
+  }
+}
+
 
 <script src="~/js/mealDisplay.js" asp-append-version="true"></script>
 <link rel="stylesheet" href="~/css/MealPlan.css" asp-append-version="true" />
