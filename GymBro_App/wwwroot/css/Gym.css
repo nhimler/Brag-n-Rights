@@ -38,11 +38,15 @@
     -moz-appearance: textfield;
 }
 
-.bookmarked-star {
+.bookmarked-icon {
     color: #1b50e2;
 }
 
-.freshly-bookmarked-star {
+.freshly-bookmarked-icon {
     color: #1b50e2;
     --fa-animation-iteration-count: 1;
+}
+
+.gym-rating-star {
+    color: #FFD43B;
 }
