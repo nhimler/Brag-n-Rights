@@ -178,10 +178,59 @@ async function getNearbyGyms(pos) {
             gymResultBody.appendChild(gymHoursParagraphs)
 
             console.log("Getting gym rating: " + gym.rating)
-            let gymRating = document.createElement("p")
-            gymRating.setAttribute("class", "card-text")
-            gymRating.innerText = `Rating: ${gym.rating} / 5.0`
-            gymResultBody.appendChild(gymRating)
+            
+            let gymRatingDiv = document.createElement("div")
+            gymRatingDiv.setAttribute("class", "d-flex align-items-center mb-3")
+            let ratingText = document.createElement("p")
+            ratingText.setAttribute("class", "card-text mb-0 me-2")
+            ratingText.innerText = "Rating: "
+            gymRatingDiv.appendChild(ratingText)
+
+            let numFullStars = Math.floor(gym.rating)
+            let numHalfStars = Math.round(gym.rating - numFullStars)
+            let numEmptyStars = 5 - numFullStars - numHalfStars
+            
+            for (let j = 0; j < numFullStars; j++) {
+                let fullStarIcon = document.createElement("i")
+                fullStarIcon.setAttribute("class", "fa-solid fa-star yellow-star")
+                gymRatingDiv.appendChild(fullStarIcon)
+            }
+            
+            for (let j = 0; j < numHalfStars; j++) {
+                let halfStarIcon = document.createElement("i")
+                halfStarIcon.setAttribute("class", "fa-regular fa-star-half-stroke yellow-star")
+                gymRatingDiv.appendChild(halfStarIcon)
+            }
+            
+            for (let j = 0; j < numEmptyStars; j++) {
+                let fullStarIcon = document.createElement("i")
+                fullStarIcon.setAttribute("class", "fa-regular fa-star yellow-star")
+                gymRatingDiv.appendChild(fullStarIcon)
+            }
+
+            let gymRatingText = document.createElement("p")
+            gymRatingText.setAttribute("class", "card-text mb-0 ms-2")
+            gymRatingText.innerText = `(${gym.rating})`
+            
+            gymRatingDiv.appendChild(gymRatingText)
+            gymResultBody.appendChild(gymRatingDiv)
+
+
+            
+            // let gymRating = document.createElement("p")
+            // let fullStars = Math.floor(gym.rating)
+            // let fullStarIcon = document.createElement("i")
+            // fullStarIcon.setAttribute("class", "fa-solid fa-star")
+
+
+            // let halfStars = 5.0 - fullStars
+            // let halfStarIcon = document.createElement("i")
+            // halfStarIcon.setAttribute("class", "fa-solid fa-star")
+            // let starRating = "★".repeat(fullStars) + "☆".repeat(5 - fullStars)
+
+            // gymRating.setAttribute("class", "card-text")
+            // gymRating.innerText = `Rating: ${starRating} (${gym.rating})`
+            // gymResultBody.appendChild(gymRating)
 
             let gymResultActions = document.createElement("div")
             gymResultActions.setAttribute("class", "d-flex justify-content-between align-items-center")
@@ -198,9 +247,9 @@ async function getNearbyGyms(pos) {
                 
                 if (isBookmarked) {
                     bookmarkButton.setAttribute("disabled", "true")
-                    let bookmarkStar = document.createElement("i")
-                    bookmarkStar.setAttribute("class", "fa-solid fa-star bookmarked-star")
-                    bookmarkButton.appendChild(bookmarkStar)
+                    let bookmarkIcon = document.createElement("i")
+                    bookmarkIcon.setAttribute("class", "fa-solid fa-bookmark bookmarked-icon")
+                    bookmarkButton.appendChild(bookmarkIcon)
                     bookmarkButton.appendChild(document.createTextNode(" Bookmarked"))
                     bookmarkButton.setAttribute("class", "btn bookmark-gym-button disabled")
                     bookmarkButton.setAttribute("aria-disabled", "true")
@@ -209,9 +258,9 @@ async function getNearbyGyms(pos) {
                 }
 
                 else {
-                    let bookmarkStar = document.createElement("i")
-                    bookmarkStar.setAttribute("class", "fa-solid fa-star")
-                    bookmarkButton.appendChild(bookmarkStar)
+                    let bookmarkIcon = document.createElement("i")
+                    bookmarkIcon.setAttribute("class", "fa-solid fa-bookmark")
+                    bookmarkButton.appendChild(bookmarkIcon)
 
                     bookmarkButton.appendChild(document.createTextNode(" Add to Boomarks"))
                     bookmarkButton.addEventListener("click", () => {
@@ -222,9 +271,9 @@ async function getNearbyGyms(pos) {
                         bookmarkButton.setAttribute("aria-disabled", "true")
                         bookmarkButton.textContent = ""
 
-                        let bookmarkedStar = document.createElement("i")
-                        bookmarkedStar.setAttribute("class", "fa-solid fa-star fa-bounce freshly-bookmarked-star")
-                        bookmarkButton.appendChild(bookmarkedStar)
+                        let bookmarkedIcon = document.createElement("i")
+                        bookmarkedIcon.setAttribute("class", "fa-solid fa-bookmark fa-bounce freshly-bookmarked-icon")
+                        bookmarkButton.appendChild(bookmarkedIcon)
                         bookmarkButton.appendChild(document.createTextNode(" Bookmarked"))
                     })
                     gymResultActions.appendChild(bookmarkButton)
