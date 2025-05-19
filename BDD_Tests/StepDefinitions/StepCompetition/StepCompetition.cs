@@ -12,6 +12,7 @@ namespace BDD_Tests.StepDefinitions
     [Scope(Tag = "SCRUM68")]
     [Scope(Tag = "SCRUM72")]
     [Scope(Tag = "SCRUM73")]
+    [Scope(Tag = "SCRUM81")]
     public sealed partial class SCRUMStepDefinitions
     {
         private IWebDriver _driver;
@@ -94,6 +95,19 @@ namespace BDD_Tests.StepDefinitions
             Assert.That(headerText, Does.Contain(expectedHeader), $"Expected header to contain '{expectedHeader}', but found '{headerText}'.");
         }
 
+        [Then(@"I should see ""(.*)""")]
+        public void ThenIShouldSee(string expectedText)
+        {
+            // wait up to 10 seconds for the text to appear in the DOM
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            wait.Until(ExpectedConditions.ElementIsVisible(
+                By.XPath($"//*[contains(normalize-space(.), '{expectedText}')]")));
+
+            // verify the text is actually on the page
+            var pageBody = _driver.FindElement(By.TagName("body")).Text;
+            Assert.That(pageBody, Does.Contain(expectedText),
+                        $"Expected to find text '{expectedText}' on the page.");
+        }
 
         [When(@"I click the ""(.*)"" button")]
         [Then(@"I click the ""(.*)"" button")]

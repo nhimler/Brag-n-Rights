@@ -1,0 +1,3 @@
+
+ALTER TABLE Meal
+ADD [Date] DATE;

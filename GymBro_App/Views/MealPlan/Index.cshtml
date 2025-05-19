@@ -50,7 +50,7 @@
                         @if(plan.Meals.Count == 0){
                             <p>No meals in this plan</p>
                         }
-                        <ol>
+                        <ol class="meal-list">
                             @foreach(var meal in plan.Meals)
                             {
                                 <li>

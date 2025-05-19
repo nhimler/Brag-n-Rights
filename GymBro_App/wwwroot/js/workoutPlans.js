@@ -93,6 +93,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
+      if (!document.getElementById('saveAllExercisesBtn')) {
+        const saveAllBtn = document.createElement('button');
+        saveAllBtn.id = 'saveAllExercisesBtn';
+        saveAllBtn.className = 'btn btn-primary mt-3 float-end';
+        saveAllBtn.textContent = 'Save All Changes';
+        container.appendChild(saveAllBtn);
+
+        saveAllBtn.addEventListener('click', async () => {
+          const updateTasks = Array.from(container.querySelectorAll('.exercise-detail')).map(detail => {
+            const apiId = detail.querySelector('.sets-input').dataset.apiid;
+            const sets = parseInt(detail.querySelector('.sets-input').value);
+            const reps = parseInt(detail.querySelector('.reps-input').value);
+            return fetch('/api/Workouts/Exercise', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ planId: parseInt(planId), apiId, sets, reps })
+            });
+          });
+
+          const results = await Promise.all(updateTasks);
+          if (results.every(r => r.ok)) {
+            const modalEl = document.getElementById('exercisesModal');
+            const modal = bootstrap.Modal.getInstance(modalEl) 
+                       || bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.hide();
+          } else {
+            console.error('One or more saves failed.');
+          }
+        });
+      }
+
     });
   });
 });
