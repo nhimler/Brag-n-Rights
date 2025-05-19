@@ -43,7 +43,7 @@
 <p><strong>Target Carbs:</strong> @Model.MealPlan.TargetCarbs</p>
 <p><strong>Target Fats:</strong> @Model.MealPlan.TargetFats</p>
 <h3 class="inl-bl m-3">Meals</h3>
-<a asp-action="CreateMeal" asp-route-id="new" ><button class="btn btn-primary" id="create-meal-btn">Add a Meal</button></a>
+<a asp-action="CreateMeal" asp-route-id="new" ><button class="btn btn-primary" id="create-meal-btn">Create Meal</button></a>
 @if(Model.Meals.Count == 0){
     <p>No meals in this plan</p>
 }

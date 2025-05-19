@@ -401,6 +401,7 @@ public class MealPlanController : Controller
         mv.MealName = meal.MealName ?? "";
         mv.MealType = meal.MealType ?? "";
         mv.Description = meal.Description ?? "";
+        mv.Date = meal.Date;
         mv.Foods = meal.Foods.Select(f => f.ApiFoodId ?? -1).ToList();
         return View("CreateMeal", mv);
     }
@@ -436,6 +437,7 @@ public class MealPlanController : Controller
                 meal.MealName = mv.MealName;
                 meal.MealType = mv.MealType;
                 meal.Description = mv.Description;
+                meal.Date = mv.Date;
                 _mealRepository.AddOrUpdate(meal);
                 _foodRepository.DeleteInMeal(meal.MealId);
                 foreach (var food in mv.Foods)

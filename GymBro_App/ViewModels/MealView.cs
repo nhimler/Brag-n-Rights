@@ -15,12 +15,15 @@ namespace GymBro_App.ViewModels
             MealName = meal.MealName ?? "";
             MealType = meal.MealType ?? "";
             Description = meal.Description ?? "";
+            Date = meal.Date;
         }
         public List<long> Foods { get; set; } = new List<long>();
 
         public List<string> PlanNames { get; set; } = new List<string>();
 
         public List<int> PlanIds { get; set; } = new List<int>();
+
+        public DateOnly? Date { get; set; }
 
         public int MealId { get; set; }
 
