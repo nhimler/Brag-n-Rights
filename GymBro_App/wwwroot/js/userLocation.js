@@ -192,19 +192,19 @@ async function getNearbyGyms(pos) {
             
             for (let j = 0; j < numFullStars; j++) {
                 let fullStarIcon = document.createElement("i")
-                fullStarIcon.setAttribute("class", "fa-solid fa-star yellow-star")
+                fullStarIcon.setAttribute("class", "fa-solid fa-star gym-rating-star")
                 gymRatingDiv.appendChild(fullStarIcon)
             }
             
             for (let j = 0; j < numHalfStars; j++) {
                 let halfStarIcon = document.createElement("i")
-                halfStarIcon.setAttribute("class", "fa-regular fa-star-half-stroke yellow-star")
+                halfStarIcon.setAttribute("class", "fa-regular fa-star-half-stroke gym-rating-star")
                 gymRatingDiv.appendChild(halfStarIcon)
             }
             
             for (let j = 0; j < numEmptyStars; j++) {
                 let fullStarIcon = document.createElement("i")
-                fullStarIcon.setAttribute("class", "fa-regular fa-star yellow-star")
+                fullStarIcon.setAttribute("class", "fa-regular fa-star gym-rating-star")
                 gymRatingDiv.appendChild(fullStarIcon)
             }
 
