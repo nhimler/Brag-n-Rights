@@ -8,7 +8,7 @@ using GymBro_App.Models;
 
 namespace GymBro_App.Controllers
 {
-    [Route("api/gymuser")]
+    [Route("api/gymUser")]
     [ApiController]
     public class GymUserAPIController : Controller
     {
@@ -25,7 +25,7 @@ namespace GymBro_App.Controllers
             _userManager = userManager;
         }
 
-        // TODO: Remove these methods form UserAPIController and move them this controller. Update the routes and calls in any other files (ex: userLocation.js).
+        // TODO: Remove these methods form UserAPIController and move them into this controller. Update the routes and calls in any other files (ex: userLocation.js).
         // [HttpPost]
         // [Route("bookmarkGym/{gymPlaceId}")]
         // public Task<IActionResult> BookmarkGym(string gymPlaceId)
@@ -101,7 +101,13 @@ namespace GymBro_App.Controllers
             }
 
             _logger.LogInformation($"User {user.UserId} is deleting bookmark for gym: {gymPlaceId}");
-            _gymUserRepository.Delete(gymUser);
+            var gymUserToDelete = _gymUserRepository.GetGymUserByGymIdAndUserId(gymPlaceId, user.UserId);
+            if (gymUserToDelete == null)
+            {
+                _logger.LogInformation($"GymUser not found for user {user.UserId} and gym: {gymPlaceId}");
+                return Task.FromResult<IActionResult>(NotFound("Bookmark not found."));
+            }
+            _gymUserRepository.Delete(gymUserToDelete);
             _logger.LogInformation($"User {user.UserId} deleted bookmark for gym: {gymPlaceId}");
             return Task.FromResult<IActionResult>(Ok("Gym bookmark deleted successfully."));
         }

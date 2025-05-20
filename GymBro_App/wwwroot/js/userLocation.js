@@ -334,7 +334,6 @@ async function isGymBookmarked(gymPlaceID) {
         }
 }
 
-
 async function reverseGeocode(lat, long) {
     let response = await fetch(`/api/maps/reversegeocode/${lat}/${long}`, {
         method: 'GET',
