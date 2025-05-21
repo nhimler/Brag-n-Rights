@@ -42,8 +42,7 @@
     color: #1b50e2;
 }
 
-.freshly-bookmarked-icon {
-    color: #1b50e2;
+.icon-single-bounce {
     --fa-animation-iteration-count: 1;
 }
 

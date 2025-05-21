@@ -116,7 +116,7 @@ async function getNearbyGyms(pos) {
         }
     })
 
-    if(response.ok){
+    if (response.ok) {
         let result = await response.json()
         let gymList = document.getElementById("nearby-gym-search-list")
         gymList.textContent = ""
@@ -152,11 +152,11 @@ async function getNearbyGyms(pos) {
             // gymNextStatusHours = gymNextStatusHours.split("T")[1].slice(0, -1)
             // console.log("Closes at: " + gym.regularOpeningHours.nextCloseTime)
             // console.log("Opens at: " + gym.regularOpeningHours.nextOpenTime)
-            
+
 
             let gymResult = document.createElement("div")
             gymResult.setAttribute("class", "card mb-3 text-decoration-none text-dark diplayed-gym-card")
-            
+
             let gymResultBody = document.createElement("div")
             gymResultBody.setAttribute("class", "card-body")
             gymResultBody.appendChild(document.createElement("h5")).innerText = gym.displayName.text
@@ -178,7 +178,7 @@ async function getNearbyGyms(pos) {
             gymResultBody.appendChild(gymHoursParagraphs)
 
             console.log("Getting gym rating: " + gym.rating)
-            
+
             let gymRatingDiv = document.createElement("div")
             gymRatingDiv.setAttribute("class", "d-flex align-items-center mb-3")
             let ratingText = document.createElement("p")
@@ -189,19 +189,19 @@ async function getNearbyGyms(pos) {
             let numFullStars = Math.floor(gym.rating)
             let numHalfStars = Math.round(gym.rating - numFullStars)
             let numEmptyStars = 5 - numFullStars - numHalfStars
-            
+
             for (let j = 0; j < numFullStars; j++) {
                 let fullStarIcon = document.createElement("i")
                 fullStarIcon.setAttribute("class", "fa-solid fa-star gym-rating-star")
                 gymRatingDiv.appendChild(fullStarIcon)
             }
-            
+
             for (let j = 0; j < numHalfStars; j++) {
                 let halfStarIcon = document.createElement("i")
                 halfStarIcon.setAttribute("class", "fa-regular fa-star-half-stroke gym-rating-star")
                 gymRatingDiv.appendChild(halfStarIcon)
             }
-            
+
             for (let j = 0; j < numEmptyStars; j++) {
                 let fullStarIcon = document.createElement("i")
                 fullStarIcon.setAttribute("class", "fa-regular fa-star gym-rating-star")
@@ -211,12 +211,12 @@ async function getNearbyGyms(pos) {
             let gymRatingText = document.createElement("p")
             gymRatingText.setAttribute("class", "card-text mb-0 ms-2")
             gymRatingText.innerText = `(${gym.rating})`
-            
+
             gymRatingDiv.appendChild(gymRatingText)
             gymResultBody.appendChild(gymRatingDiv)
 
 
-            
+
             // let gymRating = document.createElement("p")
             // let fullStars = Math.floor(gym.rating)
             // let fullStarIcon = document.createElement("i")
@@ -234,50 +234,49 @@ async function getNearbyGyms(pos) {
 
             let gymResultActions = document.createElement("div")
             gymResultActions.setAttribute("class", "d-flex justify-content-between align-items-center")
-            
+
             // Preparing the gym's id for the bookmark button (if they're logged in)
             if (userSignedIn) {
                 let gymPlaceID = gym.name.replace("places/", "")
-                let isBookmarked = await isGymBookmarked(gymPlaceID)
+                let isBookmarked = await isGymBookmarked(gymPlaceID);
 
-                let bookmarkButton = document.createElement("button")
-                bookmarkButton.setAttribute("class", "btn bookmark-gym-button")
-                bookmarkButton.setAttribute("id", gymPlaceID)
-                bookmarkButton.setAttribute("type", "button")
-                
-                if (isBookmarked) {
-                    bookmarkButton.setAttribute("disabled", "true")
-                    let bookmarkIcon = document.createElement("i")
-                    bookmarkIcon.setAttribute("class", "fa-solid fa-bookmark bookmarked-icon")
-                    bookmarkButton.appendChild(bookmarkIcon)
-                    bookmarkButton.appendChild(document.createTextNode(" Bookmarked"))
-                    bookmarkButton.setAttribute("class", "btn bookmark-gym-button disabled")
-                    bookmarkButton.setAttribute("aria-disabled", "true")
-                    bookmarkButton.setAttribute("disabled", "true")
-                    gymResultActions.appendChild(bookmarkButton)
+                let bookmarkButton = document.createElement("button");
+                bookmarkButton.setAttribute("class", "btn bookmark-gym-button");
+                bookmarkButton.setAttribute("id", gymPlaceID);
+                bookmarkButton.setAttribute("type", "button");
+
+                function updateBookmarkButton(bookmarked) {
+                    bookmarkButton.innerHTML = "";
+                    let icon = document.createElement("i");
+                    if (bookmarked) {
+                        icon.setAttribute("class", "fa-solid fa-bookmark fa-bounce bookmarked-icon");
+                        icon.setAttribute("style", "--fa-animation-iteration-count: 1;")
+                        bookmarkButton.appendChild(icon);
+                        bookmarkButton.appendChild(document.createTextNode(" Remove Bookmark"));
+                    } else {
+                        icon.setAttribute("class", "fa-solid fa-bookmark");
+                        bookmarkButton.appendChild(icon);
+                        bookmarkButton.appendChild(document.createTextNode(" Add to Bookmarks"));
+                    }
                 }
 
-                else {
-                    let bookmarkIcon = document.createElement("i")
-                    bookmarkIcon.setAttribute("class", "fa-solid fa-bookmark")
-                    bookmarkButton.appendChild(bookmarkIcon)
+                updateBookmarkButton(isBookmarked);
 
-                    bookmarkButton.appendChild(document.createTextNode(" Add to Boomarks"))
-                    bookmarkButton.addEventListener("click", () => {
-                        console.log("Bookmark button clicked")
-                        bookmarkGym(gymPlaceID)
-                        bookmarkButton.setAttribute("disabled", "true")
-                        bookmarkButton.setAttribute("class", "btn bookmark-gym-button disabled")
-                        bookmarkButton.setAttribute("aria-disabled", "true")
-                        bookmarkButton.textContent = ""
+                bookmarkButton.addEventListener("click", async () => {
+                    if (bookmarkButton.disabled) return
+                    bookmarkButton.disabled = true
+                    if (isBookmarked) {
+                        await removeGymBookmark(gymPlaceID, bookmarkButton)
+                        isBookmarked = false
+                    } else {
+                        await bookmarkGym(gymPlaceID)
+                        isBookmarked = true
+                    }
+                    updateBookmarkButton(isBookmarked)
+                    bookmarkButton.disabled = false
+                })
 
-                        let bookmarkedIcon = document.createElement("i")
-                        bookmarkedIcon.setAttribute("class", "fa-solid fa-bookmark fa-bounce freshly-bookmarked-icon")
-                        bookmarkButton.appendChild(bookmarkedIcon)
-                        bookmarkButton.appendChild(document.createTextNode(" Bookmarked"))
-                    })
-                    gymResultActions.appendChild(bookmarkButton)
-                }
+                gymResultActions.appendChild(bookmarkButton)
             }
 
             let gymWebsiteButton = document.createElement("a")
@@ -302,6 +301,15 @@ async function getNearbyGyms(pos) {
     }
 }
 
+async function removeGymBookmark(gymPlaceID, bookmarkButton) {
+    await deleteGymBookmark(gymPlaceID);
+    bookmarkButton.setAttribute("class", "btn bookmark-gym-button");
+    bookmarkButton.textContent = "";
+    let unbookmarkedIcon = document.createElement("i");
+    unbookmarkedIcon.setAttribute("class", "fa-solid fa-bookmark fa-bounce freshly-bookmarked-icon");
+    bookmarkButton.appendChild(unbookmarkedIcon);
+}
+
 async function bookmarkGym(gymPlaceID) {
     let response = await fetch(`/api/users/bookmarkGym/${gymPlaceID}`, {
         method: 'POST',
@@ -322,16 +330,17 @@ async function isGymBookmarked(gymPlaceID) {
     let response = await fetch(`/api/users/isGymBookmarked/${gymPlaceID}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'}
-        })
-        if (response.ok) {
-            let result = await response.json()
-            console.log(result)
-            return result
+            'Content-Type': 'application/json'
         }
-        else {
-            console.log("Error in isGymBookmarked: " + response.status)
-        }
+    })
+    if (response.ok) {
+        let result = await response.json()
+        console.log(result)
+        return result
+    }
+    else {
+        console.log("Error in isGymBookmarked: " + response.status)
+    }
 }
 
 async function reverseGeocode(lat, long) {
@@ -342,12 +351,12 @@ async function reverseGeocode(lat, long) {
         }
     })
 
-    if(response.ok){
+    if (response.ok) {
         let result = await response.json()
         console.log(result)
         let userLocation = document.getElementById("user-location")
         userLocation.innerHTML = `Location: ${result.address}`
-        
+
     }
     else {
         console.log("Error: " + response.status)
@@ -362,13 +371,30 @@ async function geocodePostal(postalCode) {
         }
     })
 
-    if(response.ok){
+    if (response.ok) {
         let result = await response.json()
         console.log(result)
         return result
     }
     else {
         console.log("Error: " + response.status)
+    }
+}
+
+async function deleteGymBookmark(gymPlaceID) {
+    let response = await fetch(`/api/gymUser/bookmark/delete/${gymPlaceID}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    if (response.ok) {
+        console.log("Gym bookmark deleted successfully")
+        return true
+    }
+    else {
+        console.log("Something went wrong when deleting the bookmark: " + response.status)
+        return false
     }
 }
 
