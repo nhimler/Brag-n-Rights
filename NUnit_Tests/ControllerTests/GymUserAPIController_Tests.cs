@@ -146,10 +146,12 @@ namespace Controller_Tests
                 new GymUser { GymUserId = 1, ApiGymId = "gym123", UserId = 1 }
             };
 
+            var existingGymUser = new GymUser { GymUserId = 1, ApiGymId = "gym123", UserId = 1 };
+
             _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("1");
             _mockUserRepository.Setup(repo => repo.GetUserByIdentityUserId("1")).Returns(user);
-            _mockGymUserRepository.Setup(repo => repo.GetAllGymUsersByUserId(1)).Returns(existingGymUsers);
             _mockGymUserRepository.Setup(repo => repo.IsGymBookmarked(gymPlaceId, user.UserId)).Returns(true);
+            _mockGymUserRepository.Setup(repo => repo.GetGymUserByGymIdAndUserId(gymPlaceId, user.UserId)).Returns(existingGymUser);
 
             // Act
             var result = await _gymUserAPIController.DeleteGymBookmark(gymPlaceId);
