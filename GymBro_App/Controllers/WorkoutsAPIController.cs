@@ -83,7 +83,8 @@ namespace GymBro_App.Controllers
                 var exs = await _exerciseService.GetExerciseByIdAsync(wpe.ApiId);
                 var ex = exs?.FirstOrDefault();
                 if (ex == null) continue;
-                result.Add(new {
+                result.Add(new
+                {
                     ex.Id,
                     ex.Name,
                     ex.GifUrl,
@@ -93,7 +94,8 @@ namespace GymBro_App.Controllers
                     SecondaryMuscles = ex.SecondaryMuscles,
                     Instructions = ex.Instructions,
                     Sets = wpe.Sets ?? 0,
-                    Reps = wpe.Reps ?? 0
+                    Reps = wpe.Reps ?? 0,
+                    Weight = wpe.Weight ?? 0
                 });
             }
             return Ok(result);
@@ -108,6 +110,7 @@ namespace GymBro_App.Controllers
             if (wpe == null) return NotFound();
             wpe.Sets = dto.Sets;
             wpe.Reps = dto.Reps;
+            wpe.Weight = dto.Weight;
             _workoutPlanRepository.Update(plan);
             return NoContent();
         }
