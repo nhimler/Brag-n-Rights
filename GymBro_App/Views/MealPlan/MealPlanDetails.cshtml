@@ -18,50 +18,76 @@
         <input asp-for="id" value="@Model.MealPlan.MealPlanId" hidden readonly/>
     </form>
 </div-->
-
-<h2 class="title-w-btn mx-4">Meal Plan Details</h2>
-<form id="del-form" method="post" asp-action="DeleteMealPlan" asp-route-id="" onsubmit="return confirm('Are you sure you want to delete this meal plan?');">
-<div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
-    <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
-    </svg> 
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a asp-action="CreateMealPlan" class="dropdown-item" asp-route-id="@Model.MealPlan.MealPlanId">Edit</a>
-    <a href="#" class="dropdown-item" onclick="document.getElementById('del-form').submit();">Delete</a>
-  </div>
+<div class="row">
+    <div class="col-12 col-md-6">
+        <h2 class="title-w-btn mx-4">Meal Plan Details</h2>
+        <form id="del-form" method="post" asp-action="DeleteMealPlan" asp-route-id="" onsubmit="return confirm('Are you sure you want to delete this meal plan?');">
+        <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
+            <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+            </svg> 
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a asp-action="CreateMealPlan" class="dropdown-item" id="edit-mealplan-btn" asp-route-id="@Model.MealPlan.MealPlanId">Edit</a>
+            <a href="#" class="dropdown-item" onclick="document.getElementById('del-form').submit();">Delete</a>
+        </div>
+        </div>
+            <input asp-for="id" value="@Model.MealPlan.MealPlanId" hidden readonly/>
+        </form>
+        <h3>@Model.MealPlan.PlanName </h3>
+        <h4>Time Frame:</h4> 
+        <p>@Model.MealPlan.StartDate?.Month/@Model.MealPlan.StartDate?.Day/@Model.MealPlan.StartDate?.Year - @Model.MealPlan.EndDate?.Month/@Model.MealPlan.EndDate?.Day/@Model.MealPlan.EndDate?.Year</p>
+        <p><strong>Frequency:</strong>@Model.MealPlan.Frequency</p>
+        <p><strong>Target Calories:</strong> <span id="Calories">@Model.MealPlan.TargetCalories</span></p>
+        <p><strong>Target Protein:</strong> <span id="Protein">@Model.MealPlan.TargetProtein</span></p>
+        <p><strong>Target Carbs:</strong> <span id="Carbs">@Model.MealPlan.TargetCarbs</span></p>
+        <p><strong>Target Fats:</strong> <span id="Fats">@Model.MealPlan.TargetFats</span></p>
+    </div>
+    <div class="col-12 col-md-6">
+        <canvas id="targetGraph"></canvas>
+    </div>
 </div>
-    <input asp-for="id" value="@Model.MealPlan.MealPlanId" hidden readonly/>
-</form>
-<h3>@Model.MealPlan.PlanName </h3>
-<h4>Time Frame:</h4> 
-<p>@Model.MealPlan.StartDate?.Month/@Model.MealPlan.StartDate?.Day/@Model.MealPlan.StartDate?.Year - @Model.MealPlan.EndDate?.Month/@Model.MealPlan.EndDate?.Day/@Model.MealPlan.EndDate?.Year</p>
-<p><strong>Frequency:</strong> @Model.MealPlan.Frequency</p>
-<p><strong>Target Calories:</strong> @Model.MealPlan.TargetCalories</p>
-<p><strong>Target Protein:</strong> @Model.MealPlan.TargetProtein</p>
-<p><strong>Target Carbs:</strong> @Model.MealPlan.TargetCarbs</p>
-<p><strong>Target Fats:</strong> @Model.MealPlan.TargetFats</p>
 <h3 class="inl-bl m-3">Meals</h3>
-<a asp-action="CreateMeal" asp-route-id="new" ><button class="btn btn-primary" id="create-meal-btn">Add a Meal</button></a>
+<a asp-action="CreateMeal" asp-route-id="new" ><button class="btn btn-primary" id="create-meal-btn">Create Meal</button></a>
 @if(Model.Meals.Count == 0){
     <p>No meals in this plan</p>
 }
-<ol>
-    @foreach(var meal in Model.Meals)
+<ul class="list-group">
+    @foreach(var date in Model.Meals.GroupBy(m => m.Date).OrderBy(m => m.Key))
     {
-        <li>
-            <a class="title-link" asp-action="MealDetails" asp-route-id="@meal.MealId"><h4>@meal.MealName</h4></a>
-            <p><strong>Food:</strong></p>
-            <ul>
-                @foreach(var food in meal.Foods)
+        <li class="list-group-item">
+            @if(date.Key == null)
+            {
+                <h4>Unknown Date</h4>
+            }
+            else
+            {
+                <h4>@date.Key</h4>
+            }
+                @foreach(var meal in date)
                 {
-                    <li class="food-from-api" data-api-id="@food"></li>
+                <ul class="meal-list">
+                    <li>
+                        <a class="title-link" asp-action="MealDetails" asp-route-id="@meal.MealId"><h4>@meal.MealName</h4></a>
+                        <p><strong>Food:</strong></p>
+                        <ul>
+                            @foreach(var food in meal.Foods)
+                            {
+                                <li class="food-from-api" data-api-id="@food"></li>
+                            }
+                        </ul>
+                    </li>
+                </ul>
                 }
-            </ul>
         </li>
     }
-</ol>
+</ul>
 
-<script src="~/js/mealDisplay.js" asp-append-version="true"></script>
+@section Scripts {
+    <script src="~/js/mealDisplay.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/targetGraph.js" asp-append-version="true"></script>
+}
+
 <link rel="stylesheet" href="~/css/MealPlan.css" asp-append-version="true" />

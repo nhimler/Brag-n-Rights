@@ -53,6 +53,28 @@ public class MealPlanAPIController : ControllerBase
             start = mp.StartDate,
             end = mp.EndDate
         });
+
+        foreach (var mealPlan in mealPlans)
+        {
+            var meals = mealPlan.Meals;
+            if (meals != null)
+            {
+                foreach (var meal in meals)
+                {
+                    if (meal == null)
+                    {
+                        continue;
+                    }
+                    var mealSchedule = new MealPlanScheduleDTO
+                    {
+                        title = meal.MealName != null ? meal.MealName : "No Name",
+                        start = meal.Date,
+                        end = meal.Date
+                    };
+                    mealPlanSchedules = mealPlanSchedules.Append(mealSchedule);
+                }
+            }
+        }
         return Ok(mealPlanSchedules);
     }
 

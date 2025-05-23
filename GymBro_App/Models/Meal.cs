@@ -19,6 +19,8 @@ public partial class Meal
     [StringLength(20)]
     public string? MealType { get; set; }
 
+    public DateOnly? Date { get; set; }
+
     [Column("MealPlanID")]
     public int? MealPlanId { get; set; }
 
