@@ -38,6 +38,15 @@ document.addEventListener('DOMContentLoaded', () => {
                   </label>
                 </div>
                 <div class="mb-2">
+                  <label>Weight (lbs):
+                    <input type="number"
+                           step="1"
+                           class="form-control weight-input"
+                           data-apiid="${ex.id}"
+                           value="${ex.weight || ''}" />
+                  </label>
+                </div>
+                <div class="mb-2">
                   <button class="btn btn-success btn-sm save-changes-btn"
                           type="button"
                           data-apiid="${ex.id}">
@@ -72,8 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
       container.querySelectorAll('.save-changes-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
           const apiId = btn.dataset.apiid;
-          const sets  = container.querySelector(`.sets-input[data-apiid="${apiId}"]`).value;
-          const reps  = container.querySelector(`.reps-input[data-apiid="${apiId}"]`).value;
+          const sets = container.querySelector(`.sets-input[data-apiid="${apiId}"]`).value;
+          const reps = container.querySelector(`.reps-input[data-apiid="${apiId}"]`).value;
+          const weight = container.querySelector(`.weight-input[data-apiid="${apiId}"]`).value;
           const res = await fetch('/api/Workouts/Exercise', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -81,7 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
               planId: parseInt(planId),
               apiId,
               sets: parseInt(sets),
-              reps: parseInt(reps)
+              reps: parseInt(reps),
+              weight: weight ? parseInt(weight) : null
             })
           });
           if (res.ok) {
@@ -105,10 +116,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const apiId = detail.querySelector('.sets-input').dataset.apiid;
             const sets = parseInt(detail.querySelector('.sets-input').value);
             const reps = parseInt(detail.querySelector('.reps-input').value);
+            const weight = detail.querySelector('.weight-input').value;
+            
             return fetch('/api/Workouts/Exercise', {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ planId: parseInt(planId), apiId, sets, reps })
+              body: JSON.stringify({ 
+                planId: parseInt(planId), 
+                apiId, 
+                sets, 
+                reps,
+                weight: weight ? parseInt(weight) : 0
+              })
             });
           });
 
