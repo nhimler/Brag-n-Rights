@@ -3,7 +3,7 @@ Feature: SCRUM77
 This will cover the functionality of bookmarking any gyms that the user searches for
 
 @Gym
-Scenario: User searches for nearby gyms with their location
+Scenario: User should see a bookmark button next to a gym
 	Given I am logged in
     And I am on the gym search page
     When I enter 97361 as a postal code in the search bar

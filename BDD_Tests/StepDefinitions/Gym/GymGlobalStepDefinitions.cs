@@ -4,6 +4,8 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Support;
 using Reqnroll;
+using AngleSharp.Text;
+using OpenQA.Selenium.Chrome;
 
 namespace BDD_Tests.StepDefinitions;
 
@@ -16,8 +18,22 @@ public sealed class GymGlobalStepDefinitions
     [BeforeScenario]
     public void Setup()
     {
-        _driver = GlobalDriverSetup.Driver;
+        var options = new ChromeOptions();
+        options.AddArgument("--headless");
+        options.AddArgument("--no-sandbox");
+        options.AddArgument("--disable-dev-shm-usage");
+        _driver = new ChromeDriver(options);
         _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+    }
+
+    [AfterScenario]
+    public void Teardown()
+    {
+        if (_driver != null)
+        {
+            _driver.Quit();
+            _driver.Dispose();
+        }
     }
 
     [Given("I am logged in")]
@@ -45,6 +61,21 @@ public sealed class GymGlobalStepDefinitions
         _driver.FindElement(By.Id("login-submit")).Click();
     }
 
+    [Given("I have at least one gym bookmarked")]
+    public void GivenIHaveAtLeastOneGymBookmarked()
+    {
+        _driver.Navigate().GoToUrl("http://localhost:5075/Gym/FindNearbyGyms");
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+        wait.Until(d => d.Url.Contains("FindNearbyGyms"));
+        var searchBar = _driver.FindElement(By.Id("postal-code-gym-search"));
+        searchBar.Clear();
+        searchBar.SendKeys("97361");
+        var button = _driver.FindElement(By.Id("postal-code-gym-search-button"));
+        button.Click();
+        var bookmarkingGym = FindFirstBookmarkedGym(true);
+        Assert.That(bookmarkingGym, Is.Not.Null, "No gyms found to bookmark.");
+    }
+
     [Given("I am logged in as {string} with password {string}")]
     public void GivenIAmLoggedInAs(string username, string password)
     {
@@ -62,11 +93,22 @@ public sealed class GymGlobalStepDefinitions
     public void WhenINavigateToTheGymSearchPage()
     {
         _driver.Navigate().GoToUrl("http://localhost:5075/Gym/FindNearbyGyms");
+        Console.WriteLine("Currently on: " + _driver.Url);
         
         // Wait for the page to load. The page seems to sometimes take a while to load.
-        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(3));
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
         wait.Until(d => d.Url.Contains("FindNearbyGyms"));
         Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/Gym/FindNearbyGyms"), "Expected Gym Search page URL. Actual: " + _driver.Url);
+    }
+
+    [Given("I am on the my gyms page")]
+    public void GivenIAmOnTheMyGymsPage()
+    {
+        _driver.Navigate().GoToUrl("http://localhost:5075/UserPage/BookmarkedGyms");
+
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+        wait.Until(d => d.Url.Contains("BookmarkedGyms"));
+        Assert.That(_driver.Url, Is.EqualTo("http://localhost:5075/UserPage/BookmarkedGyms"), "Expected 'My Gyms' page URL. Actual: " + _driver.Url);
     }
 
     [Then("I should see a list of gyms appear")]
@@ -141,6 +183,24 @@ public sealed class GymGlobalStepDefinitions
 
     [Then("The gym should no longer be bookmarked")]
     public void ThenTheGymShouldNoLongerBeBookmarked()
+    {
+        var bookmarkedGyms = _driver.FindElements(By.ClassName("bookmarked-icon"));
+        foreach (var gym in bookmarkedGyms)
+        {
+            Console.WriteLine($"Gym: {gym.GetAttribute("outerHTML")}");
+        }
+        Assert.That(bookmarkedGyms.Count == 0, "Gym is still bookmarked.");
+    }
+
+    [When("I delete a gym from my bookmarks")]
+    public void WhenIDeleteAGymFromMyBookmarks()
+    {
+        var deleteButton = _driver.FindElement(By.ClassName("delete-gym-btn"));
+        ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", deleteButton);
+    }
+
+    [Then("I should no longer see the gym in my bookmarks")]
+    public void ThenIShouldNoLongerSeeTheGymInMyBookmarks()
     {
         var bookmarkedGyms = _driver.FindElements(By.ClassName("bookmarked-icon"));
         foreach (var gym in bookmarkedGyms)

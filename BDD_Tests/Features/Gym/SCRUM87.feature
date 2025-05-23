@@ -12,3 +12,11 @@ Scenario: User deletes existing bookmark from the gym search page
     And I should see a bookmark button next to a gym
     When I click on a bookmarked gym
     Then The gym should no longer be bookmarked
+
+@Gym
+Scenario: User deletes existing bookmark from the my gyms page
+    Given I am logged in as "noBookmarks" with password "Password!1"
+    And I have at least one gym bookmarked
+    And I am on the my gyms page
+    When I delete a gym from my bookmarks
+    Then I should no longer see the gym in my bookmarks
