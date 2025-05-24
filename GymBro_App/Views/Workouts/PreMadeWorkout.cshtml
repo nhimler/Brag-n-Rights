@@ -113,32 +113,66 @@
 function renderPreMadePlans(plans) {
   const container = document.getElementById('PreMadeWorkoutList');
   if (!container) return console.error('No #PreMadeWorkoutList found');
+  container.innerHTML = '';
 
-  container.innerHTML = '';  // clear any old content
+  plans.forEach((plan, idx) => {
+    // Wrapper for this plan
+    const planItem = document.createElement('div');
+    planItem.className = 'plan-item mb-4';
 
-  plans.forEach(plan => {
-    // 1) Plan header
-    const header = document.createElement('h2');
-    header.className = 'mt-4';
-    header.textContent = plan.PlanName ;
-    container.appendChild(header);
+// 1) Header row with title + caret
+const header = document.createElement('div');
+header.className = 'd-flex align-items-center';  // left-align both items
+header.style.cursor = 'pointer';
 
-    // 2) “Use this plan” button
+const title = document.createElement('h2');
+title.className = 'mb-0';
+title.textContent = plan.PlanName;
+header.appendChild(title);
+
+// caret right next to the title
+const caret = document.createElement('span');
+caret.textContent = '▶';
+caret.style.fontSize = '1.25rem';
+caret.style.transition = 'transform 0.2s';
+caret.style.marginLeft = '8px';  // ← this moves it closer
+header.appendChild(caret);
+
+planItem.appendChild(header);
+
+    // 2) Hidden content panel
+    const panel = document.createElement('div');
+    panel.style.display = 'none';
+    panel.className = 'mt-2';
+
+    // “Use this plan” button
     const useBtn = document.createElement('button');
     useBtn.className = 'btn btn-success btn-sm mb-3';
     useBtn.textContent = 'Use this plan';
     useBtn.addEventListener('click', () => usePreMadePlan(plan));
-    container.appendChild(useBtn);
+    panel.appendChild(useBtn);
 
-    // 3) Exercise grid
+    // Exercise grid
     const row = document.createElement('div');
     row.className = 'row';
     plan.fullExercises.forEach(ex => {
       row.appendChild(createExerciseCard(ex));
     });
-    container.appendChild(row);
+    panel.appendChild(row);
+
+    planItem.appendChild(panel);
+
+    // 3) Toggle on header click
+    header.addEventListener('click', () => {
+      const isHidden = panel.style.display === 'none';
+      panel.style.display = isHidden ? 'block' : 'none';
+      caret.textContent = isHidden ? '▼' : '▶';
+    });
+
+    container.appendChild(planItem);
   });
 }
+
 
 async function usePreMadePlan(plan) {
   const payload = {
