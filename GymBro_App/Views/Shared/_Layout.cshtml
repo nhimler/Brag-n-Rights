@@ -11,19 +11,21 @@
 </head>
 <body>
     <!-- Sidebar / Navbar -->
-    <nav class="navbar">
-        <button class="nav-toggle">&#9776;</button>
-        <ul class="nav-links">
-            <li class="nav-brand">GymBro</li>
-            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li><a asp-controller="UserPage" asp-action="Index">User Page</a></li>
-            <li><a asp-controller="MealPlan" asp-action="Index">Meal Plan</a></li>
-            <li><a asp-controller="Workouts" asp-action="Index">Workout Plan</a></li>
-            <li><a asp-controller="AwardMedal" asp-action="AwardMedals">Step Medals</a></li>
-            <li><a asp-controller="StepCompetition" asp-action="Index">Step Competition</a></li>
-            <li class="nav-separator"></li>
-            <partial name="_LoginPartial" />
-        </ul>
+    <nav class="navbar navbar-expand-lg top-navbar">
+        <div class="navbar-brand mx-auto">
+            <a asp-controller="Home" asp-action="Index"><img src="~/images/GymBro Logo 2.png" alt="GymBro Logo" class="navbar-logo" /></a>
+        </div>
+        <div class="container-fluid justify-content-between align-items-center">
+            <ul class="navbar-nav flex-row flex-grow-1 justify-content-end">
+                <li class="nav-item mx-2"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" asp-controller="UserPage" asp-action="Index">User Page</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" asp-controller="MealPlan" asp-action="Index">Meal Plan</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" asp-controller="Workouts" asp-action="Index">Workout Plan</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" asp-controller="AwardMedal" asp-action="AwardMedals">Step Medals</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" asp-controller="StepCompetition" asp-action="Index">Step Competition</a></li>
+                @* <li class="nav-item mx-2"><partial name="_LoginPartial" /></li> *@
+            </ul>
+        </div>
     </nav>
 
     <!-- Page Content -->
