@@ -16,22 +16,7 @@
             <a asp-controller="Home" asp-action="Index"><img src="~/images/GymBro Logo 2.png" alt="GymBro Logo" class="navbar-logo" /></a>
         </div>
         <div class="container-fluid justify-content-between align-items-center">
-            <ul class="navbar-nav flex-row flex-grow-1 justify-content-end">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        FitBit Features
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-                        <li class="dropdown-item nav-item"><a class="nav-link" asp-controller="AwardMedal" asp-action="AwardMedals">Step Medals</a></li>
-                        <li class="dropdown-item nav-item"><a class="nav-link" asp-controller="StepCompetition" asp-action="Index">Step Competition</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mx-2"><a class="nav-link" asp-controller="MealPlan" asp-action="Index">Meal Plan</a></li>
-                <li class="nav-item mx-2"><a class="nav-link" asp-controller="Workouts" asp-action="Index">Workout Plan</a></li>
-                
-                
-                <li class="nav-item mx-2"><partial name="_LoginPartial" /></li>
-            </ul>
+            <partial name="_NavbarTop" />
         </div>
     </nav>
 

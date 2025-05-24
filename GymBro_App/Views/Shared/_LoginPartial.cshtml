@@ -10,11 +10,10 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
-                My Account
+                @UserManager.GetUserName(User)
             </a>
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-                <li class="dropdown-item nav-item"><a class="nav-link" asp-controller="UserPage" asp-action="Index">User
-                        Page</a></li>
+                <li class="dropdown-item nav-item"><a class="nav-link" asp-controller="UserPage" asp-action="Index">My Dashboard</a></li>
                 <li class="dropdown-item nav-item">
                     <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
                         asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
@@ -31,7 +30,7 @@ else
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
-                Get Started
+                Account
             </a>
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
                 <li class="dropdown-item nav-item"><a class="nav-link text-light" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a></li>
