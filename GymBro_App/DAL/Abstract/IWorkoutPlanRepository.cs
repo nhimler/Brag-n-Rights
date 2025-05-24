@@ -9,5 +9,10 @@ namespace GymBro_App.DAL.Abstract
         void Add(WorkoutPlan workoutPlan);
         void Update(WorkoutPlan workoutPlan);
         WorkoutPlan FindById(int id);
+
+        // Method to get all PreMade Workout Plans
+        IEnumerable<WorkoutPlanTemplate> GetAllPreMadeWorkoutPlans();
+
+
     }
 }

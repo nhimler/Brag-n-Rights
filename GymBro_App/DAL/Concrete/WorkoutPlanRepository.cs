@@ -20,7 +20,7 @@ namespace GymBro_App.DAL.Concrete
         {
             return _workoutplans.FirstOrDefault(predicate);
         }
-        
+
         public WorkoutPlan FindById(int id)
         {
             return _workoutplans
@@ -30,23 +30,24 @@ namespace GymBro_App.DAL.Concrete
 
         public void Add(WorkoutPlan workoutPlan)
         {
-            try {
+            try
+            {
                 if (workoutPlan == null)
                 {
                     throw new ArgumentNullException(nameof(workoutPlan), "WorkoutPlan cannot be null");
                 }
-                
+
                 if (workoutPlan.UserId == null || workoutPlan.UserId <= 0)
                 {
                     throw new InvalidOperationException($"Invalid UserId: {workoutPlan.UserId}. User ID must be a positive number.");
                 }
-                
+
                 var userExists = _context.Users.Any(u => u.UserId == workoutPlan.UserId);
                 if (!userExists)
                 {
                     throw new InvalidOperationException($"No user found with ID: {workoutPlan.UserId}");
                 }
-                
+
                 _context.WorkoutPlans.Add(workoutPlan);
                 _context.SaveChanges();
             }
@@ -70,5 +71,23 @@ namespace GymBro_App.DAL.Concrete
             _context.WorkoutPlans.Update(workoutPlan);
             _context.SaveChanges();
         }
+
+        public IEnumerable<WorkoutPlanTemplate> GetAllPreMadeWorkoutPlans()
+        {
+            // Only pulls PlanName, DifficultyLevel, and the list of ApiID strings
+            return _context.WorkoutPlanTemplates
+                        .Select(t => new WorkoutPlanTemplate {
+                            WorkoutPlanTemplateID = t.WorkoutPlanTemplateID,
+                            PlanName              = t.PlanName,
+                            DifficultyLevel       = t.DifficultyLevel,
+                            Exercises             = t.Exercises
+                                                    .Select(e => new WorkoutPlanTemplateExercise {
+                                                        ApiID = e.ApiID
+                                                    }).ToList()
+                        })
+                        .AsNoTracking()
+                        .ToList();
+        }
+
     }
 }

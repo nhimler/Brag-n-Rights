@@ -1,0 +1,143 @@
+@model IEnumerable<GymBro_App.Models.WorkoutPlanTemplate>
+
+<link rel="stylesheet" href="~/css/exerciseSearch.css" asp-append-version="true" />
+
+<div id="PreMadeWorkoutList"></div>
+
+<!-- somewhere in your page/layout: -->
+<div class="modal fade" id="exerciseModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalExerciseName">Title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+
+        <!-- THIS wrapper must exist if you use that selector: -->
+        <div id="modalExerciseBackdrop" class="text-center mb-3">
+          <img src="" alt="Exercise GIF" class="img-fluid" />
+        </div>
+
+        <div id="modalExerciseContent"><!-- JS will fill this --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+@section Scripts {
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 3A) Grab the template + ID data from the server-generated model
+      const templates = @Html.Raw(
+        System.Text.Json.JsonSerializer.Serialize(Model)
+      );
+
+      // 3B) Flatten out all the ApiIDs you need to fetch
+      const allApiIds = templates
+        .flatMap(t => t.Exercises.map(e => e.ApiID));
+
+      // 3C) Fire off all the detail requests in parallel
+      const detailPromises = allApiIds.map(id =>
+        fetch(`/api/exercises/id/${encodeURIComponent(id)}`)
+          .then(res => {
+            if (!res.ok) throw new Error(`Exercise ${id} not found`);
+            return res.json();
+          })
+          .then(arr => arr[0])    // your endpoint returns a one-item array
+      );
+
+      // 3D) Wait for everything, then render
+      try {
+        const fullExercises = await Promise.all(detailPromises);
+        renderPreMadeWorkouts(fullExercises);
+      } 
+      catch (err) {
+        console.error("Failed to load some exercises", err);
+      }
+    });
+
+    function renderPreMadeWorkouts(exercises) {
+    const resultList = document.getElementById("PreMadeWorkoutList");
+    if (!resultList) {
+        console.error("Container #PreMadeWorkoutList not found");
+        return;
+    }
+
+    // Optional: clear any existing content
+    resultList.innerHTML = "";
+
+    // Create a row container for the cards
+    const row = document.createElement("div");
+    row.className = "row mt-3 d-flex align-items-start";
+
+    exercises.forEach(exercise => {
+        // Title-case the exercise name
+        const nameParts = exercise.name
+            .split(" ")
+            .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+        const exerciseName = nameParts.join(" ");
+
+        // Card wrapper
+        const col = document.createElement("div");
+        col.className = "col-lg-3 col-md-4 col-sm-6 mb-3";
+
+        // Card element
+        const card = document.createElement("div");
+        card.className = "card exercise-card h-100";
+
+        // Image
+        const img = document.createElement("img");
+        img.src = exercise.gifUrl;
+        img.alt = `${exerciseName} Gif`;
+        img.className = "card-img-top";
+        card.appendChild(img);
+
+        // Card body
+        const body = document.createElement("div");
+        body.className = "card-body d-flex flex-column";
+
+        // Exercise name
+        const title = document.createElement("h5");
+        title.className = "card-title";
+        title.textContent = exerciseName;
+        body.appendChild(title);
+
+        // Badges
+        const badges = document.createElement("div");
+        badges.className = "d-flex justify-content-evenly align-items-center mb-3";
+        const badgeClass = "badge rounded-pill bg-info mb-1";
+        badges.innerHTML = `
+            <span class="${badgeClass}">${exercise.equipment.charAt(0).toUpperCase() + exercise.equipment.slice(1).toLowerCase()}</span>
+            <span class="${badgeClass}">${exercise.bodyPart.charAt(0).toUpperCase() + exercise.bodyPart.slice(1).toLowerCase()}</span>
+            <span class="${badgeClass}">${exercise.target.charAt(0).toUpperCase() + exercise.target.slice(1).toLowerCase()}</span>
+        `;
+        body.appendChild(badges);
+
+        // "View Details" button
+        const btnContainer = document.createElement("div");
+        btnContainer.className = "mt-auto text-center";
+        const detailsBtn = document.createElement("button");
+        detailsBtn.className = "btn btn-primary btn-sm rounded-pill";
+        detailsBtn.type = "button";
+        detailsBtn.textContent = "View Details";
+        detailsBtn.setAttribute("data-bs-toggle", "modal");
+        detailsBtn.setAttribute("data-bs-target", "#exerciseModal");
+        detailsBtn.addEventListener("click", () => populateExerciseModal(exercise));
+        btnContainer.appendChild(detailsBtn);
+        body.appendChild(btnContainer);
+
+        // Assemble
+        card.appendChild(body);
+        col.appendChild(card);
+        row.appendChild(col);
+    });
+
+    // Append the row to the container
+    resultList.appendChild(row);
+}
+  </script>
+}
+
+<script src="~/js/exerciseSearch.js"></script>

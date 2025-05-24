@@ -66,6 +66,14 @@ namespace GymBro_App.Controllers
             return View(workoutPlan);
         }
 
+        [HttpGet]
+        public IActionResult PreMadeWorkout()
+        {
+            var templates = _workoutPlanRepository.GetAllPreMadeWorkoutPlans();
+            return View(templates);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Create(WorkoutPlan workoutPlan)
         {
