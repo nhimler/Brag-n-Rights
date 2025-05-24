@@ -24,6 +24,8 @@ public partial class WorkoutPlanExercise
 
     public int? Sets { get; set; }
 
+    public int? Weight { get; set; }
+
     [InverseProperty("WorkoutPlanExercise")]
     public virtual ICollection<WorkoutExercise> WorkoutExercises { get; set; } = new List<WorkoutExercise>();
 

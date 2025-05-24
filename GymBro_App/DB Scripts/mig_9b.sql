@@ -36,3 +36,8 @@ VALUES
   (@BeginnerPlanID, '0009',  8, 3),
   (@BeginnerPlanID, '0025',   8, 3),
   (@BeginnerPlanID, '0033',   8, 3); 
+
+
+ALTER TABLE WorkoutPlanExercise
+ADD [Weight] INT;
+
