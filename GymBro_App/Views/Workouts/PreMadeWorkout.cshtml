@@ -110,28 +110,65 @@
       return col;
     }
 
-    function renderPreMadePlans(plans) {
-      const container = document.getElementById('PreMadeWorkoutList');
-      if (!container) return console.error('No #PreMadeWorkoutList found');
+function renderPreMadePlans(plans) {
+  const container = document.getElementById('PreMadeWorkoutList');
+  if (!container) return console.error('No #PreMadeWorkoutList found');
 
-      container.innerHTML = '';  // clear any old content
+  container.innerHTML = '';  // clear any old content
 
-      plans.forEach(plan => {
-        // Plan header
-        const header = document.createElement('h2');
-        header.className = 'mt-4';
-        header.textContent = `${plan.PlanName}`;
-        container.appendChild(header);
+  plans.forEach(plan => {
+    // 1) Plan header
+    const header = document.createElement('h2');
+    header.className = 'mt-4';
+    header.textContent = plan.PlanName ;
+    container.appendChild(header);
 
-        // Exercise grid
-        const row = document.createElement('div');
-        row.className = 'row';
-        plan.fullExercises.forEach(ex => {
-          row.appendChild(createExerciseCard(ex));
-        });
-        container.appendChild(row);
-      });
+    // 2) “Use this plan” button
+    const useBtn = document.createElement('button');
+    useBtn.className = 'btn btn-success btn-sm mb-3';
+    useBtn.textContent = 'Use this plan';
+    useBtn.addEventListener('click', () => usePreMadePlan(plan));
+    container.appendChild(useBtn);
+
+    // 3) Exercise grid
+    const row = document.createElement('div');
+    row.className = 'row';
+    plan.fullExercises.forEach(ex => {
+      row.appendChild(createExerciseCard(ex));
+    });
+    container.appendChild(row);
+  });
+}
+
+async function usePreMadePlan(plan) {
+  const payload = {
+    PlanName:       plan.PlanName,
+    Difficulty:     plan.DifficultyLevel,
+    ExerciseApiIds: plan.Exercises
+  };
+
+  try {
+    const res = await fetch('/api/workouts/applyTemplate', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || res.status);
     }
+
+    // instead of alert, redirect to your workouts page:
+    window.location.href = ('/Workouts'); 
+  }
+  catch (err) {
+    console.error('usePreMadePlan error:', err);
+    alert('Failed to send plan: ' + err.message);
+  }
+}
+
+
   </script>
 }
 

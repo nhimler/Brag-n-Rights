@@ -76,17 +76,56 @@ namespace GymBro_App.DAL.Concrete
         {
             // Only pulls PlanName, DifficultyLevel, and the list of ApiID strings
             return _context.WorkoutPlanTemplates
-                        .Select(t => new WorkoutPlanTemplate {
+                        .Select(t => new WorkoutPlanTemplate
+                        {
                             WorkoutPlanTemplateID = t.WorkoutPlanTemplateID,
-                            PlanName              = t.PlanName,
-                            DifficultyLevel       = t.DifficultyLevel,
-                            Exercises             = t.Exercises
-                                                    .Select(e => new WorkoutPlanTemplateExercise {
+                            PlanName = t.PlanName,
+                            DifficultyLevel = t.DifficultyLevel,
+                            Exercises = t.Exercises
+                                                    .Select(e => new WorkoutPlanTemplateExercise
+                                                    {
                                                         ApiID = e.ApiID
                                                     }).ToList()
                         })
                         .AsNoTracking()
                         .ToList();
+        }
+
+        public void SavePremadeWorkoutPlan(ApplyTemplateDto dto, int userId)
+        {
+            // 1) Build the new plan
+            var plan = new WorkoutPlan
+            {
+                UserId          = userId,
+                PlanName        = dto.PlanName,
+                DifficultyLevel = dto.Difficulty,
+                ApiId           = Guid.NewGuid().ToString(),
+                // optional: set defaults or leave null
+                StartDate       = null,
+                EndDate         = null,
+                IsCompleted     = 0,
+                ArchivedWorkout = false
+            };
+
+            // 2) Add exercises with default reps/sets
+            const int defaultReps = 10;
+            const int defaultSets = 3;
+
+            foreach (var apiId in dto.ExerciseApiIds)
+            {
+                plan.WorkoutPlanExercises.Add(new WorkoutPlanExercise
+                {
+                    ApiId          = apiId,
+                    Reps           = defaultReps,
+                    Sets           = defaultSets,
+                    // WorkoutPlanId will be set automatically when plan is saved
+                });
+            }
+
+            // 3) Persist in one SaveChanges call (EF will insert the plan,
+            //    get its PK, then insert the child exercises with that FK)
+            _context.WorkoutPlans.Add(plan);
+            _context.SaveChanges();
         }
 
     }

@@ -12,7 +12,7 @@ namespace GymBro_App.Controllers
     public class WorkoutsController : Controller
     {
         private readonly IWorkoutPlanRepository _workoutPlanRepository;
-        
+
         private readonly ILogger<WorkoutsController> _logger;
 
         private readonly UserManager<IdentityUser> _userManager;
@@ -33,15 +33,15 @@ namespace GymBro_App.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userId = _userRepository.GetIdFromIdentityId(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                
+
                 var userWorkoutPlans = _workoutPlanRepository.GetAll()
                     .Where(wp => wp.UserId == userId && !wp.ArchivedWorkout)
                     .Select(wp => new { wp.WorkoutPlanId, wp.PlanName })
                     .ToList();
-                
+
                 ViewBag.WorkoutPlans = userWorkoutPlans;
             }
-            
+
             return View();
         }
 
@@ -62,7 +62,7 @@ namespace GymBro_App.Controllers
             {
                 UserId = userId
             };
-            
+
             return View(workoutPlan);
         }
 
@@ -83,38 +83,38 @@ namespace GymBro_App.Controllers
                 {
                     return RedirectToAction("Index");
                 }
-                
+
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
                 {
                     return RedirectToAction("Index");
                 }
-                
+
                 int userId = _userRepository.GetIdFromIdentityId(user.Id);
                 _logger.LogInformation($"Setting workout plan UserId to {userId}");
-                
+
                 if (userId <= 0)
                 {
                     _logger.LogError($"Invalid user ID {userId} for identity ID {user.Id}");
                     ModelState.AddModelError("", "Unable to find your user account. Please try logging in again.");
                     return View("WorkoutCreationPage", workoutPlan);
                 }
-                
+
                 workoutPlan.UserId = userId;
-                
+
                 if (workoutPlan.IsCompleted == null)
                 {
                     workoutPlan.IsCompleted = 0;
                 }
-                
+
                 if (string.IsNullOrEmpty(workoutPlan.ApiId))
                 {
                     workoutPlan.ApiId = $"local-{Guid.NewGuid()}";
                 }
-                
+
                 _logger.LogInformation($"Saving WorkoutPlan: ID={workoutPlan.WorkoutPlanId}, UserId={workoutPlan.UserId}, " +
                                       $"PlanName={workoutPlan.PlanName}");
-                
+
                 _workoutPlanRepository.Add(workoutPlan);
                 return RedirectToAction("Index");
             }
@@ -132,15 +132,15 @@ namespace GymBro_App.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userId = _userRepository.GetIdFromIdentityId(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                
+
                 var userWorkoutPlans = _workoutPlanRepository.GetAll()
                     .Where(wp => wp.UserId == userId)
                     .Select(wp => new { wp.WorkoutPlanId, wp.PlanName })
                     .ToList();
-                
+
                 ViewBag.WorkoutPlans = userWorkoutPlans;
             }
-            
+
             return View();
         }
 

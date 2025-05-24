@@ -13,6 +13,7 @@ namespace GymBro_App.DAL.Abstract
         // Method to get all PreMade Workout Plans
         IEnumerable<WorkoutPlanTemplate> GetAllPreMadeWorkoutPlans();
 
+        public void SavePremadeWorkoutPlan(ApplyTemplateDto dto, int userId);
 
     }
 }

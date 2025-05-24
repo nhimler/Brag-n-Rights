@@ -4,12 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GymBro_App.Models
 {
-    public enum DifficultyLevel
-    {
-        Beginner,
-        Intermediate,
-        Advanced
-    }
+
 
     [Table("WorkoutPlanTemplate")]
     public partial class WorkoutPlanTemplate
@@ -21,7 +16,7 @@ namespace GymBro_App.Models
         public string PlanName { get; set; }
 
         [Required]
-        public DifficultyLevel DifficultyLevel { get; set; }
+        public string DifficultyLevel { get; set; }
 
         // Navigation: one template → many exercises
         public virtual ICollection<WorkoutPlanTemplateExercise> Exercises { get; set; }
@@ -48,5 +43,12 @@ namespace GymBro_App.Models
 
         [Required]
         public int Sets { get; set; }
+    }
+
+    public class ApplyTemplateDto
+    {
+        public string PlanName         { get; set; }
+        public string Difficulty       { get; set; }
+        public List<string> ExerciseApiIds { get; set; }
     }
 }
