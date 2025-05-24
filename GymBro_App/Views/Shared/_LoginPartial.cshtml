@@ -6,21 +6,39 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <li>
-        <a id="manage" class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-    </li>
-    <li>
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link text-light border-0">Logout</button>
-        </form>
-    </li>
+    <ul class="navbar-nav flex-row flex-grow-1 justify-content-end">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                My Account
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                <li class="dropdown-item nav-item"><a class="nav-link" asp-controller="UserPage" asp-action="Index">User
+                        Page</a></li>
+                <li class="dropdown-item nav-item">
+                    <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
+                        asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button id="logout" type="submit" class="nav-link btn btn-link text-light border-0">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    </ul>
 }
 else
 {
-    <li class="nav-links">
-        <a class="nav-link text-light" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-links">
-        <a class="nav-link text-light" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
+    <ul class="navbar-nav flex-row flex-grow-1 justify-content-end">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Get Started
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                <li class="dropdown-item nav-item"><a class="nav-link text-light" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a></li>
+                <li class="dropdown-item nav-item">
+                    <a class="nav-link text-light" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
 }
