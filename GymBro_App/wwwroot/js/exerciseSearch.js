@@ -257,6 +257,11 @@ function addExerciseToCart(exercise) {
         return;
     }
     
+    // Show the cart if this is the first item
+    if (exerciseIdList.length === 0) {
+        exerciseCart.classList.add("has-items");
+    }
+    
     exerciseIdList.push(exercise.id);
     console.log("Exercise ID added to list:", exercise.id);
     console.log("Current exercise ID list:", exerciseIdList);
@@ -290,6 +295,10 @@ function addExerciseToCart(exercise) {
             exerciseAddToCartButton.disabled = false;
         }
         
+        // Hide the cart if no items remain
+        if (exerciseIdList.length === 0) {
+            exerciseCart.classList.remove("has-items");
+        }
     });
 
     exerciseEntry.appendChild(removeButton);

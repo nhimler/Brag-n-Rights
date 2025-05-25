@@ -4,52 +4,69 @@
     ViewData["Title"] = "Create Workout Plan";
 }
 
-<h2>Create a Workout Plan</h2>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0 fs-4">Create a Workout Plan</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post" id="Workout-Creation-Form">
+                        @if (Model != null && Model.UserId.HasValue)
+                        {
+                            <input type="hidden" name="UserId" id="UserId" value="@Model.UserId"/>
+                        }
+                        
+                        <div class="mb-3">
+                            <label asp-for="PlanName" class="form-label fw-bold"></label>
+                            <input asp-for="PlanName" class="form-control" placeholder="Enter plan name" />
+                            <span asp-validation-for="PlanName" class="text-danger"></span>
+                        </div>
 
-<form asp-action="Create" method="post" id="Workout-Creation-Form">
-    @if (Model != null && Model.UserId.HasValue)
-    {
-        <input type="hidden" name="UserId" id="UserId" value="@Model.UserId"/>
-    }
-    <div class="form-group">
-        <label asp-for="PlanName" class="control-label"></label>
-        <input asp-for="PlanName" class="form-control" />
-        <span asp-validation-for="PlanName" class="text-danger"></span>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StartDate" class="form-label fw-bold"></label>
+                                <input asp-for="StartDate" class="form-control" type="date"/>
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="EndDate" class="form-label fw-bold"></label>
+                                <input asp-for="EndDate" class="form-control" type="date"/>
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Frequency" class="form-label fw-bold"></label>
+                            <input asp-for="Frequency" class="form-control" placeholder="How often will you work out?" />
+                            <span asp-validation-for="Frequency" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Goal" class="form-label fw-bold"></label>
+                            <input asp-for="Goal" class="form-control" placeholder="What's your fitness goal?" />
+                            <span asp-validation-for="Goal" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DifficultyLevel" class="form-label fw-bold"></label>
+                            <select asp-for="DifficultyLevel" class="form-select">
+                                <option value="" disabled selected>Select difficulty level</option>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                            <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Create Workout Plan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="StartDate" class="control-label"></label>
-        <input asp-for="StartDate" class="form-control" type="date"/>
-        <span asp-validation-for="StartDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="EndDate" class="control-label"></label>
-        <input asp-for="EndDate" class="form-control" type="date"/>
-        <span asp-validation-for="EndDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Frequency" class="control-label"></label>
-        <input asp-for="Frequency" class="form-control" />
-        <span asp-validation-for="Frequency" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Goal" class="control-label"></label>
-        <input asp-for="Goal" class="form-control" />
-        <span asp-validation-for="Goal" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="DifficultyLevel" class="control-label"></label>
-        <select asp-for="DifficultyLevel" class="form-control">
-            <option value="Beginner">Beginner</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
-        </select>
-        <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create Workout Plan</button>
-</form>
+</div>
