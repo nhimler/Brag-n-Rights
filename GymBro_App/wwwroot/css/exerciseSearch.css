@@ -69,8 +69,10 @@ justify-content: space-between; /* Distribute content evenly */
 }
 
 .exercise-card img {
-height: 300px; /* Set a fixed height for the image */
-object-fit: cover; /* Ensure the image scales properly */
+max-height: 300px; /* Maximum height instead of fixed height */
+width: 100%; /* Full width of container */
+object-fit: contain; /* Show entire image without cropping */
+background-color: #f8f9fa; /* Light background for transparent areas */
 }
 
 .exercise-card .card-body {

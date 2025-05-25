@@ -298,6 +298,12 @@ function addExerciseToCart(exercise) {
         // Hide the cart if no items remain
         if (exerciseIdList.length === 0) {
             exerciseCart.classList.remove("has-items");
+            
+            // Also remove the "Add Exercises to Workout" button when cart is empty
+            let addExerciseToCartButton = document.getElementById("addExerciseToCartButton");
+            if (addExerciseToCartButton) {
+                addExerciseToCartButton.remove();
+            }
         }
     });
 
@@ -305,8 +311,13 @@ function addExerciseToCart(exercise) {
     exerciseCart.appendChild(exerciseEntry);
 
     if (isUserLoggedIn) {
+        // First, check if the button exists and temporarily remove it
         let addExerciseToCartButton = document.getElementById("addExerciseToCartButton");
-        if (!addExerciseToCartButton) {
+        if (addExerciseToCartButton) {
+            // Remove it from DOM to reposition it at the bottom
+            addExerciseToCartButton.remove();
+        } else {
+            // Create the button if it doesn't exist
             addExerciseToCartButton = document.createElement("button");
             addExerciseToCartButton.id = "addExerciseToCartButton";
             addExerciseToCartButton.textContent = "Add Exercises to Workout";
@@ -344,7 +355,9 @@ function addExerciseToCart(exercise) {
                     console.error("Error adding exercises to workout:", response.status);
                 }
             });
-            exerciseCart.appendChild(addExerciseToCartButton);
         }
+        
+        // Always append the button at the end, ensuring it's at the bottom
+        exerciseCart.appendChild(addExerciseToCartButton);
     }
 }
