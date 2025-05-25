@@ -1,6 +1,64 @@
-
 .exercise-link {
 all: unset;
+}
+
+/* Add this new header styling */
+.exercise-search-header {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #007bff;
+  border-bottom: 3px solid #f0f0f0;
+  font-family: 'Roboto', 'Arial', sans-serif;
+  text-align: center;
+}
+
+.exercise-search-header span {
+  font-weight: 400;
+  display: block;
+  font-size: 1.2rem;
+  color: #6c757d;
+  margin-top: 10px;
+}
+
+/* Center the radio button group */
+#bodyPartRadioButtons {
+  display: flex;
+  flex-wrap: nowrap; /* Prevent wrapping to new lines */
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 90%; /* Limit width to 90% of container */
+  overflow-x: auto; /* Add horizontal scrolling for small screens */
+  padding-bottom: 5px; /* Space for the scrollbar */
+  padding-left: 10px; /* Add side padding */
+  padding-right: 10px; /* Add side padding */
+}
+
+/* Make buttons more compact */
+#bodyPartRadioButtons label.btn {
+  white-space: nowrap; /* Prevent text wrapping */
+  padding: 0.375rem 0.45rem; /* Slightly smaller padding */
+  font-size: 0.9rem; /* Slightly smaller font */
+  min-width: 0; /* Allow buttons to shrink */
+}
+
+/* Center the search row and limit its width */
+#searchRow {
+  display: flex;
+  justify-content: center;
+}
+
+#searchRow .col {
+  max-width: 500px;
+}
+
+/* Center the workout plan selector */
+#workoutPlanSelector {
+  text-align: center;
+  margin: 20px 0;
 }
 
 .exercise-card {
@@ -11,8 +69,10 @@ justify-content: space-between; /* Distribute content evenly */
 }
 
 .exercise-card img {
-height: 300px; /* Set a fixed height for the image */
-object-fit: cover; /* Ensure the image scales properly */
+max-height: 300px; /* Maximum height instead of fixed height */
+width: 100%; /* Full width of container */
+object-fit: contain; /* Show entire image without cropping */
+background-color: #f8f9fa; /* Light background for transparent areas */
 }
 
 .exercise-card .card-body {
