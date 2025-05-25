@@ -34,7 +34,7 @@ namespace GymBro_App.Services
         public async Task<PlaceDTO> GetPlaceDetails(string placeId)
         {
             string apiKey = _httpClient.DefaultRequestHeaders.GetValues("X-goog-api-key").FirstOrDefault() ?? "";
-            string url = $"https://places.googleapis.com/v1/places/{placeId}?fields=formattedAddress,displayName,regularOpeningHours,websiteUri&key={apiKey}";
+            string url = $"https://places.googleapis.com/v1/places/{placeId}?fields=formattedAddress,displayName,regularOpeningHours,websiteUri,name&key={apiKey}";
             var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
