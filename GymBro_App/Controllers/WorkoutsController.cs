@@ -28,7 +28,7 @@ namespace GymBro_App.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)

@@ -1,24 +1,93 @@
 @{
-    ViewData["Title"] = "Workouts schedule";
+    ViewData["Title"] = "Workouts";
 }
 
 <link rel="stylesheet" href="~/css/workoutPlans.css" />
 
 <div class="container py-4">
-    <h2 class="display-4 mb-4">My Workout Plans</h2>
+    @if (User?.Identity?.IsAuthenticated == true)
+    {
+        <h2 class="display-4 mb-4">My Workout Plans</h2>
+    }
+    else
+    {
+        <h2 class="display-4 mb-4">Workout Plans</h2>
+        
+        <!-- Guest user intro section -->
+        <div class="row mb-5">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="h4 mb-3">Track Your Fitness Journey</h3>
+                        <p class="text-muted mb-4">Create custom workout plans, track your progress, and achieve your fitness goals with our comprehensive workout planning tools.</p>
+                        <div class="d-flex gap-2">
+                            <a href="/Identity/Account/Register" class="btn btn-primary">
+                                <i class="fas fa-user-plus me-2"></i>Sign Up
+                            </a>
+                            <a href="/Identity/Account/Login" class="btn btn-outline-primary">
+                                <i class="fas fa-sign-in-alt me-2"></i>Log In
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="/images/WorkoutPlanExample.jpg" alt="Workout Plan Example" class="img-fluid rounded shadow" 
+                     onerror="this.src='https://via.placeholder.com/800x400?text=Create+Custom+Workout+Plans'; this.onerror=null;">
+            </div>
+        </div>
 
-    @if (!User.Identity.IsAuthenticated)
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <a asp-action="ExerciseSearch" class="text-decoration-none">
+                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                        <div class="card-body text-center p-4">
+                            <div class="workout-plan-icon mb-3">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h4 class="h5 mb-3">Find Exercises</h4>
+                            <p class="text-muted">Browse our extensive library of exercises filterable by target muscle groups.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="workout-plan-icon mb-3">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h4 class="h5 mb-3">Create Plans</h4>
+                        <p class="text-muted">Design personalized workout plans tailored to your specific fitness goals.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="workout-plan-icon mb-3">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4 class="h5 mb-3">Track Progress</h4>
+                        <p class="text-muted">Monitor your progress and celebrate achievements as you reach your goals.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (User?.Identity?.IsAuthenticated != true)
     {
         @await Html.PartialAsync("_DropdownNotification")
     }
 
     <div class="row mb-4">
         <div class="col-md-6">
-            <a asp-action="ExerciseSearch" class="btn btn-primary" id="search-exercise-button">
-                <i class="fas fa-search me-2"></i>Search for an exercise
-            </a>
-            @if (User.Identity.IsAuthenticated)
+            @if (User?.Identity?.IsAuthenticated == true)
             {
+                <a asp-action="ExerciseSearch" class="btn btn-primary" id="search-exercise-button">
+                    <i class="fas fa-search me-2"></i>Search for an exercise
+                </a>
                 <a asp-action="WorkoutCreationPage" class="btn btn-success ms-2">
                     <i class="fas fa-plus me-2"></i>Create Workout Plan
                 </a>
@@ -28,7 +97,7 @@
     
     <!-- display workout plans when logged in-->
     <div id="workoutPlansContainer">
-        @if (User.Identity.IsAuthenticated)
+        @if (User?.Identity?.IsAuthenticated == true)
         {
             var plans = ViewBag.WorkoutPlans as IEnumerable<dynamic>;
             if (plans != null && plans.Any())
@@ -57,7 +126,7 @@
                                         data-bs-toggle="modal"
                                         data-bs-target="#exercisesModal"
                                         data-plan-id="@plan.WorkoutPlanId"
-                                        id="viewExercisesButton">
+                                        id="viewExercisesButton-@plan.WorkoutPlanId">
                                         <i class="fas fa-list me-2"></i>View Exercises
                                     </button>
                                     <a asp-action="ExerciseSearch"
@@ -65,9 +134,9 @@
                                        class="btn btn-primary">
                                         <i class="fas fa-plus me-2"></i>Add Exercise
                                     </a>
-                                    <form asp-action="Archive" asp-route-id="@plan.WorkoutPlanId" method="post">
+                                    <form asp-action="Archive" asp-route-id="@plan.WorkoutPlanId" method="post" class="d-inline">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-warning" id="completeWorkoutPlanButton">
+                                        <button type="submit" class="btn btn-warning" id="completeWorkoutPlanButton-@plan.WorkoutPlanId">
                                             <i class="fas fa-check me-2"></i>Complete Workout Plan
                                         </button>
                                     </form>
