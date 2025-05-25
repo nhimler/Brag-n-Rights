@@ -14,14 +14,15 @@ html {
 }
 
 .top-navbar .navbar-brand {
-    margin-right: 2rem;
-    margin-left: 0;
-    justify-content: flex-start;
+  margin-right: 2rem;
+  margin-left: 0;
+  justify-content: flex-start;
 }
 
 .navbar-logo {
   height: 48px;
   width: auto;
+  border-radius: 12px;
 }
 
 .top-navbar .nav-link {
@@ -37,13 +38,52 @@ html {
 }
 
 @media (max-width: 991px) {
-  .top-navbar .navbar-brand {
-    margin: 0 auto;
+  .content {
+    padding-top: 86.75px; /* Adjust for fixed navbar height */
+  }
+  
+  .navbar-nav {
+    flex-direction: column !important;
+    align-items: stretch;
+    width: 100%;
+    background: #007bff;
+    padding: 1rem 0;
+    text-align: center;
   }
 
-  .top-navbar .navbar-nav {
-    flex-direction: row;
-    justify-content: center;
+  .navbar-nav .nav-item {
+    margin: 0.5rem 0;
+    width: 100%;
+  }
+
+  .navbar-nav .nav-link {
+    display: block;
+    width: 100%;
+    padding: 12px 0;
+  }
+
+  /* Dropdown menus stack vertically and fill width */
+  .navbar-nav .dropdown-menu {
+    position: static !important;
+    float: none;
+    width: 100%;
+    background: #005bb5;
+    text-align: left;
+    border-radius: 0;
+    box-shadow: none;
+    margin-top: 0;
+  }
+
+  .navbar-nav .dropdown-item {
+    color: #fff;
+    padding: 10px 20px;
+    width: 100%;
+  }
+
+  .navbar-nav .dropdown-item:hover,
+  .navbar-nav .dropdown-item:focus {
+    background: #003f7f;
+    color: #ffd700;
   }
 }
 
@@ -114,6 +154,20 @@ body {
   text-decoration: underline;
 }
 
+.navbar-toggler {
+  border: none;
+  background: none;
+}
+
+.navbar-toggler:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255,255,255,0.7%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
 /* Mobile Menu Toggle */
 .nav-toggle {
   display: none;
@@ -170,8 +224,7 @@ padding-top: 20px;
   }
 
   .content {
-    margin-left: 0;
-    margin-top: 85px;
+    padding-top: 86.75px;
     /* Adjust for navbar height */
   }
 
@@ -186,9 +239,10 @@ padding-top: 20px;
 /* Mobile View */
 @media (max-width: 768px) {
   .content {
-    padding-top: 70px;
+    padding-top: 86.75px;
   }
-
+}
+/* 
   .nav-links {
     display: none;
     flex-direction: column;
@@ -211,5 +265,5 @@ padding-top: 20px;
 
   .nav-toggle {
     display: block;
-  }
-}
+  } 
+} */

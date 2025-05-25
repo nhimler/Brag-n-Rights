@@ -3,7 +3,7 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <ul class="navbar-nav flex-row flex-grow-1 justify-content-end">
+    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 flex-row flex-grow-1 justify-content-end">
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -25,7 +25,7 @@
 }
 else
 {
-    <ul class="navbar-nav flex-row flex-grow-1 justify-content-end">
+    <ul class="navbar-nav .nav-toggle flex-row flex-grow-1 justify-content-end">
         <li class="nav-item mx-2"><a class="nav-link" asp-controller="Workouts" asp-action="ExerciseSearch">Exercise Search</a></li>
         <li class="nav-item mx-2"><a class="nav-link" asp-controller="Gym" asp-action="FindNearbyGyms">Find A Gym</a></li>
         <li class="nav-item mx-2">
