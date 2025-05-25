@@ -5,78 +5,97 @@
 <link rel="stylesheet" href="~/css/UserPage.css" />
 
 
-<div class="d-flex flex-row mb-3 pt-3">
-    <div class="pe-4">
-        @if (Model.ProfilePicture != null && Model.ProfilePicture.Length > 0)
-        {
-            <img id="profile-pic" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ProfilePicture)" class="img-fluid mb-2 user-profile" alt="User Image" />
-        }
-        else
-        {
-            <img id="profile-pic" src="https://placehold.co/150x150?text=No+Image" class="img-fluid mb-2 user-profile" alt="User Image" />
-        }
-    </div>
+<div class="container">
 
-    <div class="col-md-2 align-self-center">
-        <h3 class="mb-0">@Model.FirstName @Model.LastName</h3>
-        <p class="text-muted">@Model.Email</p>
-    </div>
-</div>
-<hr/>
-
-<div>
-    <partial name="_ProfileNav" />
-</div>
-
-<div class="row mb-3 justify-content-center">
-    <div class="card col-md-4 col-sm-12 mb-3 text-center">
-        <h5 class="card-title my-2">Completed Workouts</h5>
-        <div class="card-body">
-            @if (Model.WorkoutPlans.Count <= 0)
+    <div class="d-flex flex-row mb-3 pt-3">
+        <div class="pe-4">
+            @if (Model.ProfilePicture != null && Model.ProfilePicture.Length > 0)
             {
-                <p>You haven't completed any workouts yet</p>
+                <img id="profile-pic" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ProfilePicture)"
+                    class="img-fluid mb-2 user-profile" alt="User Image" />
             }
             else
             {
-                <ul class="list-group">
-                    @foreach (var workout in Model.WorkoutPlans)
-                    {
-                        <li class="list-group-item">@workout.PlanName</li>
-                    }
-                </ul>
+                <img id="profile-pic" src="https://placehold.co/150x150?text=No+Image" class="img-fluid mb-2 user-profile"
+                    alt="User Image" />
             }
         </div>
-    </div>
 
-    <div class="col-md-4 col-sm-12 mb-3">
-        <div class="card">
-            <h5 class="card-title my-2 text-center">User Information</h5>
-            <div class="card-body">
-                <p id="dashboard-user-age">Age: @Model.Age</p>
-                <p id="dashboard-user-gender">Gender: @Model.Gender</p>
-                <p id="dashboard-user-weight">Weight: @Model.Weight</p>
-                <p id="dashboard-user-height">Height: @Model.Height</p>
-                <p id="dashboard-user-fitness-level">Fitness Level: @Model.FitnessLevel</p>
-                <p id="dashboard-user-goals">Fitness Goals: @Model.Fitnessgoals</p>
-                <p id="dashboard-user-workout-time">Preferred Workout Time: @Model.PreferredWorkoutTime</p>
-            </div>
+        <div class="col-md-2 align-self-center">
+            <h3 class="mb-0">@Model.FirstName @Model.LastName</h3>
+            <p class="text-muted">@Model.Email</p>
         </div>
     </div>
+    <hr />
 
-    <div class="card col-md-4 col-sm-12 mb-3 text-center">
-        <h5 class="card-title my-2">Update Profile Picture</h5>
-        <div class="card-body">
-            <input type="file" id="profile-picture" title="profile-picture" name="profile-picture" accept="jpg,jpeg" class="form-control mb-2" placeholder=""/>
-            <div id="preview-container">
-                @* Space left empty for preview *@
+    <div>
+        <partial name="_ProfileNav" />
+    </div>
+
+    <div class="row mb-3 justify-content-center">
+        <div class="card col-md-4 col-sm-12 mb-3 text-center">
+            <h5 class="card-title my-2">Completed Workouts</h5>
+            <div class="card-body">
+                @if (Model.WorkoutPlans.Count <= 0)
+                {
+                    <p>You haven't completed any workouts yet</p>
+                }
+                else
+                {
+                    <ul class="list-group">
+                        @foreach (var workout in Model.WorkoutPlans)
+                        {
+                            <li class="list-group-item">@workout.PlanName</li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-12 mb-3">
+            <div class="card">
+                <h5 class="card-title my-2 text-center">User Information</h5>
+                <div class="card-body">
+                    <p id="dashboard-user-age">Age: @Model.Age</p>
+                    <p id="dashboard-user-gender">Gender: @Model.Gender</p>
+                    @if (Model.Weight <= 0 || Model.Weight == null)
+                    {
+                        <p id="dashboard-user-height">Weight: Not Set</p>
+                    }
+                    else
+                    {
+                        <p id="dashboard-user-height">Weight: @Model.Weight lbs</p>
+                    }
+                    @if (Model.Height <= 0 || Model.Height == null)
+                    {
+                        <p id="dashboard-user-height">Height: Not Set</p>
+                    }
+                    else
+                    {
+                        <p id="dashboard-user-height">Height: @Model.Height in</p>
+                    }
+                    <p id="dashboard-user-fitness-level">Fitness Level: @Model.FitnessLevel</p>
+                    <p id="dashboard-user-goals">Fitness Goals: @Model.Fitnessgoals</p>
+                    <p id="dashboard-user-workout-time">Preferred Workout Time: @Model.PreferredWorkoutTime</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card col-md-4 col-sm-12 mb-3 text-center">
+            <h5 class="card-title my-2">Update Profile Picture</h5>
+            <div class="card-body">
+                <input type="file" id="profile-picture" title="profile-picture" name="profile-picture" accept="jpg,jpeg"
+                    class="form-control mb-2" placeholder="" />
+                <div id="preview-container">
+                    @* Space left empty for preview *@
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 
-
-<div class="row mb-3">
+@* <div class="row mb-3">
     <div class="card col-md-4 col-sm-12 mb-3">
         <div class="card-body">
             <img src="https://placehold.co/350x200?text=Analytics+Chart" class="img-fluid mb-2" alt="Analytics Graph" />
@@ -85,7 +104,7 @@
             <p class="text-muted" id="user-location-details">Not Set</p>
         </div>
     </div>
-</div>
+</div> *@
 
 @section Scripts {
     <script type="text/javascript" src="~/js/userLocation.js"></script>

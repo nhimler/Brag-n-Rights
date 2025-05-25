@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- Use this layout to maintain the site's basic styling, but things like the navbar -->
     <meta charset="utf-8" />
@@ -10,15 +11,22 @@
     <link rel="stylesheet" href="~/css/minimalSite.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GymBro_App.styles.css" asp-append-version="true" />
 </head>
+
 <body>
 
+    <nav class="navbar top-navbar justify-content-center">
+        <a asp-controller="Home" asp-action="Index" class="navbar-brand mx-auto">
+           <img src="~/images/GymBro-Logo-Horizontal-Transparent.png" alt="GymBro Logo" class="navbar-logo" />
+        </a>
+    </nav>
     <!-- Page Content -->
     <div class="content">
-      @RenderBody()
+        @RenderBody()
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>
