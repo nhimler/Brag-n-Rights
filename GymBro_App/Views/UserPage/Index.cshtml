@@ -54,8 +54,22 @@
             <div class="card-body">
                 <p id="dashboard-user-age">Age: @Model.Age</p>
                 <p id="dashboard-user-gender">Gender: @Model.Gender</p>
-                <p id="dashboard-user-weight">Weight: @Model.Weight</p>
-                <p id="dashboard-user-height">Height: @Model.Height</p>
+                @if (Model.Weight == 0)
+                {
+                    <p id="dashboard-user-height">Weight: Not Set</p>
+                }
+                else
+                {
+                    <p id="dashboard-user-height">Weight: @Model.Weight lbs</p>
+                }
+                @if (Model.Height == 0)
+                {
+                    <p id="dashboard-user-height">Height: Not Set</p>
+                }
+                else
+                {
+                    <p id="dashboard-user-height">Height: @Model.Height in</p>
+                }
                 <p id="dashboard-user-fitness-level">Fitness Level: @Model.FitnessLevel</p>
                 <p id="dashboard-user-goals">Fitness Goals: @Model.Fitnessgoals</p>
                 <p id="dashboard-user-workout-time">Preferred Workout Time: @Model.PreferredWorkoutTime</p>
@@ -76,7 +90,7 @@
 
 
 
-<div class="row mb-3">
+@* <div class="row mb-3">
     <div class="card col-md-4 col-sm-12 mb-3">
         <div class="card-body">
             <img src="https://placehold.co/350x200?text=Analytics+Chart" class="img-fluid mb-2" alt="Analytics Graph" />
@@ -85,7 +99,7 @@
             <p class="text-muted" id="user-location-details">Not Set</p>
         </div>
     </div>
-</div>
+</div> *@
 
 @section Scripts {
     <script type="text/javascript" src="~/js/userLocation.js"></script>
