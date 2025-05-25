@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,26 +10,27 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GymBro_App.styles.css" asp-append-version="true" />
 </head>
+
 <body>
     <!-- Sidebar / Navbar -->
-    <nav class="navbar">
-        <button class="nav-toggle">&#9776;</button>
-        <ul class="nav-links">
-            <li class="nav-brand">GymBro</li>
-            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li><a asp-controller="UserPage" asp-action="Index">User Page</a></li>
-            <li><a asp-controller="MealPlan" asp-action="Index">Meal Plan</a></li>
-            <li><a asp-controller="Workouts" asp-action="Index">Workout Plan</a></li>
-            <li><a asp-controller="AwardMedal" asp-action="AwardMedals">Step Medals</a></li>
-            <li><a asp-controller="StepCompetition" asp-action="Index">Step Competition</a></li>
-            <li class="nav-separator"></li>
-            <partial name="_LoginPartial" />
-        </ul>
+    <nav class="navbar navbar-expand-lg top-navbar">
+        <div class="container-fluid">
+            <a asp-controller="Home" asp-action="Index" class="navbar-brand">
+                <img src="~/images/GymBro-Logo-Horizontal-Transparent.png" alt="GymBro Logo" class="navbar-logo" />
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <partial name="_NavbarTop" />
+            </div>
+        </div>
     </nav>
 
     <!-- Page Content -->
     <div class="content">
-      @RenderBody()
+        @RenderBody()
     </div>
 
 
@@ -40,4 +42,5 @@
     <script src="https://kit.fontawesome.com/a35698964c.js" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>
