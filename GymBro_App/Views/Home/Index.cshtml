@@ -1,9 +1,201 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<link rel="stylesheet" href="~/css/Homepage.css" />
 
-
-<div class="text-center">
-    <img src="GymBro.png" class="img-fluid" alt="GymBro Logo" />
-    <h1 class="display-4">Welcome to GymBro</h1>
+<div class="homepage-hero d-flex flex-column align-items-center justify-content-center text-center">
+    @* <img src="~/images/Homepage/person-in-gray-shirt-holding-black-dumbbell.jpg" class="hero-logo mb-3" alt="GymBro Logo" /> *@
+    <h1 class="display-3 fw-bold mb-3">Welcome to GymBro</h1>
+    <p class="lead mb-4">Track your workouts, plan your meals, find gyms, and compete with friends. Your fitness journey
+        starts here.</p>
 </div>
+
+<!-- AI generated starting point. Some potential, but the images could use some fixing. -->
+<div class="container my-5">
+
+    <!-- Feature 1: Find Nearby Gyms -->
+    <section class="feature-section row align-items-center my-5">
+        <div class="col-md-6">
+            <div id="feature1Carousel" class="carousel slide feature-carousel" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="~/images/Homepage/people-in-a-room-with-a-black-table-and-chairs.jpg"
+                            class="d-block w-100 rounded shadow feature-section-img" alt="Find Gyms 1" />
+                    </div>
+                    <div class="carousel-item">
+                        <img src="~/images/Homepage/woman-standing-surrounded-by-exercise-equipment.jpg"
+                            class="d-block w-100 rounded shadow feature-section-img" alt="Find Gyms 2" />
+                    </div>
+                    <div class="carousel-item">
+                        <img src="~/images/Homepage/black-and-gray-treadmill.jpg"
+                            class="d-block w-100 rounded shadow feature-section-img" alt="Find Gyms 3" />
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#feature1Carousel"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#feature1Carousel"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2 class="fw-bold">Find Nearby Gyms</h2>
+            <p class="lead">Discover and bookmark gyms near you for easy access wherever you are. Our interactive map
+                and search tools make it simple to find the perfect place to work out.</p>
+        </div>
+    </section>
+
+    <!-- Feature 2: Create Workout Plans (image right) -->
+    <section class="feature-section row align-items-center flex-md-row-reverse my-5">
+        <div class="col-md-6">
+            <div id="feature2Carousel" class="carousel slide feature-carousel" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="~/images/Homepage/pair-of-black-running-shoes.jpg"
+                            class="d-block w-100 rounded shadow feature-section-img" alt="Workout Plans 1" />
+                    </div>
+                    <div class="carousel-item">
+                        <img src="~/images/Homepage/man-in-white-tank-top-and-gray-shorts-sitting-on-blue-floor.jpg"
+                            class="d-block w-100 rounded shadow feature-section-img" alt="Workout Plans 2" />
+                    </div>
+                    <div class="carousel-item">
+                        <img src="~/images/Homepage/woman-doing-weight-lifting.jpg"
+                            class="d-block w-100 rounded shadow feature-section-img" alt="Workout Plans 3" />
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#feature2Carousel"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#feature2Carousel"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2 class="fw-bold">Create Workout Plans</h2>
+            <p class="lead">Build and track custom workout routines tailored to your goals. Stay motivated and see your
+                progress over time with easy-to-use planning tools.</p>
+        </div>
+    </section>
+
+    <!-- Feature 3: Plan Your Meals (image left) -->
+    <section class="feature-section row align-items-center my-5">
+        <div class="col-md-6">
+            <div id="feature3Carousel" class="carousel slide feature-carousel" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="~/images/Homepage/green-vegetable-on-brown-wooden-chopping-board.jpg"
+                            class="d-block w-100 rounded shadow feature-section-img" alt="Meal Plans 1" />
+                    </div>
+                    <div class="carousel-item">
+                        <img src="~/images/Homepage/recipe-from-an-old-book.jpg"
+                            class="d-block w-100 rounded shadow feature-section-img" alt="Meal Plans 2" />
+                    </div>
+                    <div class="carousel-item">
+                        <img src="~/images/Homepage/three-containers-of-protein-powder-next-to-a-blender.jpg"
+                            class="d-block w-100 rounded shadow feature-section-img" alt="Meal Plans 3" />
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#feature3Carousel"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#feature3Carousel"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2 class="fw-bold">Plan Your Meals</h2>
+            <p class="lead">Design meal plans and log your nutrition to fuel your progress. Our meal planner helps you
+                stay on track with your dietary goals.</p>
+        </div>
+    </section>
+
+    <!-- Feature 4: Join Competitions (image right) -->
+    <section class="feature-section row align-items-center flex-md-row-reverse my-5">
+        <div class="col-md-6">
+            <div id="feature4Carousel" class="carousel slide feature-carousel" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="~/images/Homepage/two-men-running-on-field-with-people-on-side-cheering-for-them.jpg"
+                            class="d-block w-100 rounded shadow feature-section-img" alt="Competitions 1" />
+                    </div>
+                    <div class="carousel-item">
+                        <img src="~/images/Homepage/a-close-up-of-a-persons-wrist-with-a-watch-on-it.jpg"
+                            class="d-block w-100 rounded shadow feature-section-img" alt="Competitions 2" />
+                    </div>
+                    <div class="carousel-item">
+                        <img src="~/images/Homepage/a-group-of-vases-sit-on-a-table.jpg"
+                            class="d-block w-100 rounded shadow feature-section-img" alt="Competitions 3" />
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#feature4Carousel"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#feature4Carousel"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2 class="fw-bold">Join Competitions</h2>
+            <p class="lead">Compete with friends and earn medals for your achievements. Friendly competition keeps you
+                motivated and engaged!</p>
+        </div>
+    </section>
+
+</div>
+
+<!-- Reviews/Testimonials Section -->
+<div class="container my-5">
+    <h2 class="text-center mb-4">What Our Users Say</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="testimonial-card p-4 shadow rounded">
+                <p>"GymBro has transformed my fitness journey. The meal planning feature is a game changer!"</p>
+                <p class="text-muted">- Angel L.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="testimonial-card p-4 shadow rounded">
+                <p>"I love the community aspect. Competing with friends keeps me motivated!"</p>
+                <p class="text-muted">- Jamie L.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="testimonial-card p-4 shadow rounded">
+                <p>"Finding gyms nearby has never been easier. GymBro is a must-have for fitness enthusiasts!"</p>
+                <p class="text-muted">- Taylor R.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Generated by AI, will be adjusted later to be in multiple divs with text -->
+@* <div class="container my-5">
+    <h2 class="text-center mb-4">Community in Action</h2>
+    <div class="row g-3">
+        <div class="col-6 col-md-3">
+            <img src="~/images/Homepage/grayscale-photo-of-man-working-out.jpg" class="gallery-img rounded shadow-sm" alt="Workout 1" />
+        </div>
+        <div class="col-6 col-md-3">
+            <img src="~/images/Homepage/man-flexing-muscles.jpg" class="gallery-img rounded shadow-sm" alt="Workout 2" />
+        </div>
+        <div class="col-6 col-md-3">
+            <img src="~/images/Homepage/man-in-white-tank-top-and-gray-shorts-sitting-on-blue-floor.jpg" class="gallery-img rounded shadow-sm" alt="Workout 3" />
+        </div>
+        <div class="col-6 col-md-3">
+            <img src="~/images/Homepage/person-wearing-orange-and-gray-nike-shoes-walking-on-gray-concrete-stairs.jpg" class="gallery-img rounded shadow-sm" alt="Workout 4" />
+        </div>
+    </div>
+</div> *@
