@@ -113,26 +113,20 @@ namespace BDD_Tests.StepDefinitions
         [Then(@"I click the ""(.*)"" button")]
         public void WhenIClickTheButton(string buttonText)
         {
-            // 1) Use an XPath that normalizes whitespace (safer if there are icons, newlines, etc.)
             var locator = By.XPath($"//button[normalize-space(text()) = \"{buttonText}\"]");
 
-            // 2) Wait until Selenium considers it “clickable”
             var clickableBtn = _wait.Until(ExpectedConditions.ElementToBeClickable(locator));
 
-            // 3) Scroll it into view (in case it's off-screen or under a sticky header)
             ((IJavaScriptExecutor)_driver)
                 .ExecuteScript("arguments[0].scrollIntoView({block:'center'})", clickableBtn);
 
-            // 4) Try the click—if intercepted, retry once
             try
             {
                 clickableBtn.Click();
             }
             catch (ElementClickInterceptedException)
             {
-                // give the page a moment to re-layout
                 System.Threading.Thread.Sleep(200);
-                // fallback: JS click
                 ((IJavaScriptExecutor)_driver)
                     .ExecuteScript("arguments[0].click();", clickableBtn);
             }
