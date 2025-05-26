@@ -9,8 +9,12 @@
 }
 
 
-#view-btn, #archive-btn {
+#archive-btn {
     display: inline-block;
+}
+
+#view-btn{
+    float:right;
 }
 
 .suggestion-button {

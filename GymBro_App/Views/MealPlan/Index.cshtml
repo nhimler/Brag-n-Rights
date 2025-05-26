@@ -2,8 +2,10 @@
 @{
     ViewData["Title"] = "Meal Plan";
 }
-
-<a asp-action="CreateMealPlan" asp-route-id="new"><button class="btn btn-primary">Create Meal Plan</button></a>
+<div class="container mt-4">
+    
+<h2 class="display-4 mb-4">Meal Plans</h2>
+<a asp-action="CreateMealPlan" asp-route-id="new"><button class="btn btn-primary mb-2 mr-2">Create Meal Plan</button></a>
 
 @if(Model?.MealPlans.Count == 0){
     <hr>
@@ -11,11 +13,10 @@
         You have no meal plans yet. Create one to get started!
     </div>
 }else{
-<a asp-action="CreateMeal" asp-route-id="new"><button class="btn btn-primary" id="create-meal-btn">Create Meal</button></a>
-<hr>
+<a asp-action="CreateMeal" asp-route-id="new"><button class="btn btn-primary mb-2 mr-2" id="create-meal-btn">Create Meal</button></a>
+<a asp-action="Archive"><button class="btn btn-secondary mb-2" id="archive-btn">Archived Meals</button></a>
 
 <button class="btn btn-secondary mb-2 mr-2" id="view-btn">Calendar View</button>
-<a asp-action="Archive"><button class="btn btn-secondary mb-2" id="archive-btn">Archived Meals</button></a>
 
 @if(Model != null && Model.didArchive){
     <div class="alert alert-warning" role="alert">
@@ -25,7 +26,6 @@
 
 <div id="list">
     @if(Model != null){
-        <h2>Meal Plans</h2>
         <a href="https://www.fatsecret.com">
             <img src="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret.png" srcset="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_2x.png 2x, https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_3x.png 3x" border="0"/>
         </a>
@@ -84,3 +84,4 @@
 <script>
     getSchedule(@Model?.userId);
 </script>
+</div>
