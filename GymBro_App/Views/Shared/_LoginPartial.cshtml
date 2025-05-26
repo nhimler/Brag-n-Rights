@@ -6,14 +6,33 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <ul class="navbar-nav flex-row flex-grow-1 justify-content-end">
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarLoggedInUserDropdownToggle" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            @UserManager.GetUserName(User)
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarLoggedInUserDropdownToggle">
+            <li class="dropdown-item nav-item">
+                <a class="nav-link text-center" asp-controller="UserPage" asp-action="Index">My Dashboard</a>
+            </li>
+            <li class="dropdown-item nav-item">
+                <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
+                    asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button id="logout" type="submit" class="nav-link btn btn-link text-light border-0 text-center">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </li>
+    @* <ul class="flex-row flex-grow-1 justify-content-end">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarLoggedInUserDropdownToggle" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
                 @UserManager.GetUserName(User)
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-                <li class="dropdown-item nav-item"><a class="nav-link" asp-controller="UserPage" asp-action="Index">My Dashboard</a></li>
+            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarLoggedInUserDropdownToggle">
+                <li class="dropdown-item nav-item">
+                    <a class="nav-link" asp-controller="UserPage" asp-action="Index">My Dashboard</a>
+                </li>
                 <li class="dropdown-item nav-item">
                     <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
                         asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
@@ -22,22 +41,38 @@
                 </li>
             </ul>
         </li>
-    </ul>
+    </ul> *@
 }
 else
 {
-    <ul class="navbar-nav flex-row flex-grow-1 justify-content-end">
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarGuestUserDropdownToggle" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            Account
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarGuestUserDropdownToggle">
+            <li class="dropdown-item nav-item">
+                <a class="nav-link text-light" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            </li>
+            <li class="dropdown-item nav-item">
+                <a class="nav-link text-light" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            </li>
+        </ul>
+    </li>
+    @* <ul class="flex-row flex-grow-1 justify-content-end">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarGuestUserDropdownToggle" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
                 Account
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-                <li class="dropdown-item nav-item"><a class="nav-link text-light" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a></li>
+            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarGuestUserDropdownToggle">
+                <li class="dropdown-item nav-item">
+                    <a class="nav-link text-light" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                </li>
                 <li class="dropdown-item nav-item">
                     <a class="nav-link text-light" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
                 </li>
             </ul>
         </li>
-    </ul>
+    </ul> *@
 }

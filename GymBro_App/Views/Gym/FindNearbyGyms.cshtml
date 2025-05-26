@@ -1,6 +1,9 @@
 @{
     ViewData["Title"] = "Find Nearby Gyms";
 }
+@using GymBro_App.Services;
+@inject IGoogleMapsService GoogleMapsService
+<link rel="stylesheet" href="~/css/UserPage.css" />
 <link rel="stylesheet" href="~/css/Gym.css" />
 
 <div class="container">
@@ -10,8 +13,8 @@
         <partial name="../UserPage/_ProfileNav" />
     </div>
     <div class="row d-flex align-items-stretch">
-        <div class="col-4 col-md-4 d-flex flex-column">
-            <form id="nearby-gym-search-form" class="mb-3 col-sm-12">
+        <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 d-flex flex-column">
+            <form id="nearby-gym-search-form" data-user-authenticated="@User.Identity.IsAuthenticated.ToString().ToLower()">
                 <div class="input-group">
                     <input type="number" id="postal-code-gym-search" value="" class="form-control" placeholder="Enter a postal code" required />
                     <span id="set-gym-location-span" class="input-group-text">
@@ -26,20 +29,14 @@
             <div id="nearby-gym-search-list"><!-- This is where the search results go --></div>
         </div>
         
-        <div class="col-8 col-md-8 d-flex flex-column">
-            <iframe
-                id="nearby-gyms-map"
-                frameborder="0" style="border:0"
-                referrerpolicy="no-referrer-when-downgrade"
-                src=""
-                allowfullscreen
-            ></iframe>
-            @* <button class="btn btn-primary mt-3" id="set-location-button">Find My Location</button> *@
+        <div class="col-xs-0 col-sm-0 col-md-0 col-lg-8 col-xl-8 flex-column">
+            <div id="nearby-gyms-map"></div>
         </div>
     </div>
 </div>
 
 <script>var isLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower())</script>
 @section Scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?key=@(await GoogleMapsService.GetGoogleMapsApiKey())"></script>
     <script type="text/javascript" src="~/js/userLocation.js"></script>
 }
