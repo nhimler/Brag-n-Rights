@@ -56,10 +56,11 @@
     #nearby-gym-search-list {
         height: 80vh;
         width: 100%;
+        overflow: visible;
     }
 
     #nearby-gym-search-form {
-        height: 400px;
+        height: 5vh;
         width: 100%;
     }
 
