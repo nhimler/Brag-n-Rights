@@ -28,20 +28,21 @@ namespace GymBro_App.Controllers
         }
 
         [HttpGet]
+        //[Authorize]
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
             {
                 var userId = _userRepository.GetIdFromIdentityId(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                
+
                 var userWorkoutPlans = _workoutPlanRepository.GetAll()
                     .Where(wp => wp.UserId == userId && !wp.ArchivedWorkout)
                     .Select(wp => new { wp.WorkoutPlanId, wp.PlanName })
                     .ToList();
-                
+
                 ViewBag.WorkoutPlans = userWorkoutPlans;
             }
-            
+
             return View();
         }
 
