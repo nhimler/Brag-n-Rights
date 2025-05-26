@@ -1,7 +1,6 @@
 #nearby-gyms-map {
     height: 100%;
-    height: 50vh;
-
+    width: 100%;
 }
 
 #set-location-button {
@@ -10,12 +9,14 @@
 
 #nearby-gym-search-list {
     overflow-y: auto;
-    height: 50vh;
-    scrollbar-width: thin; /* TODO: This does not work on Safari. Find alternative in the future */
+    height: 90vh;
+    scrollbar-width: thin;
+    /* TODO: This does not work on Safari. Find alternative in the future */
 }
 
 #nearby-gym-search-form {
     height: 5vh;
+    margin-bottom: 2vh;
 }
 
 #set-gym-location-span {
@@ -49,4 +50,47 @@
 
 .gym-rating-star {
     color: #FFD43B;
+}
+
+@media (max-width: 768px) {
+    #nearby-gym-search-list {
+        height: 80vh;
+        width: 100%;
+    }
+
+    #nearby-gym-search-form {
+        height: 400px;
+        width: 100%;
+    }
+
+    #nearby-gyms-map {
+        visibility: hidden;
+    }
+}
+
+/* XL Screens (Large Laptops/Desktop Monitors) */
+@media (min-width: 1200px) {
+    #nearby-gyms-map {
+        max-height: 65vh;
+    }
+
+    #nearby-gym-search-list {
+        max-height: 55vh;
+    }
+
+    #nearby-gym-search-form {
+        height: 5vh;
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    #nearby-gyms-results-header {
+        padding-top: 1vh;
+    }
+}
+
+@media (max-height: 600px) {
+    #nearby-gyms-results-header {
+        padding-top: 5vh;
+    }
 }

@@ -167,7 +167,7 @@ async function getNearbyGyms(pos) {
     if (response.ok) {
         let result = await response.json();
         renderNearbyGyms(result);
-        clearMarkers()
+        setMapCenter(lat, long);
         addGymMarkers(result)
     } else {
         console.log("Error: " + response.status);
