@@ -24,18 +24,40 @@ VALUES
   ('Advanced workout plan',     'Advanced');
 
 
--- 1) Grab the Beginner-plan’s template ID
 DECLARE @BeginnerPlanID INT;
 SELECT @BeginnerPlanID = WorkoutPlanTemplateID
 FROM   WorkoutPlanTemplate
 WHERE  DifficultyLevel = 'Beginner';
 
--- 2) Insert multiple exercises in one go
 INSERT INTO WorkoutPlanTemplateExercise (WorkoutPlanTemplateID, ApiID, Reps, Sets)
 VALUES
   (@BeginnerPlanID, '0009',  8, 3),
   (@BeginnerPlanID, '0025',   8, 3),
   (@BeginnerPlanID, '0033',   8, 3); 
+
+DECLARE @IntermediatePlanID INT;
+SELECT @IntermediatePlanID = WorkoutPlanTemplateID
+FROM   WorkoutPlanTemplate
+WHERE  DifficultyLevel = 'Intermediate';
+
+INSERT INTO WorkoutPlanTemplateExercise (WorkoutPlanTemplateID, ApiID, Reps, Sets)
+VALUES
+  (@IntermediatePlanID, '0047', 8, 3),
+  (@IntermediatePlanID, '0052', 8, 3),
+  (@IntermediatePlanID, '0089', 8, 3);
+
+
+DECLARE @AdvancedPlanID INT;
+SELECT @AdvancedPlanID = WorkoutPlanTemplateID
+FROM   WorkoutPlanTemplate
+WHERE  DifficultyLevel = 'Advanced';
+
+INSERT INTO WorkoutPlanTemplateExercise (WorkoutPlanTemplateID, ApiID, Reps, Sets)
+VALUES
+  (@AdvancedPlanID, '0061', 8, 3),
+  (@AdvancedPlanID, '0074', 8, 3),
+  (@AdvancedPlanID, '0098', 8, 3);
+
 
 
 ALTER TABLE WorkoutPlanExercise
