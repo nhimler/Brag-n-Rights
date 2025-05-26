@@ -1,6 +1,8 @@
 @{
     ViewData["Title"] = "Find Nearby Gyms";
 }
+@using GymBro_App.Services;
+@inject IGoogleMapsService GoogleMapsService
 <link rel="stylesheet" href="~/css/Gym.css" />
 
 <div class="container">
@@ -27,19 +29,13 @@
         </div>
         
         <div class="col-8 col-md-8 d-flex flex-column">
-            <iframe
-                id="nearby-gyms-map"
-                frameborder="0" style="border:0"
-                referrerpolicy="no-referrer-when-downgrade"
-                src=""
-                allowfullscreen
-            ></iframe>
-            @* <button class="btn btn-primary mt-3" id="set-location-button">Find My Location</button> *@
+            <div id="nearby-gyms-map"></div>
         </div>
     </div>
 </div>
 
 <script>var isLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower())</script>
 @section Scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?key=@(await GoogleMapsService.GetGoogleMapsApiKey())"></script>
     <script type="text/javascript" src="~/js/userLocation.js"></script>
 }

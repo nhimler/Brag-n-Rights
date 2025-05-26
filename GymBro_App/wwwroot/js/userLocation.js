@@ -1,8 +1,23 @@
+let map
+let markers = []
 let userSignedIn = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     if (isLoggedIn) {
         userSignedIn = true
+    }
+
+    if (window.google && window.google.maps) {
+        initMap();
+    }
+    else {
+        // If Google Maps is not loaded yet, wait and try again
+        let interval = setInterval(() => {
+            if (window.google && window.google.maps) {
+                initMap();
+                clearInterval(interval);
+            }
+        }, 100);
     }
 
     const mapElement = document.getElementById("nearby-gyms-map")
@@ -54,6 +69,41 @@ document.addEventListener("DOMContentLoaded", () => {
         })
     }
 })
+
+function initMap(center = { lat: 39.828175, lng: -98.5795 }, zoom = 4) {
+    map = new google.maps.Map(document.getElementById("nearby-gyms-map"), {
+        center,
+        zoom,
+    });
+}
+
+function setMapCenter(lat, lng, zoom = 10) {
+    if (map) {
+        map.setCenter({ lat, lng });
+        map.setZoom(zoom);
+    }
+}
+
+function clearMarkers() {
+    for (let marker of markers) {
+        marker.setMap(null);
+    }
+    markers = [];
+}
+
+function addGymMarkers(gyms) {
+    clearMarkers();
+    gyms.forEach(gym => {
+        if (gym && gym.location && gym.location.latitude && gym.location.longitude) {
+            let marker = new google.maps.Marker({
+                position: { lat: gym.location.latitude, lng: gym.location.longitude },
+                map: map,
+                title: gym.displayName.text
+            });
+            markers.push(marker);
+        }
+    });
+}
 
 function noNearbyGyms() {
     let gymList = document.getElementById("nearby-gym-search-list")
@@ -117,6 +167,8 @@ async function getNearbyGyms(pos) {
     if (response.ok) {
         let result = await response.json();
         renderNearbyGyms(result);
+        clearMarkers()
+        addGymMarkers(result)
     } else {
         console.log("Error: " + response.status);
     }

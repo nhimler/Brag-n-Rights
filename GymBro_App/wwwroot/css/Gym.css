@@ -1,6 +1,7 @@
 #nearby-gyms-map {
     height: 100%;
-    width: 100%;
+    height: 50vh;
+
 }
 
 #set-location-button {
@@ -9,7 +10,7 @@
 
 #nearby-gym-search-list {
     overflow-y: auto;
-    height: 90vh;
+    height: 50vh;
     scrollbar-width: thin; /* TODO: This does not work on Safari. Find alternative in the future */
 }
 
