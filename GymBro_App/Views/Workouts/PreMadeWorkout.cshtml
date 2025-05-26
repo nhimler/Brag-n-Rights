@@ -1,0 +1,43 @@
+@model IEnumerable<GymBro_App.Models.WorkoutPlanTemplate>
+
+<link rel="stylesheet" href="~/css/exerciseSearch.css" asp-append-version="true" />
+
+<div id="PreMadeWorkoutList"></div>
+
+<!-- Exercise Details Modal -->
+<div class="modal fade" id="exerciseModal" tabindex="-1" aria-labelledby="modalExerciseName" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalExerciseName">Title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="modalExerciseBackdrop" class="text-center mb-3">
+          <img src="" alt="Exercise GIF" class="img-fluid" />
+        </div>
+        <div id="modalExerciseContent"><!-- JS will fill this --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+@section Scripts {
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js" defer></script>
+
+  <script>
+    window.preMadePlansData = @Html.Raw(
+      System.Text.Json.JsonSerializer.Serialize(
+        Model.Select(p => new {
+          p.PlanName,
+          p.DifficultyLevel,
+          Exercises = p.Exercises.Select(e => e.ApiID)
+        })
+      )
+    );
+  </script>
+
+<script src="~/js/preMadeWorkouts.js" defer></script>
+}
+<script src="~/js/exerciseSearch.js"></script>

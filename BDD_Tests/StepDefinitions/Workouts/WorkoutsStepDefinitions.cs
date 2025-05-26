@@ -416,6 +416,8 @@ public sealed class WorkoutsStepDefinitions
         var workoutPlansContainer = _driver.FindElement(By.Id("workoutPlansContainer"));
         var workoutPlanTitles = workoutPlansContainer.FindElements(By.ClassName("card-title"));
         bool planFound = workoutPlanTitles.Any(title => title.Text.Contains(planName));
+        var viewExercisesButton = _driver.FindElement(By.Id("viewExercisesButton"));
+        viewExercisesButton.Click();
         Assert.IsTrue(planFound, $"Workout plan with name '{planName}' was not found.");
     }
 
@@ -455,5 +457,19 @@ public sealed class WorkoutsStepDefinitions
         testPlanTitle.Click();
         var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
         wait.Until(driver => driver.FindElement(By.Id("exercisesModalBody")).Displayed);
+    }
+
+    [Then("I should be able to input the amount of weight I do for an exercise")]
+    public void ThenIShouldBeAbleToInputTheAmountOfWeightIDoForAnExercise()
+    {
+        var container = _driver.FindElement(By.Id("exercisesModalBody"));
+        var firstDetail = container.FindElement(By.ClassName("exercise-detail"));
+        var weightInput = firstDetail.FindElement(By.CssSelector(".weight-input"));
+
+        weightInput.Clear();
+        weightInput.SendKeys("100");
+
+        // Verify that the input was set correctly
+        Assert.That(weightInput.GetAttribute("value"), Is.EqualTo("100"), "Weight input did not accept the value.");
     }
 }

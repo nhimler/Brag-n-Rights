@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Create Meal";
 }
-
+<div class="container mt-4">
 <h2>Create Meal</h2>
 <div class="row">
     <div class="col-sm-12 col-md-6">
@@ -26,7 +26,7 @@
                 <label asp-for="MealPlanId">Meal Plan</label>
                 <select asp-for="MealPlanId" class="form-control">
                     @for(int i = 0; i < Model.PlanNames.Count; i++){
-                        <option value="@Model.PlanIds[i]">@Model.PlanNames[i]</option>
+                        <option value="@Model.PlanIds[i]" data-start="@Model.StartDates[i].ToString("yyyy-MM-dd")" data-end="@Model.EndDates[i].ToString("yyyy-MM-dd")">@Model.PlanNames[i]</option>
                     }
                 </select>
             </div>
@@ -73,7 +73,9 @@
 </div>
 
 
+<script src="~/js/lockDate.js" asp-append-version="true"></script>
 <script src="~/js/foodSearch.js" asp-append-version="true"></script>
 <script src="~/js/callAI.js" asp-append-version="true"></script>
 <link rel="stylesheet" href="~/css/MealPlan.css" asp-append-version="true" />
 
+</div>

@@ -22,5 +22,10 @@ namespace GymBro_App.DAL.Concrete
         {
             return _gymUser.Any(u => u.ApiGymId == gymUserId && u.UserId == userId);
         }
+
+        public GymUser? GetGymUserByGymIdAndUserId(string gymPlaceId, int userId)
+        {
+            return _gymUser.FirstOrDefault(u => u.ApiGymId == gymPlaceId && u.UserId == userId);
+        }
     }
 }

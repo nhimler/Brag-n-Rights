@@ -2,8 +2,9 @@
 @{
     ViewData["Title"] = "My Gyms";
 }
+<link rel="stylesheet" href="~/css/UserPage.css" />
 
-<div class="">
+<div class="container">
     <h1 class="mb-4 pt-4">My Gyms</h1>
     <hr />
     <div>
@@ -11,9 +12,17 @@
     </div>
     <div>
         <div class="row g-3">
+            @if (Model.AllGyms.Count <= 0)
+            {
+                <div class="col-md-12">
+                    <div class="alert alert-info text-center" role="alert">
+                        You haven't bookmarked any gyms yet.
+                    </div>
+                </div>
+            }
             @foreach (var gym in Model.AllGyms)
             {
-                <div class="col-md-4">
+                <div class="col-md-4 gym-card" id="gym-card-@gym.Name">
                     <div class="card text-decoration-none text-dark diplayed-gym-card">
                         <div class="card-body">
                             <h5>@gym.DisplayName.Text</h5>
@@ -25,6 +34,9 @@
                                 }
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
+                                <button type="button" class="btn btn-danger delete-gym-btn" id="@gym.Name">
+                                    Remove
+                                </button>
                                 <a target="_blank" rel="noopener noreferrer" href="@gym.WebsiteUri" class="text-decoration-none text-dark">
                                     <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> View Gym Website
                                 </a>
@@ -36,10 +48,6 @@
         </div>
     </div>
 </div>
-
-@*  public DisplayName DisplayName { get; set; } = new DisplayName();
-    public string FormattedAddress { get; set; } = "";
-    public RegularOpeningHours RegularOpeningHours { get; set; } = new RegularOpeningHours();
-    public string WebsiteUri { get; set; } = "";
-    public string Name { get; set; } = "";
-*@
+@section Scripts {
+    <script type="text/javascript" src="~/js/bookmarkedGyms.js"></script>
+}

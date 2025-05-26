@@ -1,8 +1,23 @@
+let map
+let markers = []
 let userSignedIn = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     if (isLoggedIn) {
         userSignedIn = true
+    }
+
+    if (window.google && window.google.maps) {
+        initMap();
+    }
+    else {
+        // If Google Maps is not loaded yet, wait and try again
+        let interval = setInterval(() => {
+            if (window.google && window.google.maps) {
+                initMap();
+                clearInterval(interval);
+            }
+        }, 100);
     }
 
     const mapElement = document.getElementById("nearby-gyms-map")
@@ -55,6 +70,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 })
 
+function initMap(center = { lat: 39.828175, lng: -98.5795 }, zoom = 4) {
+    map = new google.maps.Map(document.getElementById("nearby-gyms-map"), {
+        center,
+        zoom,
+    });
+}
+
+function setMapCenter(lat, lng, zoom = 10) {
+    if (map) {
+        map.setCenter({ lat, lng });
+        map.setZoom(zoom);
+    }
+}
+
+function clearMarkers() {
+    for (let marker of markers) {
+        marker.setMap(null);
+    }
+    markers = [];
+}
+
+function addGymMarkers(gyms) {
+    clearMarkers();
+    gyms.forEach(gym => {
+        if (gym && gym.location && gym.location.latitude && gym.location.longitude) {
+            let marker = new google.maps.Marker({
+                position: { lat: gym.location.latitude, lng: gym.location.longitude },
+                map: map,
+                title: gym.displayName.text
+            });
+            markers.push(marker);
+        }
+    });
+}
+
 function noNearbyGyms() {
     let gymList = document.getElementById("nearby-gym-search-list")
     document.getElementById("nearby-gyms-results-header").innerText = "No nearby gyms found."
@@ -105,201 +155,205 @@ async function embedMapAtUserPosition(position) {
 }
 
 async function getNearbyGyms(pos) {
-    // TODO: Call this method in a better way (ex: "api/maps/nearby?latitude=lat&longitude=long").
-    // This would also involve changing how this function is called in the event listener.
-    let lat = pos.coords.latitude
-    let long = pos.coords.longitude
+    let lat = pos.coords.latitude;
+    let long = pos.coords.longitude;
     let response = await fetch(`/api/maps/nearby/${lat}/${long}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
-    })
+    });
 
-    if(response.ok){
-        let result = await response.json()
-        let gymList = document.getElementById("nearby-gym-search-list")
-        gymList.textContent = ""
-
-        if (result.length === 0) {
-            document.getElementById("nearby-gyms-results-header").innerText = "No nearby gyms found."
-            gymList.parentNode.replaceChild(gymList.cloneNode(false), gymList)
-            return
-        }
-        else {
-            document.getElementById("nearby-gyms-results-header").textContent = `Found ${result.length} nearby gyms`
-        }
-        for (let i = 0; i < result.length; i++) {
-            let gym = result[i]
-            // console.log(gym.regularOpeningHours)
-
-            // // Gets open/close status and the next time it opens/closes. TODO: Fix this so it adjusts for UTC time and 24/7 gyms
-            // let gymOpenStatus = gym.regularOpeningHours.openNow ? "Open" : "Closed"
-            // const daysOfWeek = []
-            // const currentDay = new Date().getDay()
-            // console
-            // console.log(`Open Status: ${gymOpenStatus}`)
-            // console.log(`Today's hours: ${gym.regularOpening}`)
-            // if (gymOpenStatus === "Open") {
-            //     console.log("Today's hours: " + gym.regularOpeningHours.openingHours[currentDay])
-            //     console.log("Closes at: " + gym.regularOpeningHours.nextCloseTime)
-            // }
-            // else {
-            //     console.log("Opens at: " + gym.regularOpeningHours.nextOpenTime)
-            // }
-            // console.log(`${gym.regularOpeningHours.nextCloseTime} ${gym.regularOpeningHours.nextOpenTime}`)
-            // let gymNextStatusHours = gymOpenStatus ? `Closes at ${gym.regularOpeningHours.nextCloseTime} ` : `Opens at ${gym.regularOpeningHours.nextOpenTime}`
-            // gymNextStatusHours = gymNextStatusHours.split("T")[1].slice(0, -1)
-            // console.log("Closes at: " + gym.regularOpeningHours.nextCloseTime)
-            // console.log("Opens at: " + gym.regularOpeningHours.nextOpenTime)
-            
-
-            let gymResult = document.createElement("div")
-            gymResult.setAttribute("class", "card mb-3 text-decoration-none text-dark diplayed-gym-card")
-            
-            let gymResultBody = document.createElement("div")
-            gymResultBody.setAttribute("class", "card-body")
-            gymResultBody.appendChild(document.createElement("h5")).innerText = gym.displayName.text
-
-            let gymResultAddress = document.createElement("p")
-            gymResultAddress.setAttribute("class", "card-text")
-            gymResultAddress.innerText = gym.formattedAddress
-            gymResultBody.appendChild(gymResultAddress)
-
-            let gymHours = gym.regularOpeningHours.weekdayDescriptions
-            let gymHoursParagraphs = document.createElement("div")
-            gymHoursParagraphs.setAttribute("class", "d-flex flex-column mb-3")
-            gymHours.forEach(day => {
-                let gymHoursParagraph = document.createElement("p")
-                gymHoursParagraph.setAttribute("class", "card-text my-1")
-                gymHoursParagraph.innerText = day
-                gymHoursParagraphs.appendChild(gymHoursParagraph)
-            })
-            gymResultBody.appendChild(gymHoursParagraphs)
-
-            console.log("Getting gym rating: " + gym.rating)
-            
-            let gymRatingDiv = document.createElement("div")
-            gymRatingDiv.setAttribute("class", "d-flex align-items-center mb-3")
-            let ratingText = document.createElement("p")
-            ratingText.setAttribute("class", "card-text mb-0 me-2")
-            ratingText.innerText = "Rating: "
-            gymRatingDiv.appendChild(ratingText)
-
-            let numFullStars = Math.floor(gym.rating)
-            let numHalfStars = Math.round(gym.rating - numFullStars)
-            let numEmptyStars = 5 - numFullStars - numHalfStars
-            
-            for (let j = 0; j < numFullStars; j++) {
-                let fullStarIcon = document.createElement("i")
-                fullStarIcon.setAttribute("class", "fa-solid fa-star gym-rating-star")
-                gymRatingDiv.appendChild(fullStarIcon)
-            }
-            
-            for (let j = 0; j < numHalfStars; j++) {
-                let halfStarIcon = document.createElement("i")
-                halfStarIcon.setAttribute("class", "fa-regular fa-star-half-stroke gym-rating-star")
-                gymRatingDiv.appendChild(halfStarIcon)
-            }
-            
-            for (let j = 0; j < numEmptyStars; j++) {
-                let fullStarIcon = document.createElement("i")
-                fullStarIcon.setAttribute("class", "fa-regular fa-star gym-rating-star")
-                gymRatingDiv.appendChild(fullStarIcon)
-            }
-
-            let gymRatingText = document.createElement("p")
-            gymRatingText.setAttribute("class", "card-text mb-0 ms-2")
-            gymRatingText.innerText = `(${gym.rating})`
-            
-            gymRatingDiv.appendChild(gymRatingText)
-            gymResultBody.appendChild(gymRatingDiv)
-
-
-            
-            // let gymRating = document.createElement("p")
-            // let fullStars = Math.floor(gym.rating)
-            // let fullStarIcon = document.createElement("i")
-            // fullStarIcon.setAttribute("class", "fa-solid fa-star")
-
-
-            // let halfStars = 5.0 - fullStars
-            // let halfStarIcon = document.createElement("i")
-            // halfStarIcon.setAttribute("class", "fa-solid fa-star")
-            // let starRating = "★".repeat(fullStars) + "☆".repeat(5 - fullStars)
-
-            // gymRating.setAttribute("class", "card-text")
-            // gymRating.innerText = `Rating: ${starRating} (${gym.rating})`
-            // gymResultBody.appendChild(gymRating)
-
-            let gymResultActions = document.createElement("div")
-            gymResultActions.setAttribute("class", "d-flex justify-content-between align-items-center")
-            
-            // Preparing the gym's id for the bookmark button (if they're logged in)
-            if (userSignedIn) {
-                let gymPlaceID = gym.name.replace("places/", "")
-                let isBookmarked = await isGymBookmarked(gymPlaceID)
-
-                let bookmarkButton = document.createElement("button")
-                bookmarkButton.setAttribute("class", "btn bookmark-gym-button")
-                bookmarkButton.setAttribute("id", gymPlaceID)
-                bookmarkButton.setAttribute("type", "button")
-                
-                if (isBookmarked) {
-                    bookmarkButton.setAttribute("disabled", "true")
-                    let bookmarkIcon = document.createElement("i")
-                    bookmarkIcon.setAttribute("class", "fa-solid fa-bookmark bookmarked-icon")
-                    bookmarkButton.appendChild(bookmarkIcon)
-                    bookmarkButton.appendChild(document.createTextNode(" Bookmarked"))
-                    bookmarkButton.setAttribute("class", "btn bookmark-gym-button disabled")
-                    bookmarkButton.setAttribute("aria-disabled", "true")
-                    bookmarkButton.setAttribute("disabled", "true")
-                    gymResultActions.appendChild(bookmarkButton)
-                }
-
-                else {
-                    let bookmarkIcon = document.createElement("i")
-                    bookmarkIcon.setAttribute("class", "fa-solid fa-bookmark")
-                    bookmarkButton.appendChild(bookmarkIcon)
-
-                    bookmarkButton.appendChild(document.createTextNode(" Add to Boomarks"))
-                    bookmarkButton.addEventListener("click", () => {
-                        console.log("Bookmark button clicked")
-                        bookmarkGym(gymPlaceID)
-                        bookmarkButton.setAttribute("disabled", "true")
-                        bookmarkButton.setAttribute("class", "btn bookmark-gym-button disabled")
-                        bookmarkButton.setAttribute("aria-disabled", "true")
-                        bookmarkButton.textContent = ""
-
-                        let bookmarkedIcon = document.createElement("i")
-                        bookmarkedIcon.setAttribute("class", "fa-solid fa-bookmark fa-bounce freshly-bookmarked-icon")
-                        bookmarkButton.appendChild(bookmarkedIcon)
-                        bookmarkButton.appendChild(document.createTextNode(" Bookmarked"))
-                    })
-                    gymResultActions.appendChild(bookmarkButton)
-                }
-            }
-
-            let gymWebsiteButton = document.createElement("a")
-            gymWebsiteButton.setAttribute("target", "_blank")
-            gymWebsiteButton.setAttribute("rel", "noopener noreferrer")
-            gymWebsiteButton.setAttribute("href", gym.websiteUri)
-            gymWebsiteButton.setAttribute("class", "text-decoration-none text-dark")
-
-            let gymWebsiteIcon = document.createElement("i")
-            gymWebsiteIcon.setAttribute("class", "fa-solid fa-arrow-up-right-from-square")
-            gymWebsiteButton.appendChild(gymWebsiteIcon)
-            gymWebsiteButton.appendChild(document.createTextNode(" View Gym Website"))
-            gymResultActions.appendChild(gymWebsiteButton)
-
-            gymResultBody.appendChild(gymResultActions)
-            gymResult.appendChild(gymResultBody)
-            gymList.appendChild(gymResult)
-        }
+    if (response.ok) {
+        let result = await response.json();
+        renderNearbyGyms(result);
+        setMapCenter(lat, long);
+        addGymMarkers(result)
+    } else {
+        console.log("Error: " + response.status);
     }
-    else {
-        console.log("Error: " + response.status)
+}
+
+function renderNearbyGyms(gyms) {
+    let gymList = document.getElementById("nearby-gym-search-list");
+    gymList.textContent = "";
+
+    if (!gyms || gyms.length === 0) {
+        document.getElementById("nearby-gyms-results-header").innerText = "No nearby gyms found.";
+        gymList.parentNode.replaceChild(gymList.cloneNode(false), gymList);
+        return;
+    } else {
+        document.getElementById("nearby-gyms-results-header").textContent = `Found ${gyms.length} nearby gyms`;
     }
+
+    gyms.forEach(gym => {
+        let gymResult = createGymCard(gym);
+        gymList.appendChild(gymResult);
+    });
+}
+
+function createGymCard(gym) {
+    let gymResult = document.createElement("div");
+    gymResult.setAttribute("class", "card mb-3 text-decoration-none text-dark diplayed-gym-card");
+
+    let gymResultBody = document.createElement("div");
+    gymResultBody.setAttribute("class", "card-body");
+    gymResultBody.appendChild(document.createElement("h5")).innerText = gym.displayName.text;
+
+    let gymResultAddress = createGymAddressElement(gym);
+    gymResultBody.appendChild(gymResultAddress);
+
+    let gymHoursParagraphs = createGymHoursElement(gym);
+    gymResultBody.appendChild(gymHoursParagraphs);
+
+    let gymRatingDiv = createGymRatingElement(gym);
+    gymResultBody.appendChild(gymRatingDiv);
+
+    let gymResultActions = createGymActions(gym);
+    gymResultBody.appendChild(gymResultActions);
+
+    gymResult.appendChild(gymResultBody);
+    return gymResult;
+}
+
+function createGymActions(gym) {
+    let gymResultActions = document.createElement("div");
+    gymResultActions.setAttribute("class", "d-flex justify-content-between align-items-center");
+
+    // Bookmark button (if logged in)
+    if (userSignedIn) {
+        let gymPlaceID = gym.name.replace("places/", "");
+        let bookmarkButton = createBookmarkButton(gymPlaceID);
+        gymResultActions.appendChild(bookmarkButton);
+    }
+
+    let gymWebsiteButton = document.createElement("a");
+    gymWebsiteButton.setAttribute("target", "_blank");
+    gymWebsiteButton.setAttribute("rel", "noopener noreferrer");
+    gymWebsiteButton.setAttribute("href", gym.websiteUri);
+    gymWebsiteButton.setAttribute("class", "text-decoration-none text-dark");
+
+    let gymWebsiteIcon = document.createElement("i");
+    gymWebsiteIcon.setAttribute("class", "fa-solid fa-arrow-up-right-from-square");
+    gymWebsiteButton.appendChild(gymWebsiteIcon);
+    gymWebsiteButton.appendChild(document.createTextNode(" View Gym Website"));
+    gymResultActions.appendChild(gymWebsiteButton);
+
+    return gymResultActions;
+}
+
+function createBookmarkButton(gymPlaceID) {
+    let bookmarkButton = document.createElement("button");
+    bookmarkButton.setAttribute("class", "btn bookmark-gym-button");
+    bookmarkButton.setAttribute("id", gymPlaceID);
+    bookmarkButton.setAttribute("type", "button");
+
+    // Set initial state asynchronously
+    isGymBookmarked(gymPlaceID).then(isBookmarked => {
+        updateBookmarkButton(isBookmarked, bookmarkButton);
+
+        bookmarkButton.addEventListener("click", async () => {
+            if (bookmarkButton.disabled) return;
+            bookmarkButton.disabled = true;
+            let currentlyBookmarked = await isGymBookmarked(gymPlaceID);
+            if (currentlyBookmarked) {
+                await removeGymBookmark(gymPlaceID, bookmarkButton);
+            } else {
+                await bookmarkGym(gymPlaceID);
+            }
+            let updatedBookmarked = await isGymBookmarked(gymPlaceID);
+            updateBookmarkButton(updatedBookmarked, bookmarkButton);
+            bookmarkButton.disabled = false;
+        });
+    });
+
+    return bookmarkButton;
+}
+
+function updateBookmarkButton(bookmarked, bookmarkButton) {
+    bookmarkButton.innerHTML = "";
+    let icon = document.createElement("i");
+    if (bookmarked) {
+        icon.setAttribute("class", "fa-solid fa-bookmark fa-bounce bookmarked-icon");
+        icon.setAttribute("style", "--fa-animation-iteration-count: 1;")
+        bookmarkButton.appendChild(icon);
+        bookmarkButton.appendChild(document.createTextNode(" Remove Bookmark"));
+    } else {
+        icon.setAttribute("class", "fa-solid fa-bookmark");
+        bookmarkButton.appendChild(icon);
+        bookmarkButton.appendChild(document.createTextNode(" Add to Bookmarks"));
+    }
+}
+
+function createGymAddressElement(gym) {
+    let gymResultAddress = document.createElement("p");
+    gymResultAddress.setAttribute("class", "card-text");
+    gymResultAddress.innerText = gym.formattedAddress;
+    return gymResultAddress;
+}
+
+// Google's Nearby Search API can give us the opening and closing hours for a gym.
+// TODO: Fix this so it adjusts for UTC time so that the hours are correct for the user's timezone
+function createGymHoursElement(gym) {
+    let gymHours = gym.regularOpeningHours.weekdayDescriptions;
+    let gymHoursParagraphs = document.createElement("div");
+    gymHoursParagraphs.setAttribute("class", "d-flex flex-column mb-3");
+    gymHours.forEach(day => {
+        let gymHoursParagraph = document.createElement("p");
+        gymHoursParagraph.setAttribute("class", "card-text my-1");
+        gymHoursParagraph.innerText = day;
+        gymHoursParagraphs.appendChild(gymHoursParagraph);
+    });
+    return gymHoursParagraphs;
+}
+
+function createGymRatingElement(gym) {
+    // console.log("Getting gym rating: " + gym.rating);
+
+    let gymRatingDiv = document.createElement("div");
+    gymRatingDiv.setAttribute("class", "d-flex align-items-center mb-3");
+    let ratingText = document.createElement("p");
+    ratingText.setAttribute("class", "card-text mb-0 me-2");
+    ratingText.innerText = "Rating: ";
+    gymRatingDiv.appendChild(ratingText);
+
+    let numFullStars = Math.floor(gym.rating);
+    let numHalfStars = Math.round(gym.rating - numFullStars);
+    let numEmptyStars = 5 - numFullStars - numHalfStars;
+
+    for (let j = 0; j < numFullStars; j++) {
+        let fullStarIcon = document.createElement("i");
+        fullStarIcon.setAttribute("class", "fa-solid fa-star gym-rating-star");
+        gymRatingDiv.appendChild(fullStarIcon);
+    }
+
+    for (let j = 0; j < numHalfStars; j++) {
+        let halfStarIcon = document.createElement("i");
+        halfStarIcon.setAttribute("class", "fa-regular fa-star-half-stroke gym-rating-star");
+        gymRatingDiv.appendChild(halfStarIcon);
+    }
+
+    for (let j = 0; j < numEmptyStars; j++) {
+        let fullStarIcon = document.createElement("i");
+        fullStarIcon.setAttribute("class", "fa-regular fa-star gym-rating-star");
+        gymRatingDiv.appendChild(fullStarIcon);
+    }
+
+    let gymRatingText = document.createElement("p");
+    gymRatingText.setAttribute("class", "card-text mb-0 ms-2");
+    gymRatingText.innerText = `(${gym.rating})`;
+
+    gymRatingDiv.appendChild(gymRatingText);
+    return gymRatingDiv;
+}
+
+async function removeGymBookmark(gymPlaceID, bookmarkButton) {
+    await deleteGymBookmark(gymPlaceID);
+    bookmarkButton.setAttribute("class", "btn bookmark-gym-button");
+    bookmarkButton.textContent = "";
+    let unbookmarkedIcon = document.createElement("i");
+    unbookmarkedIcon.setAttribute("class", "fa-solid fa-bookmark fa-bounce freshly-bookmarked-icon");
+    bookmarkButton.appendChild(unbookmarkedIcon);
 }
 
 async function bookmarkGym(gymPlaceID) {
@@ -322,18 +376,17 @@ async function isGymBookmarked(gymPlaceID) {
     let response = await fetch(`/api/users/isGymBookmarked/${gymPlaceID}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'}
-        })
-        if (response.ok) {
-            let result = await response.json()
-            console.log(result)
-            return result
+            'Content-Type': 'application/json'
         }
-        else {
-            console.log("Error in isGymBookmarked: " + response.status)
-        }
+    })
+    if (response.ok) {
+        let result = await response.json()
+        return result
+    }
+    else {
+        console.log("Error in isGymBookmarked: " + response.status)
+    }
 }
-
 
 async function reverseGeocode(lat, long) {
     let response = await fetch(`/api/maps/reversegeocode/${lat}/${long}`, {
@@ -343,12 +396,12 @@ async function reverseGeocode(lat, long) {
         }
     })
 
-    if(response.ok){
+    if (response.ok) {
         let result = await response.json()
         console.log(result)
         let userLocation = document.getElementById("user-location")
         userLocation.innerHTML = `Location: ${result.address}`
-        
+
     }
     else {
         console.log("Error: " + response.status)
@@ -363,13 +416,30 @@ async function geocodePostal(postalCode) {
         }
     })
 
-    if(response.ok){
+    if (response.ok) {
         let result = await response.json()
         console.log(result)
         return result
     }
     else {
         console.log("Error: " + response.status)
+    }
+}
+
+async function deleteGymBookmark(gymPlaceID) {
+    let response = await fetch(`/api/gymUser/bookmark/delete/${gymPlaceID}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    if (response.ok) {
+        console.log("Gym bookmark deleted successfully")
+        return true
+    }
+    else {
+        console.log("Something went wrong when deleting the bookmark: " + response.status)
+        return false
     }
 }
 

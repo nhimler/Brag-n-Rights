@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,7 +41,8 @@ public partial class GymBroDbContext : DbContext
 
     public virtual DbSet<WorkoutPlan> WorkoutPlans { get; set; }
 
-
+    public virtual DbSet<WorkoutPlanTemplate> WorkoutPlanTemplates { get; set; }
+    public virtual DbSet<WorkoutPlanTemplateExercise> WorkoutPlanTemplateExercises { get; set; }
     
     
     public virtual DbSet<StepCompetition> StepCompetitions { get; set; }  
@@ -89,6 +90,12 @@ public partial class GymBroDbContext : DbContext
                         j.IndexerProperty<int>("UserId").HasColumnName("UserID");
                     });
         });
+
+        // Map singular class names to singular tables
+        modelBuilder.Entity<WorkoutPlanTemplate>()
+            .ToTable("WorkoutPlanTemplate");
+        modelBuilder.Entity<WorkoutPlanTemplateExercise>()
+            .ToTable("WorkoutPlanTemplateExercise");
 
         modelBuilder.Entity<Food>(entity =>
         {
@@ -203,6 +210,19 @@ public partial class GymBroDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__WorkoutPl__UserI__1975C517");
         });
+
+
+            // Store the DifficultyLevel enum as its string value in the DB
+            modelBuilder.Entity<WorkoutPlanTemplate>()
+                        .Property(e => e.DifficultyLevel)
+                        .HasConversion<string>();
+
+            // Configure the 1-to-many relationship
+            modelBuilder.Entity<WorkoutPlanTemplate>()
+                        .HasMany(t => t.Exercises)
+                        .WithOne(x => x.Template)
+                        .HasForeignKey(x => x.WorkoutPlanTemplateID)
+                        .OnDelete(DeleteBehavior.Cascade);
 
 
         modelBuilder.Entity<StepCompetitionParticipant>()

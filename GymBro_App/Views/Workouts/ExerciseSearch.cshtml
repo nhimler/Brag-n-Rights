@@ -6,7 +6,10 @@
     <link rel="stylesheet" href="~/css/exerciseSearch.css" asp-append-version="true" />
 </head>
 
-<h1>Let's search our API for a workout</h1>
+<div class="exercise-search-header">
+    Exercise Database
+    <span>Search through our extensive collection for the perfect exercise</span>
+</div>
 
 <!-- body-part radio button group -->
 <div class="btn-group mb-3" role="group" aria-label="Body part filter" id="bodyPartRadioButtons">
@@ -91,7 +94,7 @@
     </div>
 </div>
 
-<div id="exerciseCart" class="mt-4 p-3 border rounded"></div>
+<div id="exerciseCart"></div>
 
 <script>
     var isLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
