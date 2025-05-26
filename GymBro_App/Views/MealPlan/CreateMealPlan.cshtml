@@ -3,8 +3,9 @@
 @{
     ViewData["Title"] = "Meal Plan Creation";
 }
-
+<div class="container mt-4">
 <h2>Create Meal Plan</h2>
+
 <form method="post" asp-action="CreateMealPlan" asp-route-id="">
     <input asp-for="MealPlanId" hidden readonly/>
     <div class="form-group">
@@ -54,3 +55,4 @@
     <button type="submit" class="btn btn-primary mt-3" id="create-btn">Create</button>
 
 </form>
+</div>

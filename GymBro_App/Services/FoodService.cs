@@ -20,7 +20,7 @@ public class Serving
     public string serving_description { get; set; } = "";
     public string calories { get; set; } = "";
     public string protein { get; set; } = "";
-    public string carbs { get; set; } = "";
+    public string carbohydrate { get; set; } = "";
     public string fat { get; set; } = "";
 }
 
@@ -171,7 +171,7 @@ public class FoodService : IFoodService
                 FoodId = food.food_id,
                 BrandName = food.brand_name,
                 FoodDescription = "Per " + serving.serving_description + " - Calories: " + serving.calories + "kcal | Fat: " + serving.fat 
-                    + "g | Carbs: " + serving.carbs + "g | Protein: "+ serving.protein  + "g"
+                    + "g | Carbs: " + serving.carbohydrate + "g | Protein: "+ serving.protein  + "g"
             };
         }
         return null;

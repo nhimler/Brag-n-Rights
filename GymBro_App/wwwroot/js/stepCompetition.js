@@ -86,7 +86,7 @@ function renderCompetitions(competitions, containerId, showLeaveButton) {
     competitions.forEach(comp => {
       // Card wrapper
       const card = document.createElement('div');
-      card.className = 'card mb-3';
+      card.className = 'card mb-3 CompetitionCard';
       card.id = `competition-${comp.competitionID}`;
   
       const cardBody = document.createElement('div');
@@ -105,11 +105,23 @@ function renderCompetitions(competitions, containerId, showLeaveButton) {
   
       const status = document.createElement('p');
       if (comp.isActive) {
-        status.textContent = `${top.username} is winning with ${top.steps} steps!`;
-        status.className = 'text-info';      // optional Bootstrap styling
+        // Find second top steps (if any)
+        let secondTopSteps = null;
+        if (comp.participants.length > 1) {
+          // Sort descending by steps
+          const sorted = [...comp.participants].sort((a, b) => b.steps - a.steps);
+          secondTopSteps = sorted[1].steps;
+        }
+        if (secondTopSteps !== null && top.steps !== secondTopSteps) {
+          status.textContent = `${top.username} is winning with ${top.steps} steps!`;
+          status.className = 'Winning';
+        } else {
+          status.textContent = '';
+          status.className = '';
+        }
       } else {
         status.textContent = `${top.username} won with ${top.steps} steps! 🎉`;
-        status.className = 'text-success';   // optional Bootstrap styling
+        status.className = 'Won';
       }
   
       // 3) Date range
@@ -277,8 +289,8 @@ window.addEventListener('DOMContentLoaded', () => {
           if (recentData.length === 0) return;           // nothing to show
           const wrapper = document.getElementById('RecentlyEndedComp');
           wrapper.innerHTML = `
-            <h5>Recently Ended Competitions</h5>
-            <div id="recentCompetitionList"></div>
+            <h5>Recently Ended Competitions</h5><br>
+            <div id="recentCompetitionList" class="mt-4"></div>
           `;
       
           renderCompetitions(recentData, 'recentCompetitionList', false);

@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Meal Plan Details";
 }
-
+<div class="container mt-4">
 <a asp-action="Index"><button class="btn btn-primary">Back to Meal Plans</button></a>
 <hr>
 <!--a asp-action="CreateMealPlan" asp-route-id="@Model.MealPlan.MealPlanId"><button class="btn btn-primary" id="edit-mealplan-btn"> 
@@ -89,5 +89,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/targetGraph.js" asp-append-version="true"></script>
 }
+
+</div>
 
 <link rel="stylesheet" href="~/css/MealPlan.css" asp-append-version="true" />
