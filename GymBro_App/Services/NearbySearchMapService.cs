@@ -83,6 +83,11 @@ namespace GymBro_App.Services
                     WebsiteUri = p.WebsiteUri,
                     Name = p.Name,
                     Rating = p.Rating,
+                    Location = new Location
+                    {
+                        Latitude = p.Location.Latitude,
+                        Longitude = p.Location.Longitude
+                    },
                 }).ToList();
                 return places;
             }

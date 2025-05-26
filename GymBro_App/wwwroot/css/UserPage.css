@@ -11,3 +11,10 @@
     justify-content: center;
     width: 100%;
 }
+
+/* XL Screens (Large Laptops/Desktop Monitors) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 90vw; /* or try 80vw for even less space */
+    }
+}
