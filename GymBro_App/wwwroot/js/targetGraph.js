@@ -11,17 +11,17 @@ async function renderGraph() {
     data: {
         labels: ['Calories', 'Protein', 'Carbs', 'Fats'],
         datasets: [{
-        label: 'Target',
-        data: [document.getElementById('Calories').innerText, 
-                document.getElementById('Protein').innerText, 
-                document.getElementById('Carbs').innerText, 
-                document.getElementById('Fats').innerText],
+        label: 'Percentage of Target',//'Target',
+        data: [100 * stats[0] / Number(document.getElementById('Calories').innerText), 
+                100 * stats[1] / Number(document.getElementById('Protein').innerText), 
+                100 * stats[2] / Number(document.getElementById('Carbs').innerText), 
+                100 * stats[3] / Number(document.getElementById('Fats').innerText)],
         borderWidth: 1
-        }, 
-        {
-        label: 'Actual',
-        data: stats,
-        borderWidth: 1
+        // }, 
+        // {
+        // label: 'Actual',
+        // data: stats,
+        // borderWidth: 1
         }]
     },
     options: {
