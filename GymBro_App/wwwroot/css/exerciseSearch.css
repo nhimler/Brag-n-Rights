@@ -90,7 +90,28 @@ text-align: center; /* Center the title */
 align-self: center; /* Center the button horizontally */
 }
 
-@media (max-width: 600px) {
+#exerciseSearchByNameForm {
+  width: 50%;
+}
+
+#exerciseSearchResults {
+  width: 90%;
+  justify-self: center;
+}
+
+@media (min-width: 768px){
+  #bodyPartRadioButtons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 3 per row, change to 4 for 4 per row */
+    gap: 8px;
+    max-width: 90%;
+    overflow-x: unset;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 767px) {
   #bodyPartRadioButtons {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 3 per row, change to 4 for 4 per row */
@@ -107,7 +128,7 @@ align-self: center; /* Center the button horizontally */
     margin-right: 0;
   }
 
-  #exerciseSearchForm {
+  #exerciseSearchByNameForm {
     width: 80%;
   }
 }
