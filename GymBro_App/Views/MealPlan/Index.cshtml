@@ -43,7 +43,8 @@
             @foreach(var plan in Model.MealPlans){
                 <tr>
                     <td>
-                        <a class="title-link" asp-action="MealPlanDetails" asp-route-id="@plan.Id"><h3>@plan.PlanName - Starting @plan.StartDate.Month/@plan.StartDate.Day/@plan.StartDate.Year</h3></a>
+                        <a class="title-link" asp-action="MealPlanDetails" asp-route-id="@plan.Id"><h3>@plan.PlanName</h3></a>
+                        <p> <span class="badge bg-primary me-1">Starts @plan.StartDate</span> <span class="badge bg-secondary">Ends @plan.EndDate</span></p>
                     </td>
                     <td>
                         <h4>Meals</h4>

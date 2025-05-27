@@ -105,7 +105,15 @@ function generateAccordionItem(food, isSelected){
     bodyContent.appendChild(addBtn);
 
     let bodyText = document.createElement("span");
-    bodyText.textContent = " " + food.foodDescription;
+    bodyText.textContent = " ";
+    let macros = food.foodDescription.split("|");
+    for (let i = 0; i < macros.length; i++) {
+        let macro = document.createElement("span");
+        macro.className = "badge bg-primary me-1";
+        macro.textContent = macros[i];
+        bodyText.appendChild(macro);
+    }
+    // bodyText.textContent = " " + food.foodDescription;
 
     bodyContent.appendChild(bodyText);
 

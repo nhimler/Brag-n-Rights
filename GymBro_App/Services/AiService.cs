@@ -53,9 +53,9 @@ public class AiService : IAiService
     {
         var prompt = new StringBuilder();
         prompt.AppendLine("Give me 5 meal suggestions.");
-        prompt.AppendLine("These suggestions should be a list of what the meals are called with no elaboration.");
+        prompt.AppendLine("These suggestions should be a numbered list of what the meals are called with no elaboration.");
         prompt.AppendLine("There should be nothing else in your response except the list, not even a header.");
-        prompt.AppendLine("Also try to list meals that contain one or more of the following ingredients:");
+        prompt.AppendLine("Also please list meals that only use the following ingredients:");
         prompt.AppendLine(query);
         return prompt.ToString();
     }

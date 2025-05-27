@@ -47,12 +47,13 @@ public class MealPlanAPIController : ControllerBase
             return new NotFoundResult();
         }
 
-        IEnumerable<MealPlanScheduleDTO> mealPlanSchedules = mealPlans.Select(mp => new MealPlanScheduleDTO
-        {
-            title = mp.PlanName != null ? mp.PlanName : "No Name",
-            start = mp.StartDate,
-            end = mp.EndDate
-        });
+        // IEnumerable<MealPlanScheduleDTO> mealPlanSchedules = mealPlans.Select(mp => new MealPlanScheduleDTO
+        // {
+        //     title = mp.PlanName != null ? mp.PlanName : "No Name",
+        //     start = mp.StartDate,
+        //     end = mp.EndDate
+        // });
+        IEnumerable<MealPlanScheduleDTO> mealPlanSchedules = Enumerable.Empty<MealPlanScheduleDTO>();
 
         foreach (var mealPlan in mealPlans)
         {
