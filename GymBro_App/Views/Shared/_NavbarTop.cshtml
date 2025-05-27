@@ -5,34 +5,36 @@
 {
     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 flex-row flex-grow-1 justify-content-end">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarFitBitFeaturesDropdownMenu" role="button"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarFitBitFeaturesDropdownToggle" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
                 FitBit Features
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarFitBitFeaturesDropdownMenu">
-                <li class="dropdown-item nav-item"><a class="nav-link" asp-controller="AwardMedal"
-                        asp-action="AwardMedals">Step Medals</a></li>
-                <li class="dropdown-item nav-item"><a class="nav-link" asp-controller="StepCompetition"
-                        asp-action="Index">Step Competition</a></li>
+            <ul class="dropdown-menu dropdown-menu-dark navbar-dropdown-menu" id="" aria-labelledby="navbarFitBitFeaturesDropdownToggle">
+                <li class="dropdown-item nav-item">
+                    <a class="nav-link text-center" asp-controller="AwardMedal" asp-action="AwardMedals">Step Medals</a>
+                </li>
+                <li class="dropdown-item nav-item">
+                    <a class="nav-link text-center" asp-controller="StepCompetition" asp-action="Index">Step Competition</a>
+                </li>
             </ul>
         </li>
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarExerciseFeaturesDropdownMenu" role="button"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarExerciseFeaturesDropdownToggle" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
                 Exercise
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarExerciseFeaturesDropdownMenu">
-                <li class="dropdown-item nav-item"><a class="nav-link" asp-controller="Workouts"
-                        asp-action="ExerciseSearch">Exercise Search</a></li>
-                <li class="dropdown-item nav-item"><a class="nav-link" asp-controller="Workouts"
-                        asp-action="Index">Workout Plans</a></li>
+            <ul class="dropdown-menu dropdown-menu-dark navbar-dropdown-menu" aria-labelledby="navbarExerciseFeaturesDropdownToggle">
+                <li class="dropdown-item nav-item">
+                    <a class="nav-link text-center" asp-controller="Workouts" asp-action="ExerciseSearch">Exercise Search</a>
+                </li>
+                <li class="dropdown-item nav-item">
+                    <a class="nav-link text-center" asp-controller="Workouts" asp-action="Index">Workout Plans</a>
+                </li>
             </ul>
         </li>
-        <li class="nav-item mx-2"><a class="nav-link" asp-controller="MealPlan" asp-action="Index">Meal Plan</a></li>
-        <li class="nav-item mx-2"><a class="nav-link" asp-controller="Gym" asp-action="FindNearbyGyms">Find A Gym</a></li>
-        <li class="nav-item mx-2">
-            <partial name="_LoginPartial" />
-        </li>
+        <li class="nav-item mx-2"><a class="nav-link text-center" asp-controller="MealPlan" asp-action="Index">Meal Plan</a></li>
+        <li class="nav-item mx-2"><a class="nav-link text-center" asp-controller="Gym" asp-action="FindNearbyGyms">Find A Gym</a></li>
+        <partial name="_LoginPartial" />
     </ul>
 }
 else

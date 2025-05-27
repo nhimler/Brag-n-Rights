@@ -1,8 +1,9 @@
+using System.ComponentModel.DataAnnotations;
 using GymBro_App.Models;
 
 namespace GymBro_App.ViewModels
 {
-    public class MealPlanView
+    public class MealPlanView : IValidatableObject
     {
         public MealPlanView()
         {
@@ -41,5 +42,24 @@ namespace GymBro_App.ViewModels
         public int? TargetCarbs { get; set; }
 
         public int? TargetFats { get; set; }
+
+        
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (StartDate == null || EndDate == null || string.IsNullOrEmpty(Frequency))
+                yield break;
+
+            int planLength = EndDate.Value.DayNumber - StartDate.Value.DayNumber + 1;
+
+            if (Frequency.Equals("Weekly", StringComparison.OrdinalIgnoreCase) && planLength >= 7)
+            {
+                yield return new ValidationResult("A weekly plan must be shorter than 7 days.", new[] { nameof(EndDate) });
+            }
+
+            if (Frequency.Equals("Monthly", StringComparison.OrdinalIgnoreCase) && planLength >= 30)
+            {
+                yield return new ValidationResult("A monthly plan must be shorter than 30 days.", new[] { nameof(EndDate) });
+            }
+        }
     }
 }

@@ -60,6 +60,7 @@ namespace GymBro_App.Models.DTOs
         public string WebsiteUri { get; set; } = "";
         public string Name { get; set; } = "";
         public double Rating { get; set; } = 0.0;
+        public Location Location { get; set; } = new Location();
     }
 }
 

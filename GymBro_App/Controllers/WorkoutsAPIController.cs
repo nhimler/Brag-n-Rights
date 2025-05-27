@@ -114,5 +114,30 @@ namespace GymBro_App.Controllers
             _workoutPlanRepository.Update(plan);
             return NoContent();
         }
+        
+        [HttpPost("applyTemplate")]
+        public IActionResult ApplyTemplate([FromBody] ApplyTemplateDto dto)
+        {
+            if (dto == null || string.IsNullOrEmpty(dto.PlanName) || string.IsNullOrEmpty(dto.Difficulty) || dto.ExerciseApiIds == null || dto.ExerciseApiIds.Count == 0)
+            {
+                return BadRequest("Invalid template data.");
+            }
+            var currentUserId = _userRepository.GetIdFromIdentityId(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (currentUserId <= 0)
+            {
+                return Unauthorized("Invalid user ID.");
+            }
+            try
+            {
+                _workoutPlanRepository.SavePremadeWorkoutPlan(dto, currentUserId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error applying workout template");
+                return StatusCode(500, "Error applying workout template: " + ex.Message);
+            }
+
+            return Ok();
+        }
     }
 }

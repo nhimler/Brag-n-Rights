@@ -39,9 +39,10 @@ html {
 
 @media (max-width: 991px) {
   .content {
-    padding-top: 86.75px; /* Adjust for fixed navbar height */
+    padding-top: 86.75px;
+    /* Adjust for fixed navbar height */
   }
-  
+
   .navbar-nav {
     flex-direction: column !important;
     align-items: stretch;
@@ -237,11 +238,30 @@ padding-top: 20px;
 }
 
 /* Mobile View */
-@media (max-width: 768px) {
+@media (max-height: 500px) {
   .content {
     padding-top: 86.75px;
   }
+  .navbar-collapse {
+    max-height: 375px; /* Adjust as needed */
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .navbar-nav .dropdown-item {
+    color: #fff;
+    padding: 10px 20px;
+    width: 100%;
+    white-space: normal;
+  }
+  .navbar-nav .dropdown-item:hover,
+  .navbar-nav .dropdown-item:focus {
+    background: #003f7f;
+    color: #ffd700;
+  }
+
 }
+
 /* 
   .nav-links {
     display: none;

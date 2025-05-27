@@ -62,7 +62,7 @@ public class MealPlanController : Controller
             {
                 continue;
             }
-            if (mealPlan.EndDate != null && mealPlan.EndDate < DateOnly.FromDateTime(DateTime.Now))
+            if (mealPlan.EndDate != null && mealPlan.EndDate < DateOnly.FromDateTime(DateTime.Now) && mealPlan.Frequency == "Once")
             {
                 mealPlan.Archived = true;
                 _mealPlanRepository.AddOrUpdate(mealPlan);
@@ -376,6 +376,8 @@ public class MealPlanController : Controller
         {
             mv.PlanIds.Add(mp.MealPlanId);
             mv.PlanNames.Add(mp.PlanName ?? "");
+            mv.StartDates.Add(mp.StartDate ?? DateOnly.MaxValue);
+            mv.EndDates.Add(mp.EndDate ?? DateOnly.MaxValue);
         }
         if (id == "new")
         {
@@ -424,6 +426,11 @@ public class MealPlanController : Controller
             var userId = _userRepository.GetIdFromIdentityId(user.Id);
             var mealPlans = _mealPlanRepository.GetMealPlansForUser(userId);
             if (mealPlans.IsNullOrEmpty() || !mealPlans.Select(mp => mp.MealPlanId).Contains(mv.MealPlanId))
+            {
+                return RedirectToAction("Index");
+            }
+            var mealPlan = _mealPlanRepository.FindById(mv.MealPlanId);
+            if( mv.Date < mealPlan?.StartDate || mv.Date > mealPlan?.EndDate)
             {
                 return RedirectToAction("Index");
             }
