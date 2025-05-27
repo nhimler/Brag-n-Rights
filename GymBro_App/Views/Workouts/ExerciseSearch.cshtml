@@ -1,6 +1,10 @@
+@using Microsoft.AspNetCore.Identity
+
 @{
     ViewData["Title"] = "Exercise Search";
 }
+@inject SignInManager<IdentityUser> SignInManager
+
 
 <head>
     <link rel="stylesheet" href="~/css/exerciseSearch.css" asp-append-version="true" />
@@ -45,26 +49,27 @@
 </div>
 
 <div class="row align-items-center mb-3" id="searchRow">
-    <div class="col">
-        <div class="input-group">
-            <input type="text" class="form-control" id="exerciseInput" placeholder="Search by an exercise name ex) bench press" aria-label="Search by an exercise name">
-            <button class="btn btn-outline-secondary" type="button" id="exerciseSearchButtonAddon">Search</button>
-        </div>
+    <div class="input-group" id ="exerciseSearchForm">
+        <input type="text" class="form-control" id="exerciseInput" placeholder="Search by name (ex: sit-up)" aria-label="Search by an exercise name">
+        <button class="btn btn-outline-secondary" type="button" id="exerciseSearchButtonAddon">Search</button>
     </div>
 </div>
 
-<div id="workoutPlanSelector">
-    <label for="workoutPlanSelectorList">Select Workout Plan:</label>
-    <select id="workoutPlanSelectorList">
-        @if(ViewBag.WorkoutPlans != null)
-        {
-            foreach(var wp in ViewBag.WorkoutPlans)
+@if (SignInManager.IsSignedIn(User))
+{
+    <div id="workoutPlanSelector">
+        <label for="workoutPlanSelectorList">Select Workout Plan:</label>
+        <select id="workoutPlanSelectorList">
+            @if(ViewBag.WorkoutPlans != null)
             {
-                <option value="@wp.WorkoutPlanId">@wp.PlanName</option>
+                foreach(var wp in ViewBag.WorkoutPlans)
+                {
+                    <option value="@wp.WorkoutPlanId">@wp.PlanName</option>
+                }
             }
-        }
-    </select>
-</div>
+        </select>
+    </div>
+}
 
 <div id="exerciseSearchResults">
 </div>
