@@ -1,6 +1,6 @@
 /* Modern Fitness App Homepage Styles */
 .homepage-hero {
-  min-height: 80vh;
+  min-height: 70vh;
   background: linear-gradient(135deg, rgba(0,62,129,0.7) 50%, rgba(255,255,255,0.7) 100%), 
     url('/images/Homepage/person-in-gray-shirt-holding-black-dumbbell.jpg') center center/cover no-repeat;
   color: #fff;
