@@ -52,7 +52,11 @@
         <input asp-for="TargetFats" class="form-control" type="number" />
     </div>
 
-    <button type="submit" class="btn btn-primary mt-3" id="create-btn">Create</button>
+    @if(Context.Request.Path.Value.Contains("new")){
+        <button type="submit" class="btn btn-primary mt-3" id="create-btn">Create</button>
+    }else{
+        <button class="btn btn-primary mt-3" type="submit" id="update-btn">Save Changes</button>
+    }
 
 </form>
 </div>

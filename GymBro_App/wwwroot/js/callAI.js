@@ -38,7 +38,7 @@ suggestBtn.addEventListener("click", async function() {
     lines.forEach(async function(line) {
         sgEl = document.createElement("button");
         sgEl.textContent = line;
-        sgEl.classList.add("btn", "btn-secondary", "m-1", "suggestion-fill-btn"); // Add Bootstrap classes for styling
+        sgEl.classList.add("btn", "suggestion-fill-btn"); // Add Bootstrap classes for styling
         sgEl.addEventListener("click", async function() {
             let response = await fetch("/api/ai/fill?q=" + line, {
                 method: "GET",
