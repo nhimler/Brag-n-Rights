@@ -9,7 +9,8 @@
                 data-bs-toggle="dropdown" aria-expanded="false">
                 FitBit Features
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark navbar-dropdown-menu" id="" aria-labelledby="navbarFitBitFeaturesDropdownToggle">
+            <ul class="dropdown-menu dropdown-menu-dark navbar-dropdown-menu" id=""
+                aria-labelledby="navbarFitBitFeaturesDropdownToggle">
                 <li class="dropdown-item nav-item">
                     <a class="nav-link text-center" asp-controller="AwardMedal" asp-action="AwardMedals">Step Medals</a>
                 </li>
@@ -23,27 +24,35 @@
                 data-bs-toggle="dropdown" aria-expanded="false">
                 Exercise
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark navbar-dropdown-menu" aria-labelledby="navbarExerciseFeaturesDropdownToggle">
+            <ul class="dropdown-menu dropdown-menu-dark navbar-dropdown-menu"
+                aria-labelledby="navbarExerciseFeaturesDropdownToggle">
                 <li class="dropdown-item nav-item">
-                    <a class="nav-link text-center" asp-controller="Workouts" asp-action="ExerciseSearch">Exercise Search</a>
+                    <a class="nav-link text-center" asp-controller="Workouts" asp-action="ExerciseSearch">Exercise
+                        Search</a>
                 </li>
                 <li class="dropdown-item nav-item">
                     <a class="nav-link text-center" asp-controller="Workouts" asp-action="Index">Workout Plans</a>
                 </li>
             </ul>
         </li>
-        <li class="nav-item mx-2"><a class="nav-link text-center" asp-controller="MealPlan" asp-action="Index">Meal Plan</a></li>
-        <li class="nav-item mx-2"><a class="nav-link text-center" asp-controller="Gym" asp-action="FindNearbyGyms">Find A Gym</a></li>
+        <li class="nav-item">
+            <a class="nav-link text-center" asp-controller="MealPlan" asp-action="Index">Meal Plan</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-center" asp-controller="Gym" asp-action="FindNearbyGyms">Find A Gym</a>
+        </li>
         <partial name="_LoginPartial" />
     </ul>
 }
 else
 {
     <ul class="navbar-nav .nav-toggle flex-row flex-grow-1 justify-content-end">
-        <li class="nav-item mx-2"><a class="nav-link" asp-controller="Workouts" asp-action="ExerciseSearch">Exercise Search</a></li>
-        <li class="nav-item mx-2"><a class="nav-link" asp-controller="Gym" asp-action="FindNearbyGyms">Find A Gym</a></li>
-        <li class="nav-item mx-2">
-            <partial name="_LoginPartial" />
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Workouts" asp-action="ExerciseSearch">Exercise Search</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Gym" asp-action="FindNearbyGyms">Find A Gym</a>
+        </li>
+        <partial name="_LoginPartial" />
     </ul>
 }

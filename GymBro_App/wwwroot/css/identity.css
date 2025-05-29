@@ -1,5 +1,13 @@
 /* General CSS file for Identity pages */
 
-.identity-form {
-    width: 80%;
+@media (min-width: 769px) {
+    .identity-form {
+        width: 40%;
+    }
+}
+
+@media (max-width: 768px) {
+    .identity-form {
+        width: 80%;
+    }
 }
