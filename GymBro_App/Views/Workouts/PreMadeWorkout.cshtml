@@ -1,25 +1,30 @@
 @model IEnumerable<GymBro_App.Models.WorkoutPlanTemplate>
 
+@{
+    ViewData["Title"] = "Pre-Made WorkoutPlans";
+}
+
 <link rel="stylesheet" href="~/css/exerciseSearch.css" asp-append-version="true" />
 
-<div id="PreMadeWorkoutList"></div>
+<div class="container mt-4" id="PreMadeWorkoutList">
 
-<!-- Exercise Details Modal -->
-<div class="modal fade" id="exerciseModal" tabindex="-1" aria-labelledby="modalExerciseName" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalExerciseName">Title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="modalExerciseBackdrop" class="text-center mb-3">
-          <img src="" alt="Exercise GIF" class="img-fluid" />
+    <!-- Exercise Details Modal -->
+    <div class="modal fade" id="exerciseModal" tabindex="-1" aria-labelledby="modalExerciseName" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalExerciseName">Title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="modalExerciseBackdrop" class="text-center mb-3">
+              <img src="" alt="Exercise GIF" class="img-fluid" />
+            </div>
+            <div id="modalExerciseContent"><!-- JS will fill this --></div>
+          </div>
         </div>
-        <div id="modalExerciseContent"><!-- JS will fill this --></div>
       </div>
     </div>
-  </div>
 </div>
 
 

@@ -30,8 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("No login status detected, assuming not logged in");
     }
 
-    let exerciseSearchButton = document.getElementById("exerciseSearchButtonAddon");
-    exerciseSearchButton.addEventListener("click", function() {
+    let exerciseSearchForm = document.getElementById("exerciseSearchByNameForm");
+    exerciseSearchForm.addEventListener("submit", event => {
+        event.preventDefault();
         document.querySelectorAll('input[name="bodyPartOption"]').forEach(radio => {
             radio.checked = false;
         });
