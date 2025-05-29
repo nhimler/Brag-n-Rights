@@ -69,10 +69,9 @@ justify-content: space-between; /* Distribute content evenly */
 }
 
 .exercise-card img {
-max-height: 300px; /* Maximum height instead of fixed height */
+max-height: 360px; /* Maximum height instead of fixed height */
 width: 100%; /* Full width of container */
 object-fit: contain; /* Show entire image without cropping */
-background-color: #f8f9fa; /* Light background for transparent areas */
 }
 
 .exercise-card .card-body {
@@ -89,4 +88,88 @@ text-align: center; /* Center the title */
 
 .exercise-card .btn {
 align-self: center; /* Center the button horizontally */
+}
+
+#exerciseSearchByNameForm {
+  width: 50%;
+}
+
+#exerciseSearchResults {
+  width: 90%;
+  justify-self: center;
+}
+
+@media (min-width: 768px){
+  #bodyPartRadioButtons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 3 per row, change to 4 for 4 per row */
+    gap: 8px;
+    max-width: 90%;
+    overflow-x: unset;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  #bodyPartRadioButtons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 3 per row, change to 4 for 4 per row */
+    gap: 8px;
+    max-width: 90%;
+    overflow-x: unset;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  #bodyPartRadioButtons label.btn {
+    min-width: 0; /* Allow buttons to shrink to fit grid */
+    width: 100%;
+    text-align: center;
+    margin-right: 0;
+  }
+
+  #exerciseSearchByNameForm {
+    width: 80%;
+  }
+}
+
+.exercise-modal-flex {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.exercise-modal-image-col {
+    flex: 0 0 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.exercise-modal-content-col {
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+@media (max-width: 767px) {
+    .exercise-modal-flex {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .exercise-modal-image-col,
+    .exercise-modal-content-col {
+        flex: unset;
+        width: 100%;
+        max-width: 100%;
+    }
+    #modalExerciseBackdrop img {
+        width: 100%;
+        max-width: 320px;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+    }
 }

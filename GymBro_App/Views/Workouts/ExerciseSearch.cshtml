@@ -1,6 +1,10 @@
+@using Microsoft.AspNetCore.Identity
+
 @{
     ViewData["Title"] = "Exercise Search";
 }
+@inject SignInManager<IdentityUser> SignInManager
+
 
 <head>
     <link rel="stylesheet" href="~/css/exerciseSearch.css" asp-append-version="true" />
@@ -22,10 +26,12 @@
     <input type="radio" class="btn-check" name="bodyPartOption" id="bp-chest" value="chest" autocomplete="off">
     <label class="btn btn-outline-primary" for="bp-chest">Chest</label>
 
-    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-lower-arms" value="lower arms" autocomplete="off">
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-lower-arms" value="lower arms"
+        autocomplete="off">
     <label class="btn btn-outline-primary" for="bp-lower-arms">Lower Arms</label>
 
-    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-lower-legs" value="lower legs" autocomplete="off">
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-lower-legs" value="lower legs"
+        autocomplete="off">
     <label class="btn btn-outline-primary" for="bp-lower-legs">Lower Legs</label>
 
     <input type="radio" class="btn-check" name="bodyPartOption" id="bp-neck" value="neck" autocomplete="off">
@@ -34,10 +40,12 @@
     <input type="radio" class="btn-check" name="bodyPartOption" id="bp-shoulders" value="shoulders" autocomplete="off">
     <label class="btn btn-outline-primary" for="bp-shoulders">Shoulders</label>
 
-    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-upper-arms" value="upper arms" autocomplete="off">
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-upper-arms" value="upper arms"
+        autocomplete="off">
     <label class="btn btn-outline-primary" for="bp-upper-arms">Upper Arms</label>
 
-    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-upper-legs" value="upper legs" autocomplete="off">
+    <input type="radio" class="btn-check" name="bodyPartOption" id="bp-upper-legs" value="upper legs"
+        autocomplete="off">
     <label class="btn btn-outline-primary" for="bp-upper-legs">Upper Legs</label>
 
     <input type="radio" class="btn-check" name="bodyPartOption" id="bp-waist" value="waist" autocomplete="off">
@@ -45,26 +53,30 @@
 </div>
 
 <div class="row align-items-center mb-3" id="searchRow">
-    <div class="col">
+    <form id="exerciseSearchByNameForm">
         <div class="input-group">
-            <input type="text" class="form-control" id="exerciseInput" placeholder="Search by an exercise name ex) bench press" aria-label="Search by an exercise name">
-            <button class="btn btn-outline-secondary" type="button" id="exerciseSearchButtonAddon">Search</button>
+            <input type="text" class="form-control" id="exerciseInput" placeholder="Search by name (ex: sit-up)"
+                aria-label="Search by an exercise name">
+            <button class="btn btn-outline-secondary" type="submit" id="exerciseSearchButtonAddon">Search</button>
         </div>
-    </div>
+    </form>
 </div>
 
-<div id="workoutPlanSelector">
-    <label for="workoutPlanSelectorList">Select Workout Plan:</label>
-    <select id="workoutPlanSelectorList">
-        @if(ViewBag.WorkoutPlans != null)
-        {
-            foreach(var wp in ViewBag.WorkoutPlans)
+@if (SignInManager.IsSignedIn(User) && ViewBag.WorkoutPlans.Count > 0)
+{
+    <div id="workoutPlanSelector">
+        <label for="workoutPlanSelectorList">Select Workout Plan:</label>
+        <select id="workoutPlanSelectorList">
+            @if (ViewBag.WorkoutPlans != null)
             {
-                <option value="@wp.WorkoutPlanId">@wp.PlanName</option>
+                foreach (var wp in ViewBag.WorkoutPlans)
+                {
+                    <option value="@wp.WorkoutPlanId">@wp.PlanName</option>
+                }
             }
-        }
-    </select>
-</div>
+        </select>
+    </div>
+}
 
 <div id="exerciseSearchResults">
 </div>
@@ -77,16 +89,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-6 justify-content-center align-items-center d-flex">
-                        <div id="modalExerciseBackdrop">
-                            <img src="" alt="Exercise Gif" id="exerciseGif">
-                        </div>
+                <div class="exercise-modal-flex">
+                    <div id="modalExerciseBackdrop" class="exercise-modal-image-col">
+                        <img src="" alt="Exercise Gif" id="exerciseGif">
                     </div>
-                    <div class="col-6">
-                        <div id="modalExerciseContent">
-                            <!-- Content will be populated dynamically -->
-                        </div>
+                    <div id="modalExerciseContent" class="exercise-modal-content-col">
+                        <!-- Content will be populated dynamically -->
                     </div>
                 </div>
             </div>

@@ -45,8 +45,8 @@ namespace GymBro_App.Services
 
             var requestBody = new
             {
-                includedTypes = new[] { "gym" },
-                maxResultCount = 10,
+                includedTypes = new[] { "gym" , "fitness_center"},
+                maxResultCount = 20,
                 locationRestriction = new
                 {
                     circle = new
