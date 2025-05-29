@@ -8,13 +8,18 @@
 <div class="row">
     <div class="col-sm-12 col-md-6">
         <form method="post" asp-action="CreateMeal" asp-route-id="">
-            <button class="btn btn-primary" type="submit" id="create-btn">Create</button>
+            @if(Context.Request.Path.Value.Contains("new")){
+                <button class="btn btn-primary" type="submit" id="create-btn">Create</button>
+            }else{
+                <button class="btn btn-primary" type="submit" id="update-btn">Save Changes</button>
+            }
+
             <div class="form-group">
                 <label asp-for="MealName">Meal Name</label>
-                @if(Model == null){
-                    <input asp-for="MealName" class="form-control" value="New Meal"/>
+                @if(Context.Request.Path.Value.Contains("new")){
+                    <input asp-for="MealName" class="form-control" value="New Meal" required/>
                 } else {
-                    <input asp-for="MealName" class="form-control" value="@Model.MealName"/>
+                    <input asp-for="MealName" class="form-control" value="@Model.MealName" required/>
                 }
             </div>
             <div class="form-group">
