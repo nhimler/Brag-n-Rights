@@ -19,27 +19,27 @@
                         }
                         
                         <div class="mb-3">
-                            <label asp-for="PlanName" class="form-label fw-bold"></label>
+                            <label asp-for="PlanName" class="form-label fw-bold">Plan Name</label>
                             <input asp-for="PlanName" class="form-control" placeholder="Enter plan name" />
                             <span asp-validation-for="PlanName" class="text-danger"></span>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label asp-for="StartDate" class="form-label fw-bold"></label>
+                                <label asp-for="StartDate" class="form-label fw-bold">Start Date</label>
                                 <input asp-for="StartDate" class="form-control" type="date"/>
                                 <span asp-validation-for="StartDate" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label asp-for="EndDate" class="form-label fw-bold"></label>
+                                <label asp-for="EndDate" class="form-label fw-bold">End Date</label>
                                 <input asp-for="EndDate" class="form-control" type="date"/>
                                 <span asp-validation-for="EndDate" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Frequency" class="form-label fw-bold"></label>
+                            <label asp-for="Frequency" class="form-label fw-bold">Frequency</label>
                             <input asp-for="Frequency" class="form-control" placeholder="How often will you work out?" />
                             <span asp-validation-for="Frequency" class="text-danger"></span>
                         </div>
@@ -51,7 +51,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="DifficultyLevel" class="form-label fw-bold"></label>
+                            <label asp-for="DifficultyLevel" class="form-label fw-bold">Difficulty Level</label>
                             <select asp-for="DifficultyLevel" class="form-select">
                                 <option value="" disabled selected>Select difficulty level</option>
                                 <option value="Beginner">Beginner</option>
